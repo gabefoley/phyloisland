@@ -1,0 +1,135 @@
+/*
+ * General
+ */
+
+
+
+html, body, h1 {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #e8e8e8;
+}
+
+body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
+
+.container {
+  width: 1000px;
+  margin: 0 auto;
+}
+
+header {
+  background-color: white;
+  padding: 5px 5px 5px 5px;
+  height: 90px;
+  margin: 0px auto;
+}
+
+
+ .main-img {
+  float: left;
+   width:100px;
+   height:80px;
+}
+
+.intro {
+  margin: 20px;
+}
+
+.title {
+  float: left;
+  margin-top: 25px;
+  margin-left: 0px;
+}
+
+.upload {
+  margin: 25px;
+}
+
+.sortTable {
+  margin: 55px;
+}
+
+.btn-primary {
+  background: #259086;
+  border: 1px solid #0a463c;
+  color: #0a463c;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.23px;
+  padding: 12px 32px;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.btn-primary:hover {
+  background: #0a463c;
+  /*border: 1px solid #259086;*/
+  color: white;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.23px;
+  padding: 12px 32px;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.btn-secondary {
+  background: #ffffff;
+  border: 1px solid #e6e6e6;
+  color: goldenrod;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.23px;
+  padding: 12px 32px;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  color: #3a3a3a;
+  display: block;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  margin-top: 25px;
+  margin-bottom: 25px;
+}
+
+.form-group input {
+  /*border: 2px solid black;*/
+  /*border-bottom: 2px solid black;*/
+  background-color: white;
+  color: #3a3a3a;
+  font-size: 13px;
+  padding: 12px 32px;  /*width: 100%;*/
+}
+
+.form-group input:focus {
+  outline: 0;
+}
+
+.form-group .error-message {
+  margin: 10px 0;
+  color: #db4437;
+}
+
+.form-group .error-message + input {
+  border-bottom: 2px solid #db4437;
+}
+
+.error-message {
+  color: #db4437;
+}

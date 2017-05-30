@@ -1,0 +1,58 @@
+{% extends 'admin/master.html' %}
+
+{% block body %}
+
+     <form method="POST"    enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+
+
+
+            <div class="form-group">
+
+            {% with messages = get_flashed_messages() %}
+                  {% if messages %}
+                    <ul>
+                    {% for message in messages %}
+                        <li>{{ message }} </li>
+                    {% endfor %}
+                    </ul>
+                  {% endif %}
+                {% endwith %}
+
+
+            {{ form.name.label }}
+                {{ form.name() }}
+
+              {% if form.name.errors %}
+                {% for error in form.name.errors %}
+                  <p class="error-message">{{ error }}</p>
+                {% endfor %}
+              {% endif %}
+
+            <br>
+            <br>
+
+
+            {{ form.file.label }}
+            {{ form.file() }}
+
+              {% if form.file.errors %}
+                {% for error in form.file.errors %}
+                  <p class="error-message">{{ error }}</p>
+                {% endfor %}
+              {% endif %}
+
+
+            <br>
+            <br>
+            {{ form.upload_submit(class="btn-primary") }}
+            </div>
+ </form>
+
+    </div>
+
+
+</div>
+
+
+{% endblock %}

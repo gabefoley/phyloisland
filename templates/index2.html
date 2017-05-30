@@ -1,0 +1,83 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="upload">
+
+ <form method="POST" action="{{  url_for('upload') }}"  enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+
+
+
+            <div class="form-group">
+
+            {% with messages = get_flashed_messages() %}
+                  {% if messages %}
+                    <ul>
+                    {% for message in messages %}
+                        <li>{{ message }} </li>
+                    {% endfor %}
+                    </ul>
+                  {% endif %}
+                {% endwith %}
+
+
+            {{ form.name.label }}
+                {{ form.name() }}
+
+              {% if form.name.errors %}
+                {% for error in form.name.errors %}
+                  <p class="error-message">{{ error }}</p>
+                {% endfor %}
+              {% endif %}
+
+
+            {{ form.file.label }}
+            {{ form.file() }}
+
+              {% if form.file.errors %}
+                {% for error in form.file.errors %}
+                  <p class="error-message">{{ error }}</p>
+                {% endfor %}
+              {% endif %}
+
+
+
+            {{ form.upload_submit(class="btn-primary") }}
+            </div>
+ </form>
+
+    </div>
+
+
+</div>
+
+<table class="sortable">
+
+<table>
+        <thead>
+        <tr>
+            <th> ID </th>
+            <th> Name </th>
+            <th> Sequence </th>
+            <th> Company </th>
+        </tr>
+       </thead>
+    {% for item in records %}
+
+       <tr>
+           <td> {{ records[item].id }} </td>
+           <td> {{ records[item].description }} </td>
+           <td> {{  records[item].annotations.keys() }}</td>
+
+       </tr>
+
+    {% endfor %}
+    <tfoot>
+    </tfoot>
+
+</table>
+
+
+{% endblock %}
+
