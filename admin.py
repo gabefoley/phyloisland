@@ -8,7 +8,6 @@ from BioSQL import BioSeqDatabase
 from forms import UploadForm
 import os
 import os.path as op
-from flask.ext.admin.form import rules
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, TextAreaField, FileField
 from wtforms.validators import DataRequired, Email, Length, ValidationError
@@ -17,8 +16,19 @@ from flask_uploads import UploadSet, configure_uploads, ALL
 from Table import SortableTable, Item
 from flask_admin.actions import action
 import gettext
+from Bio import Entrez, SeqIO, GenBank, AlignIO, pairwise2
+from Bio.Align.Applications import MuscleCommandline
+from Bio.SubsMat.MatrixInfo import blosum62
+from Bio.Seq import Seq
+from Bio.Alphabet import generic_protein
+import requests
+import subprocess
+import sys
+from Bio.SeqRecord import SeqRecord
+from flask import Flask, make_response, request
 
-subMenu.seqRecords = {}
+
+# subMenu.seqRecords = {}
 
 # Create directory for file fields to use
 file_path = op.join(op.dirname(__file__), 'files')
@@ -31,9 +41,9 @@ bio_server = BioSeqDatabase.open_database(driver="MySQLdb", user="pi", passwd=""
 bio_db = bio_server["phylotest"]
 
 app = Flask(__name__)
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://pi:@localhost/bioseqdb'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://pi:@localhost/bioseqdb'
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///gabe'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///gabe'
 app.config['SECRET_KEY'] = 'developmentkey'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
@@ -78,21 +88,21 @@ class User(db.Model):
 
 
 
-# class BioEntry(db.Model):
-#     __tablename__ = 'bioentry'
-#     bioentry_id = db.Column(db.Integer, primary_key=True)
-#     biodatabase_id = db.Column(db.Integer, unique = True)
-#     taxon_id = db.Column(db.Integer)
-#     name = db.Column(db.VARCHAR(40))
-#     accession = db.Column(db.VARCHAR(128), unique=True)
-#     identifier = db.Column(db.VARCHAR(40))
-#     division = db.Column(db.VARCHAR(6))
-#     description = db.Column(db.TEXT)
-#     version = db.Column(db.SMALLINT, unique=True)
+class BioEntry(db.Model):
+    __tablename__ = 'bioentry'
+    bioentry_id = db.Column(db.Integer, primary_key=True)
+    biodatabase_id = db.Column(db.Integer, unique = True)
+    taxon_id = db.Column(db.Integer)
+    name = db.Column(db.VARCHAR(40))
+    accession = db.Column(db.VARCHAR(128), unique=True)
+    identifier = db.Column(db.VARCHAR(40))
+    division = db.Column(db.VARCHAR(6))
+    description = db.Column(db.TEXT)
+    version = db.Column(db.SMALLINT, unique=True)
 
 
 
-class SeqRecord(db.Model):
+class SeqInstance(db.Model):
     __tablename__ = 'seqrecord'
     uid = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text)
@@ -127,7 +137,7 @@ class SeqView(ModelView):
     column_sortable_list = ['name', 'division']
 
 class SeqRecordView(ModelView):
-    column_searchable_list = ['name', 'species', 'a1', 'a2']
+    column_searchable_list = ['name', 'species', 'a1', 'a2', 'overlap']
 
     create_modal = True
     edit_modal = True
@@ -156,10 +166,10 @@ class SeqRecordView(ModelView):
     }
 
     @action('getoverlap', 'Get Overlap')
-    def action_approve(self, ids):
+    def action_getoverlap(self, ids):
         print (ids)
         try:
-            query = SeqRecord.query.filter(SeqRecord.uid.in_(ids))
+            query = SeqInstance.query.filter(SeqInstance.uid.in_(ids))
 
             count = 0
             for record in query.all():
@@ -179,6 +189,115 @@ class SeqRecordView(ModelView):
                     db.session.commit()
                     # print (subMenu.seqRecords)
                     # print (subMenu.seqRecords['CPYD01000004'].annotations.keys())
+
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+
+            flash(gettext('Failed to approve users. %(error)s', error=str(ex)), 'error')
+
+    @action('checkA1', 'Check for A1 region')
+    def action_checkA1(self, ids):
+        print (ids)
+        try:
+            query = SeqInstance.query.filter(SeqInstance.uid.in_(ids))
+
+            count = 0
+            for record in query.all():
+                if record.a1 != "Not tested":
+                    pass
+                else:
+                    # print ('got here')
+                    # print (record)
+                    # print (record.name)
+                    # print (record.name.split(".")[0])
+                    # print (subMenu.seqRecords)
+                    # print (subMenu.seqRecords.get(record.name.split(".")[0]))
+                    # print (subMenu.seqRecords.get(record.name.split(".")[0]).features)
+                    #
+                    # print ("** KEYS **")
+                    # print (subMenu.seqRecords.get(record.name.split(".")[0]).annotations.keys())
+                    for feature in subMenu.seqDict.get(record.name.split(".")[0]).features:
+                        if 'gene' in feature.qualifiers and 'translation' in feature.qualifiers:
+                            if "A1" in feature.qualifiers['gene'][0]:
+                                print ("FOUND AN A1")
+                                record.a1 = "Found"
+                                db.session.add(record)
+                                db.session.commit()
+
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+
+            flash(gettext('Failed to approve users. %(error)s', error=str(ex)), 'error')
+
+    @action('checkA2', 'Check for A2 region')
+    def action_checkA2(self, ids):
+        print (ids)
+        try:
+            query = SeqInstance.query.filter(SeqInstance.uid.in_(ids))
+
+            count = 0
+            for record in query.all():
+                if record.a1 != "Not tested":
+                    pass
+                else:
+                    # print ('got here')
+                    # print (record)
+                    # print (record.name)
+                    # print (record.name.split(".")[0])
+                    # print (subMenu.seqRecords)
+                    # print (subMenu.seqRecords.get(record.name.split(".")[0]))
+                    # print (subMenu.seqRecords.get(record.name.split(".")[0]).features)
+                    #
+                    # print ("** KEYS **")
+                    # print (subMenu.seqRecords.get(record.name.split(".")[0]).annotations.keys())
+                    for feature in subMenu.seqDict.get(record.name.split(".")[0]).features:
+                        if 'gene' in feature.qualifiers and 'translation' in feature.qualifiers:
+                            if "A2" in feature.qualifiers['gene'][0]:
+                                print ("FOUND AN A2")
+                                record.a1 = "Found"
+                                db.session.add(record)
+                                db.session.commit()
+
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+
+            flash(gettext('Failed to approve users. %(error)s', error=str(ex)), 'error')
+
+    @action('buildprofileA2', 'Build profile based on A2')
+    def action_build_profile_a2(self, ids):
+        print (ids)
+        try:
+            query = SeqInstance.query.filter(SeqInstance.uid.in_(ids))
+            align_list = []
+            for record in query.all():
+                if record.a2 == "Not tested":
+                    pass
+                else:
+                    print (record.a2)
+                    print (record.name)
+                    align_record = SeqRecord(Seq(record.a2, generic_protein), id=str(record.name) + "_" + "A2")
+                    # newSeq = Seq(record.a2)
+                    # align_record = Seq(newSeq, )
+                    # align_record = SeqRecord(Seq(record.a2, generic_protein), id="gabe")
+                    align_list.append(align_record)
+
+                    # Write sequences to FASTA
+
+            SeqIO.write(align_list, "align.fasta", "fasta")
+            muscle_cline = MuscleCommandline(input="align.fasta")
+            child = subprocess.Popen(str(muscle_cline), stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                                         universal_newlines=True, shell=(sys.platform != "win32"))
+            alignment = AlignIO.read(child.stdout, "fasta")
+            AlignIO.write(alignment, "align.aln", "fasta")
+            file = subprocess.call(["hmmbuild", "profile.hmm", "align.aln"])
+
+            # file_contents = file.stream.read().decode("utf-8")
+
+
+
 
         except Exception as ex:
             if not self.handle_view_exception(ex):
@@ -248,48 +367,73 @@ class UploadView(BaseView):
             print (filename, region, "##")
 
             # Create the initial seqRecords
+            subMenu.seqDict = {}
+            subMenu.unmappable = []
             subMenu.defaultValue("static/uploads/"  + filename, region)
+            print ("@@@@@@@@@@@@@@Couldn't map@@@@@@@@@@@@@" , len(subMenu.unmappable))
+            for x in subMenu.unmappable:
+                print (x)
 
-            records = subMenu.seqRecords
+            records = subMenu.seqDict.items()
 
-            for record in records:
-                current = records[record]
-                # print (current)
-                name = current.id
-                species = current.annotations['source']
-                strain = current.annotations['source']
-                description = current.description
-                a1 = current.annotations["A1"] if "A1" in current.annotations.keys() else "Not tested"
-                a1_loc = current.annotations["A1_location"] if "A1_location" in current.annotations.keys() else "Not tested"
-                a2 = current.annotations["A2"] if "A2" in current.annotations.keys() else "Not tested"
-                a2_loc = current.annotations["A2_location"] if "A2_location" in current.annotations.keys() else "Not tested"
-                overlap = current.annotations["Overlap"] if "Overlap" in current.annotations.keys() else "Not tested"
-                distance = "Not tested"
-                # sequence = str(current.seq)
-                sequence = str(current.seq)
-                fullrecord = current
+            print (type(records))
 
-                entry = SeqRecord(name, species, strain, description, a1, a1_loc, a2, a2_loc, overlap, distance, sequence)
+            for k,v in records:
+                seqList.append(v)
 
-                check = SeqRecord.query.filter_by(name=name).first()
+            count = bio_db.load(seqList)
+            print ('Loaded %d sequences' % count)
+            bio_server.commit()
 
-                # check = db.session.query(db.exists().where(SeqRecord.name== name)).scalar()
-                print ('Name we are checking on is ', name)
-
-                print (check)
-
-                if (check):
-                    print ('got here baby')
-                    print ("A1 loc ", check.a1_loc)
-                    print ("A2 loc ", check.a2_loc)
-                    check = subMenu.addToRecord(check, current, region)
-                    print ("A1 loc ", check.a1_loc)
-                    print ("A2 loc ", check.a2_loc)
-
-                    db.session.add(check)
-                else:
-                    db.session.add(entry)
-                db.session.commit()
+            # for record in records:
+            #     current = records[record]
+            #     for feat in current.features:
+            #         print ("**", feat)
+            #     # print (current)
+            #     name = current.id
+            #     species = current.annotations['species']
+            #     strain = current.annotations['source']
+            #     description = current.description
+            #     a1 = current.annotations["A1"] if "A1" in current.annotations.keys() else "Not tested"
+            #     a1_loc = current.annotations["A1_location"] if "A1_location" in current.annotations.keys() else "Not tested"
+            #     a2 = current.annotations["A2"] if "A2" in current.annotations.keys() else "Not tested"
+            #     a2_loc = current.annotations["A2_location"] if "A2_location" in current.annotations.keys() else "Not tested"
+            #     overlap = current.annotations["Overlap"] if "Overlap" in current.annotations.keys() else "Not tested"
+            #     distance = "Not tested"
+            #     # sequence = str(current.seq)
+            #     sequence = str(current.seq)
+            #     fullrecord = current
+            #
+            #     entry = SeqInstance(name, species, strain, description, a1, a1_loc, a2, a2_loc, overlap, distance, sequence)
+            #
+            #     check = SeqInstance.query.filter_by(name=name).first()
+            #
+            #     # check = db.session.query(db.exists().where(SeqRecord.name== name)).scalar()
+            #
+            #     # print (check)
+            #
+            #     if (check):
+            #         print('Name we are checking on is ', name)
+            #
+            #         print ("A1  ", check.a1)
+            #         print ("A2  ", check.a2)
+            #         print ("region is ", region)
+            #         if region in current.annotations.keys():
+            #             print ("YEAH BABY")
+            #         else:
+            #             print ("NAH BOY")
+            #         setattr(check, region.lower(), current.annotations[region] if region in current.annotations.keys() else "Not tested")
+            #         setattr(check, region.lower() + "_loc", current.annotations[region + "_location"] if region + "_location" in current.annotations.keys() else "Not tested")
+            #         # print ('got here baby')
+            #
+            #         # check = subMenu.addToRecord(check, current, region)
+            #         print ("A1  ", check.a1)
+            #         print ("A2  ", check.a2)
+            #
+            #         db.session.add(check)
+            #     else:
+            #         db.session.add(entry)
+            #     db.session.commit()
 
             return self.render("upload_admin.html", form=form, records = records)
         return self.render("upload_admin.html", form=form)
@@ -299,8 +443,11 @@ class UploadView(BaseView):
 admin = Admin(app, name="Phylo Island", template_mode="bootstrap3")
 admin.add_view(UploadView(name='Upload', endpoint='upload_admin'))
 
-admin.add_view(SeqRecordView(SeqRecord, db.session))
-# admin.add_view(SeqView(BioEntry, db.session))
+# admin.add_view(SeqRecordView(SeqInstance, db.session)) // working version
+
+
+
+admin.add_view(SeqView(BioEntry, db.session))
 admin.add_view(UserView(User, db.session))
 
 

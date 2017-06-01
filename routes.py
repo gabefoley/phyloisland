@@ -62,13 +62,13 @@ def upload():
         # Create the initial seqRecords
         subMenu.defaultValue("static/uploads/"  + filename, name)
 
-        records = subMenu.seqRecords
+        records = subMenu.seqDict
 
-        for record in subMenu.seqRecords:
-            print (subMenu.seqRecords[record].id)
-            seqList.append(subMenu.seqRecords[record])
+        for record in subMenu.seqDict:
+            print (subMenu.seqDict[record].id)
+            seqList.append(subMenu.seqDict[record])
 
-            next_item = Item(count, subMenu.seqRecords[record].id, subMenu.seqRecords[record].annotations['organism'])
+            next_item = Item(count, subMenu.seqDict[record].id, subMenu.seqDict[record].annotations['organism'])
             item.add_elements(next_item)
             count += 1
 

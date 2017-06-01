@@ -20,7 +20,7 @@ from subprocess import DEVNULL
 
 
 
-seqRecords = {}
+seqDict = {}
 feature_to_record = {}
 selected_records = {}
 selected_features = set()
@@ -69,6 +69,8 @@ def defaultValue(region1, region1_name):
         for protein_id, small_record in genes.items():
             if (small_record):  # If the smallRecord mapped successfully
                 getGene(protein_id, small_record, region1_name)
+                getSpecies(protein_id, small_record)
+
             else:
                 unmappable.append(protein_id)
 
@@ -86,6 +88,12 @@ def defaultValues(region1, region1_name):
     for protein_id, small_record in genes.items():
         if (small_record): # If the smallRecord mapped successfully
             getGene(protein_id, small_record, region1_name)
+            getSpecies(protein_id, small_record)
+
+            # Get species
+            split_line = seqDict[small_record.get_emblID()].annotations['organism'].split()
+            species_name = split_line[0] + " " + split_line[1]
+            seqDict[small_record.get_emblID()].annotations["species"] = species_name
         else:
             unmappable.append(protein_id)
 
@@ -100,6 +108,11 @@ def defaultValues(region1, region1_name):
     #     else:
     #         unmappable.append(protein_id)
 
+
+def getSpecies(protein_id, small_record):
+    split_line = seqDict[small_record.get_emblID()].annotations['organism'].split()
+    species_name = split_line[0] + " " + split_line[1]
+    seqDict[small_record.get_emblID()].annotations["species"] = species_name
 
 def mapToGene(seq_records, setID):
 
@@ -160,16 +173,16 @@ def getGene(protein_id, small_record, set_id):
     feature_parser = GenBank.FeatureParser()
 
     for record in records:
-        if small_record.get_emblID() in seqRecords:
-            seqRecords[small_record.get_emblID()].annotations[set_id] = small_record.get_sequence()
-            seqRecords[small_record.get_emblID()].annotations[set_id + "_location"] = getCoords(seqRecords[small_record.get_emblID()], set_id)
+        if small_record.get_emblID() in seqDict:
+            seqDict[small_record.get_emblID()].annotations[set_id] = small_record.get_sequence()
+            seqDict[small_record.get_emblID()].annotations[set_id + "_location"] = getCoords(seqDict[small_record.get_emblID()], set_id)
             user_annotations.add(set_id) # User annotations now contains this ID
 
         else:
             record.annotations[set_id] = small_record.get_sequence()
             record.annotations[set_id + "_location"] = getCoords(record, set_id)
             record.annotations['Uniprot'] = small_record.get_uniprotID()# Append an annotation saying this record has been identified from this set
-            seqRecords[small_record.get_emblID()] = record
+            seqDict[small_record.get_emblID()] = record
             user_annotations.add(set_id) # User annotations now contains this ID
 
         if set_id in feature_to_record:
@@ -199,42 +212,43 @@ def getDistance(overlap_1, overlap_2):
         return str(loc_1_start - loc_2_end)
 
 def addToRecord(old, new, region):
+    setattr(old, region, 21)
     print ("**OLD**", old)
     print ("**NEW**", new)
     print ("**REGION**", region)
-    old.a2 = new.annotations[region] if region in new.annotations.keys() else "Not tested"
+    old.a2 = new.annotations[region] if region in old.annotations.keys() else "Not tested"
     old.a2_loc = new.annotations[region + "_location"] if region + "_location" in new.annotations.keys() else "Not tested"
     return old
 
 
 def check_overlap(overlap_1, overlap_2):
-    for record in seqRecords:
+    for record in seqDict:
         # Only check records that have both of the regions
-        if overlap_1 in seqRecords.get(record).annotations.keys() and overlap_2 in seqRecords.get(record).annotations.keys() :
+        if overlap_1 in seqDict.get(record).annotations.keys() and overlap_2 in seqDict.get(record).annotations.keys() :
             location1 = ExactPosition(0)
             location2 = ExactPosition(0)
-            for feature in seqRecords.get(record).features:
+            for feature in seqDict.get(record).features:
                 if 'translation' in feature.qualifiers:
 
                     # print (feature.qualifiers['translation'][0])
-                    if feature.qualifiers['translation'][0] == seqRecords.get(record).annotations[overlap_1]:
+                    if feature.qualifiers['translation'][0] == seqDict.get(record).annotations[overlap_1]:
                         location_1_start = feature.location.start
                         location_1_end = feature.location.end
-                    if feature.qualifiers['translation'][0] == seqRecords.get(record).annotations[overlap_2]:
+                    if feature.qualifiers['translation'][0] == seqDict.get(record).annotations[overlap_2]:
                         location_2_start = feature.location.start
                         location_2_end = feature.location.end
             if location_1_end > location_2_start or location_2_end > location_1_start:
-                seqRecords[record].annotations[overlap_1 + ":" + overlap_2 + " Overlap"] = "True"
+                seqDict[record].annotations[overlap_1 + ":" + overlap_2 + " Overlap"] = "True"
                 user_annotations.add(overlap_1 + ":" + overlap_2 + " Overlap")
             elif location_1_end < location_2_start:
-                seqRecords[record].annotations[overlap_1 + ":" + overlap_2 + " Overlap"] = "False"
-                seqRecords[record].annotations[overlap_1 + ":" + overlap_2 + " Distance"] = location_2_start - location_1_end
+                seqDict[record].annotations[overlap_1 + ":" + overlap_2 + " Overlap"] = "False"
+                seqDict[record].annotations[overlap_1 + ":" + overlap_2 + " Distance"] = location_2_start - location_1_end
                 user_annotations.add(overlap_1 + ":" + overlap_2 + " Overlap")
                 user_annotations.add(overlap_1 + ":" + overlap_2 + " Distance")
 
             elif location_2_end < location_1_start:
-                seqRecords[record].annotations[overlap_2 + ":" + overlap_1 + " Overlap"] = "False"
-                seqRecords[record].annotations[overlap_1 + ":" + overlap_2 + " Distance" ] = location_1_start - location_2_end
+                seqDict[record].annotations[overlap_2 + ":" + overlap_1 + " Overlap"] = "False"
+                seqDict[record].annotations[overlap_1 + ":" + overlap_2 + " Distance"] = location_1_start - location_2_end
                 user_annotations.add(overlap_2 + ":" + overlap_1 + " Overlap")
                 user_annotations.add(overlap_2 + ":" + overlap_1 + " Distance")
 
@@ -447,7 +461,7 @@ def set_reference():
     global referenceSeqs
     referenceSeqs = {}
     feature = input("Which feature do you want to set a reference sequence for? Available features are " + str([i for i in user_annotations]))
-    ref_sequence = input ("Which record should be used as the reference sequence? Available records are" + str([i for i in seqRecords if i in feature_to_record[feature]]))
+    ref_sequence = input ("Which record should be used as the reference sequence? Available records are" + str([i for i in seqDict if i in feature_to_record[feature]]))
     referenceSeqs[feature] = ref_sequence
     print (ref_sequence, "has been set as the reference sequence for", feature)
     profile_menu()
@@ -479,16 +493,17 @@ def unique_strains():
             print ("Using ", k, "as the reference sequence for the", v, "feature. The unique record chosen for each strain without this feature will be randomly selected")
 
 
-    for record in seqRecords:
+    for record in seqDict:
 
-        if seqRecords[record].annotations['organism'] in strains:
+        if seqDict[record].annotations['organism'] in strains:
             pass
         else:
-            strains.add(seqRecords[record].annotations['organism'])
-            unique_strains[record] = seqRecords[record]
+            strains.add(seqDict[record].annotations['organism'])
+            unique_strains[record] = seqDict[record]
     selected_records = unique_strains
 
     profile_menu()
+
 
 def unique_species():
     species = {}
@@ -501,37 +516,37 @@ def unique_species():
         for k,v in referenceSeqs.items():
             print ("Using ", k, "as the reference sequence for the", v, "feature. The unique record chosen for each strain without this feature will be randomly selected")
 
-    for record in seqRecords:
-        if ("A1" in seqRecords[record].annotations.keys()):
+    for record in seqDict:
+        if ("A1" in seqDict[record].annotations.keys()):
             # print ("LENGTH" + (str(len(unique_species))))
             # for k,v in unique_species.items():
             #     print ("here it is ", k)
 
             # print ("record " + record)
-            split_line = seqRecords[record].annotations['organism'].split()
+            split_line = seqDict[record].annotations['organism'].split()
             species_name = split_line[0] + " " + split_line[1]
-            print (seqRecords[record].annotations.keys())
+            print (seqDict[record].annotations.keys())
             # print ("A1" in seqRecords[record].annotations.keys() )
             if species_name in species.keys():
                 # print(species_name + " was in species")
                 high_score = species[species_name][1]
                 # print ("Checking alignment score for ", record, " and  ")
-                new_score = getAlignmentScore(seqRecords[referenceSeqs["A1"]].annotations["A1"], seqRecords[record].annotations["A1"])
+                new_score = getAlignmentScore(seqDict[referenceSeqs["A1"]].annotations["A1"], seqDict[record].annotations["A1"])
                 # print ("New score " + str(new_score) + " and high score " + str(high_score))
                 if new_score > high_score:
                     unique_species.pop(species[species_name[0]])
                     species[species_name] = [record, new_score]
-                    unique_species[record] = seqRecords[record]
+                    unique_species[record] = seqDict[record]
                     # for k, v in unique_species.items():
                     #     print("here it is inside here ", k)
 
             else:
                 # print (species_name + " was  not in species")
-                high_score = getAlignmentScore(seqRecords[referenceSeqs["A1"]].annotations["A1"], seqRecords[record].annotations["A1"])
+                high_score = getAlignmentScore(seqDict[referenceSeqs["A1"]].annotations["A1"], seqDict[record].annotations["A1"])
                 # print ("GOT HERE")
                 species[species_name] = [record, high_score]
                 # print ("NOW HERE")
-                unique_species[record] = seqRecords[record]
+                unique_species[record] = seqDict[record]
                 # print ("WHERE HERE")
                 # for k, v in unique_species.items():
                 #     print("here it is from here ", k)
@@ -567,7 +582,7 @@ def feature_summary():
         selected_features = user_annotations
 
     if len(selected_records) == 0:
-        selected_records = seqRecords
+        selected_records = seqDict
     print ("Record summary")
     print (selected_records.keys())
     print ("Feature summary")
@@ -584,7 +599,7 @@ def build_profile():
 
 
     if len(selected_records) == 0:
-        selected_records = seqRecords
+        selected_records = seqDict
 
     for feature in selected_features:
         # print (feature)
@@ -631,7 +646,7 @@ def summary_menu():
 
 def summary_all():
     print ("Here are all the loaded records: \n ")
-    printRecords(seqRecords, user_annotations)
+    printRecords(seqDict, user_annotations)
 
     if len(unmappable) > 0:
         print ("The following IDs couldn't be mapped to a GenBank record: ")
