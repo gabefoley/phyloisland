@@ -162,8 +162,8 @@ class BioView(ModelView):
 
 class BioEntryDBXRefView(ModelView):
     column_sortable_list = ['bioentry_id']
-    column_display_pk: True
-    column_auto_select_related: True
+    column_display_pk = True
+    column_auto_select_related = True
 
 
 class FilterLastNameBrown(BaseSQLAFilter):
@@ -620,7 +620,7 @@ admin.add_view(SeqInstanceView(SeqInstance, db.session, endpoint="seq_view")) # 
 @app.route('/')
 def index():
     form = UploadForm()
-    # return render_template("index.html", form=form)
+    # return render_template("index.html", form=form
     return '<a href="/admin/">Click me to get to Admin!</a>'
 
 # @app.route("/upload", methods = ['GET', 'POST'])

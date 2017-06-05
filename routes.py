@@ -45,18 +45,18 @@ except OSError:
 bio_server = BioSeqDatabase.open_database(driver="MySQLdb", user="pi", passwd="", host="localhost", db="bioseqdb")
 bio_db = bio_server["phylomain"]
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://pi:@localhost/bioseqdb'
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///gabe'
-app.config['SECRET_KEY'] = 'developmentkey'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+application = Flask(__name__)
+application.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://pi:@localhost/bioseqdb'
+# application.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///gabe'
+application.config['SECRET_KEY'] = 'developmentkey'
+application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
 allfiles = UploadSet('all', ALL)
-app.config['UPLOADS_ALL_DEST'] = 'static/uploads'
-app.config['UPLOADED_ALL_DEST'] = 'static/uploads'
-configure_uploads(app, allfiles)
+application.config['UPLOADS_ALL_DEST'] = 'static/uploads'
+application.config['UPLOADED_ALL_DEST'] = 'static/uploads'
+configure_uploads(application, allfiles)
 
-db = SQLAlchemy(app)
+db = SQLAlchemy(application)
 
 # Create models
 class File(db.Model):
@@ -584,7 +584,7 @@ class UploadView(BaseView):
 
 
 
-admin = Admin(app, name="Phylo Island", template_mode="bootstrap3")
+admin = Admin(application, name="Phylo Island", template_mode="bootstrap3")
 admin.add_view(UploadView(name='Upload', endpoint='upload_admin'))
 
 admin.add_view(SeqInstanceView(SeqInstance, db.session, endpoint="seq_view")) # working version
@@ -613,7 +613,7 @@ admin.add_view(SeqInstanceView(SeqInstance, db.session, endpoint="seq_view")) # 
 # admin.add_view(AnalyticsView(name='Analytics', endpoint='analytics'))
 
 
-@app.route('/')
+@application.route('/')
 def index():
     form = UploadForm()
     # return render_template("index.html", form=form)
@@ -626,7 +626,7 @@ def index():
 #     return render_template("admin/upload_admin.html", form=form)
 
 
-@app.route("/admin", methods = ['GET', 'POST'])
+@application.route("/admin", methods = ['GET', 'POST'])
 def admin():
     form = UploadForm()
     return render_template("admin/index.html", form=form)
@@ -642,5 +642,5 @@ def admin():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0')
+    application.run(debug=True, host='0.0.0.0')
 
