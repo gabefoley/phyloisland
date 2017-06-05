@@ -26,9 +26,14 @@ import subprocess
 import sys
 from Bio.SeqRecord import SeqRecord
 from flask import Flask, make_response, request
+from flask_admin.contrib.sqla import filters
+from flask_admin.contrib.sqla.filters import BooleanEqualFilter
+from flask_admin.contrib.sqla.filters import BaseSQLAFilter
 
 
-# subMenu.seqRecords = {}
+# Setup temporary best guesses for what the A1 and A2 region should look like
+yenA1 = "MDKYNNYSNVIKNKSSISPLLAAAAKIEPEITVLSSASKSNRSQYSQSLADTLLGLGYRSIFDIAKVSRQRFIKRHDESLLGNGAVIFDKAVSMANQVLQKYRKNRLEKSNSPLVPQTSSSTDASSESQTNKLPEYNQLFPEPWDNFCRPGAIEALDSPASYLLDLYKFIQSVELDGSNQARKLETRRADIPKLSLDNDALYKEVTALSIVNDVLSGSAREYIDQSGQADKAVNQILGDTHFPFTLPYSLPTQQINKGLGASNIELGTVIQRVDPQFSWNTTQEKYNQVLLAYTQLSSEQIALLSLPDVFTQNFLTQTELSAGYLSASTTEILAEKDLSRHGYIVKAADNIKGPTQLVEHSDASYDVIELTCTNQAKETITVKLRGENIITYQRTKARMVPFDNSSPFSRQLKLTFVAEDNPSLGNLDKGPYFANMDIYAAEWVRENVSSETMVSRPFLTMTYRIAIAKAGASLEELQPEADAFFINNFGLSAEDSSQLVKLVAFGDQTGSKAEEIESLLSCGENLPIVSPNVIFANPIFGSYFNDEPFPAPYHFGGVYINAHQRNAMTIIRAEGGREIQSLSNFRLERLNRFIRLQRWLDLPSHQLDLLLTSVMQADADNSQQEITEPVLKSLGLFRHLNLQYKITPEIFSSWLYQLTPFAVSGEIAFFDRIFNREQLFDQPFILDGGSFTYLDAKGSDAKSVKQLCAGLNISAVTFQFIAPLVQSALGLEAGTLVRSFEVVSSLYRLVSIPQTFGLSTEDGLILMNILTDEMGYLAKQPAFDDKQTQDKDFLSIILKMEALSAWLTKNNLTPASLALLLGVTRLAVVPTNNMVTFFKGIANGLSENVCLTTDDFQRQELEGADWWTLLSTNQVIDDMGLVLDIHPVWGKSDEEMLMEKIQSIGVSNDNNTLSIIVQILIQAKNAQENLLSQTISAEYGVERSVVPLQLRWLGSNVYSVLNQVLNNTPTDISSIVPKLSELTYSLLIYTQLINSLKLNKEFIFLRLTQPNWLGLTQPKLSTQLSLPEIYLITCYQDWVVNANKNEDSIHEYLEFANIKKTEAEKTLVDNSEKCAELLAEILAWDAGEILKAASLLGLNPPQATNVFEIDWIRRLQTLSEKTMISTEYLWQMGDLTENSEFSLKEGVGEAVMAALKAQGDSDNV"
+yenA2 = "MSNSIEAKLQEDLRDALVDYYLGQIVPNSKDFINLRSTIKNVDDLYDHLLLDTQVSAKVITSRLSLVTQSVQQYINRIALNLEPGLSINQQEATDWEEFANRYGYWAANQQLRMFPEIYVDPTLRLTKTEFFFQLESALNQGKLTDDVAQKAVLGYLNNFEEVSNLEIIAGYQDGIDIENDKTYFVARTRMQPYRYFWRSLDASQRNSNSQELYPTAWSEWKAISVPLENVANGIVRPIMMDNRLYISWFEVAEEKDTDENGNIIVSGRYRTKIRLAHLGFDGIWSSGTTLREEVLAYQMEEMIAVVDRMEDEPRLALVAFKEMSENWDVVFSYICDSMLIESSNLPTTTHPPKPEDGDKGLSDLDDYGANLVWFYLHETANGGKAEYKQLILYPVIINRDWPIELDKTHQEGFGTVDDFTLNSNYTGDELSLYLQSSSTYKYDFSKSKNIIYGIWKEDANNNRCWLNYKLLTPEDYDPQINTTLVMCDKGDVNIITGFSLPNGGVDAGGKIKVTLRVGKKLRDKFQIKQFSQTQYLQFPEASSADVWYIGKQIRLNTLFAKELIGKASRSLDLVLSWETQNSRLEEAILGGAAELIDLDGANGIYFWELFFHMPFMVSWRFNVEQRYEDANRWIKYLFNPFECDDEPALLLGKPAYWNSRPLVDEPFTGYSLTQPSDPDAIAASDPIHYRKAVFNFLTKNIIDQGDMEYRKLQPSARTLARLSYSTASSLLGRRPDVQLTSFWQPLTLEDASYKTDSEIRAIEMQSQPLTFEPVVHDQTMSAVDNDIFMYPMNNELRGLWDRIENRIYNLRHNLTLDGKEINMDLYDSSISPRGLMKQRYQRVVTARNASKMNFKVPNYRFEPMLNRSKSGVETLIQFGSTLLSLLERKDSLSFDAYQMIQSGDLYRFSIDLQQQDIDINKASLEALQVSKQSAQDRYDHFKELYDENISSTEQKVIELQSQAANALLMAQGMRTAAAALDVIPNIYGLAVGGSHWGAPLNAAAEIIMIKYQADSSKSESLSVSESYRRRRQEWELQYKQAEWEVNSVEQQINLQNMQIKAANKRLEQVEAQQQQAMALLAYFSERFTNESLYTWLISQLSSLYLQAYDAVLSLCLSAEASLLYELNLGEQSFVGGGGWNDLYQGLMAGETLKLALMRMERVYVEQNSRRQEITKTISLKALLGESWPAELNKLKQKTPINFNLEEQIFVEDYQELYQRRIKSVSVSLPMLVGPYEDVCAQLTQTSSSYSTQADLKTVENMLTKRTFADTPHLVRSIQPNQQISLSTGVNDSGLFMLNFDDERFLPFEGSGVDSSWRLQFTNLKQNLDSLNDVILHVKYTAAIGSSTFSQGVRKILANINNDE"
 
 # Create directory for file fields to use
 file_path = op.join(op.dirname(__file__), 'files')
@@ -37,19 +42,17 @@ try:
 except OSError:
     pass
 
-bio_server = BioSeqDatabase.open_database(driver="MySQLdb", user="pi", passwd="", host="localhost", db="bioseqdb")
-bio_db = bio_server["phylotest"]
+bio_server = BioSeqDatabase.open_database(driver="MySQLdb", user="pi", passwd="", host="localhost", db="phyloisland6")
+bio_db = bio_server["phylomain"]
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://pi:@localhost/bioseqdb'
-
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://pi:@localhost/phyloisland6'
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///gabe'
 app.config['SECRET_KEY'] = 'developmentkey'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
 allfiles = UploadSet('all', ALL)
 app.config['UPLOADS_ALL_DEST'] = 'static/uploads'
-
 app.config['UPLOADED_ALL_DEST'] = 'static/uploads'
 configure_uploads(app, allfiles)
 
@@ -88,18 +91,40 @@ class User(db.Model):
 
 
 
-class BioEntry(db.Model):
-    __tablename__ = 'bioentry'
-    bioentry_id = db.Column(db.Integer, primary_key=True)
-    biodatabase_id = db.Column(db.Integer, unique = True)
-    taxon_id = db.Column(db.Integer)
-    name = db.Column(db.VARCHAR(40))
-    accession = db.Column(db.VARCHAR(128), unique=True)
-    identifier = db.Column(db.VARCHAR(40))
-    division = db.Column(db.VARCHAR(6))
-    description = db.Column(db.TEXT)
-    version = db.Column(db.SMALLINT, unique=True)
-
+# class BioEntry(db.Model):
+#     __tablename__ = 'bioentry'
+#     bioentry_id = db.Column(db.Integer, primary_key=True)
+#     biodatabase_id = db.Column(db.Integer, unique = True)
+#     taxon_id = db.Column(db.Integer)
+#     name = db.Column(db.VARCHAR(40))
+#     accession = db.Column(db.VARCHAR(128), unique=True)
+#     identifier = db.Column(db.VARCHAR(40))
+#     division = db.Column(db.VARCHAR(6))
+#     description = db.Column(db.TEXT)
+#     version = db.Column(db.SMALLINT, unique=True)
+#
+#     def __str__(self):
+#         return str(self.bioentry_id)
+#
+# class BioEntryDBXRef(db.Model):
+#     __tablename__ = 'bioentry_dbxref'
+#     bioentry_id = db.Column(db.Integer, db.ForeignKey('bioentry.bioentry_id'), primary_key=True)
+#     dbxref_id = db.Column(db.Integer)
+#     rank = db.Column(db.Integer)
+#     bioentry_name = db.Column(db.Column(db.VARCHAR(40)), db.ForeignKey('bioentry.name'))
+#
+#
+#
+#     relationship = db.relationship("BioEntry", backref="bioentry_dbxref")
+#     # relationship = db.relationship("BioEntry", backref="bioentry_dbxref")
+#
+#
+#     # form_ajax_refs = {
+#     #     'relationship': {
+#     #         'fields': ['name', 'description'],
+#     #         'page_size': 10
+#     #     }
+#     # }
 
 
 class SeqInstance(db.Model):
@@ -117,9 +142,8 @@ class SeqInstance(db.Model):
     overlap = db.Column(db.String(255))
     distance = db.Column(db.VARCHAR(255))
     sequence =  db.Column(db.Text)
-    fullrecord = db.Column(db.Text)
 
-    def __init__(self, name="", species="", strain="", description="", a1="", a1_loc="", a2="", a2_loc="", overlap="", distance="", sequence="", fullrecord=""):
+    def __init__(self, name="", species="", strain="", description="", a1="", a1_loc="", a2="", a2_loc="", overlap="", distance="", sequence=""):
         self.name = name
         self.species = species
         self.strain = strain
@@ -131,13 +155,57 @@ class SeqInstance(db.Model):
         self.overlap = overlap
         self.distance = distance
         self.sequence = sequence
-        self.fullrecord = fullrecord
 
-class SeqView(ModelView):
+class BioView(ModelView):
     column_sortable_list = ['name', 'division']
 
-class SeqRecordView(ModelView):
+
+class BioEntryDBXRefView(ModelView):
+    column_sortable_list = ['bioentry_id']
+    column_display_pk: True
+    column_auto_select_related: True
+
+
+class FilterLastNameBrown(BaseSQLAFilter):
+    def apply(self, query, value, alias=None):
+        list = ['JGVH01000004.1', 'FMWJ01000001.1']
+
+        return query.filter(self.column == "BX571867.1")
+
+
+    def operation(self):
+        return 'BX571867.1'
+
+class FilterInAListMaybe(BaseSQLAFilter):
+
+    def apply(self, query, value, alias=None):
+        listup = ['JGVH01000004.1', 'FMWJ01000001.1']
+        return query.filter(self.get_column(alias).in_(listup))
+
+    def operation(self):
+        return 'BX571867.1'
+
+
+class FilterGetUnique(BaseSQLAFilter):
+    list = ['JGVH01000004.1', 'FMWJ01000001.1']
+
+    # def __init__(self, column, name, options=None, data_type=None):
+    #     super(filters.FilterInList, self).__init__(column, name, options, data_type='select2-tags')
+    #
+    # def clean(self, value):
+    #     return [v.strip() for v in value.split(',') if v.strip()]
+
+
+    def apply(self, query, value, alias=None):
+        return query.filter(self.get_column(query).in_(list))
+
+    def operation(self):
+        return 'in list'
+
+
+class SeqInstanceView(ModelView):
     column_searchable_list = ['name', 'species', 'a1', 'a2', 'overlap']
+
 
     create_modal = True
     edit_modal = True
@@ -164,6 +232,20 @@ class SeqRecordView(ModelView):
         'a2': _a2description_formatter,
         'sequence' : _seqdescription_formatter,
     }
+
+    column_filters = ('name',
+                      'species',
+                      'strain',
+                      'overlap',
+                      FilterLastNameBrown(
+                          SeqInstance.name, 'Da name is in'),
+                      FilterInAListMaybe(
+                          SeqInstance.name, 'Maybe this is in'),
+                      # FilterLastNameBrown(column=SeqInstance.species, name="Get Unique Species Name"),
+                      # filters.EqualFilter(column=SeqInstance.species, name="Photorhabdus luminescens"),
+                      filters.FilterLike(SeqInstance.overlap, 'Overlaps', options=(('True', 'True'), ('False', 'False'))))
+                      # BooleanEqualFilter(column=SeqInstance.species, name='Get unique species'))
+
 
     @action('getoverlap', 'Get Overlap')
     def action_getoverlap(self, ids):
@@ -201,29 +283,46 @@ class SeqRecordView(ModelView):
         print (ids)
         try:
             query = SeqInstance.query.filter(SeqInstance.uid.in_(ids))
-
-            count = 0
             for record in query.all():
-                if record.a1 != "Not tested":
-                    pass
-                else:
-                    # print ('got here')
-                    # print (record)
-                    # print (record.name)
-                    # print (record.name.split(".")[0])
-                    # print (subMenu.seqRecords)
-                    # print (subMenu.seqRecords.get(record.name.split(".")[0]))
-                    # print (subMenu.seqRecords.get(record.name.split(".")[0]).features)
-                    #
-                    # print ("** KEYS **")
-                    # print (subMenu.seqRecords.get(record.name.split(".")[0]).annotations.keys())
-                    for feature in subMenu.seqDict.get(record.name.split(".")[0]).features:
-                        if 'gene' in feature.qualifiers and 'translation' in feature.qualifiers:
-                            if "A1" in feature.qualifiers['gene'][0]:
-                                print ("FOUND AN A1")
-                                record.a1 = "Found"
-                                db.session.add(record)
-                                db.session.commit()
+                print ("record name = ", record.name)
+                seq_record = bio_db.lookup(primary_id=record.name)
+                print ("seq record = ", seq_record.name)
+
+                for feature in seq_record.features:
+                    if 'translation' in feature.qualifiers:
+                        print (feature.qualifiers['translation'][0])
+
+                        alignment = pairwise2.align.globalms(yenA1, feature.qualifiers['translation'][0],  2, -1, -.5, -.1, score_only=True)
+                        print (alignment)
+
+
+
+
+
+            # query = SeqInstance.query.filter(SeqInstance.uid.in_(ids))
+
+            # for record in query.all():
+            #     if record.a1 != "Not tested":
+            #         pass
+            #     else:
+            #         record = bio_db.lookup(id=)
+            #         # print ('got here')
+            #         # print (record)
+            #         # print (record.name)
+            #         # print (record.name.split(".")[0])
+            #         # print (subMenu.seqRecords)
+            #         # print (subMenu.seqRecords.get(record.name.split(".")[0]))
+            #         # print (subMenu.seqRecords.get(record.name.split(".")[0]).features)
+            #         #
+            #         # print ("** KEYS **")
+            #         # print (subMenu.seqRecords.get(record.name.split(".")[0]).annotations.keys())
+            #         for feature in subMenu.seqDict.get(record.name.split(".")[0]).features:
+            #             if 'gene' in feature.qualifiers and 'translation' in feature.qualifiers:
+            #                 if "A1" in feature.qualifiers['gene'][0]:
+            #                     print ("FOUND AN A1")
+            #                     record.a1 = "Found"
+            #                     db.session.add(record)
+            #                     db.session.commit()
 
         except Exception as ex:
             if not self.handle_view_exception(ex):
@@ -305,6 +404,35 @@ class SeqRecordView(ModelView):
 
             flash(gettext('Failed to approve users. %(error)s', error=str(ex)), 'error')
 
+    @action('showyen', 'Show Yen')
+    def action_build_profile_a2(self, ids):
+        print (ids)
+        try:
+            print ('trying')
+            query = self.session.query(self.model).filter(self.model.species == "Yersinia nurmii")
+            render_template("index.html")
+            return query
+
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+
+            flash(gettext('Failed to approve users. %(error)s', error=str(ex)), 'error')
+
+class FilterGetBrown(BaseSQLAFilter):
+    def apply(self, query, value, alias=None):
+        list = ['JGVH01000004.1', 'FMWJ01000001.1' ]
+        if value == '1':
+            return query.filter(self.column=="Brown")
+        else:
+            return query.filter(self.column != "Brown")
+
+        def operation(self):
+            return 'is Brown'
+
+
+
+
 
 class UploadForm(FlaskForm):
     name = StringField('What ID should we give this feature?', validators=[DataRequired("Not completed")])
@@ -312,6 +440,12 @@ class UploadForm(FlaskForm):
 
     upload_submit = SubmitField("Upload files")
 
+class SelectedView(ModelView):
+    def get_query(self):
+        return self.session.query(self.model).filter(self.model.species=="Yersinia nurmii")
+
+    # def get_count_query(self):
+    #     return self.session.query('*').filter(self.model.species=="Yersinia nurmii")
 
 class FileUpload(FileAdmin):
     can_mkdir = False
@@ -350,13 +484,13 @@ class MyForm(ModelView):
 
 class UploadView(BaseView):
 
+
     # @app.route("/upload", methods = ['GET', 'POST'])
     @expose("/", methods =('GET', 'POST'))
     def upload(self):
         form = UploadForm()
         sort = request.args.get('sort', 'id')
         reverse = (request.args.get('direction', 'asc') == 'desc')
-        seqList = []
 
         if request.method == 'POST':
             # region = request.form['name']
@@ -371,69 +505,83 @@ class UploadView(BaseView):
             subMenu.unmappable = []
             subMenu.defaultValue("static/uploads/"  + filename, region)
             print ("@@@@@@@@@@@@@@Couldn't map@@@@@@@@@@@@@" , len(subMenu.unmappable))
-            for x in subMenu.unmappable:
-                print (x)
 
-            records = subMenu.seqDict.items()
+            records = subMenu.seqDict
 
-            print (type(records))
 
-            for k,v in records:
-                seqList.append(v)
 
-            count = bio_db.load(seqList)
-            print ('Loaded %d sequences' % count)
-            bio_server.commit()
 
-            # for record in records:
-            #     current = records[record]
-            #     for feat in current.features:
-            #         print ("**", feat)
-            #     # print (current)
-            #     name = current.id
-            #     species = current.annotations['species']
-            #     strain = current.annotations['source']
-            #     description = current.description
-            #     a1 = current.annotations["A1"] if "A1" in current.annotations.keys() else "Not tested"
-            #     a1_loc = current.annotations["A1_location"] if "A1_location" in current.annotations.keys() else "Not tested"
-            #     a2 = current.annotations["A2"] if "A2" in current.annotations.keys() else "Not tested"
-            #     a2_loc = current.annotations["A2_location"] if "A2_location" in current.annotations.keys() else "Not tested"
-            #     overlap = current.annotations["Overlap"] if "Overlap" in current.annotations.keys() else "Not tested"
-            #     distance = "Not tested"
-            #     # sequence = str(current.seq)
-            #     sequence = str(current.seq)
-            #     fullrecord = current
-            #
-            #     entry = SeqInstance(name, species, strain, description, a1, a1_loc, a2, a2_loc, overlap, distance, sequence)
-            #
-            #     check = SeqInstance.query.filter_by(name=name).first()
-            #
-            #     # check = db.session.query(db.exists().where(SeqRecord.name== name)).scalar()
-            #
-            #     # print (check)
-            #
-            #     if (check):
-            #         print('Name we are checking on is ', name)
-            #
-            #         print ("A1  ", check.a1)
-            #         print ("A2  ", check.a2)
-            #         print ("region is ", region)
-            #         if region in current.annotations.keys():
-            #             print ("YEAH BABY")
-            #         else:
-            #             print ("NAH BOY")
-            #         setattr(check, region.lower(), current.annotations[region] if region in current.annotations.keys() else "Not tested")
-            #         setattr(check, region.lower() + "_loc", current.annotations[region + "_location"] if region + "_location" in current.annotations.keys() else "Not tested")
-            #         # print ('got here baby')
-            #
-            #         # check = subMenu.addToRecord(check, current, region)
-            #         print ("A1  ", check.a1)
-            #         print ("A2  ", check.a2)
-            #
-            #         db.session.add(check)
-            #     else:
-            #         db.session.add(entry)
-            #     db.session.commit()
+            for record in records:
+                current = records[record]
+                # for feat in current.features:
+                #     print ("**", feat)
+                print (current)
+                name = current.id
+                species = current.annotations['species']
+                strain = current.annotations['source']
+                description = current.description
+                a1 = current.annotations["A1"] if "A1" in current.annotations.keys() else "Not tested"
+                a1_loc = current.annotations["A1_location"] if "A1_location" in current.annotations.keys() else "Not tested"
+                a2 = current.annotations["A2"] if "A2" in current.annotations.keys() else "Not tested"
+                a2_loc = current.annotations["A2_location"] if "A2_location" in current.annotations.keys() else "Not tested"
+                overlap = current.annotations["Overlap"] if "Overlap" in current.annotations.keys() else "Not tested"
+                distance = "Not tested"
+                sequence = str(current.seq)
+
+                entry = SeqInstance(name, species, strain, description, a1, a1_loc, a2, a2_loc, overlap, distance, sequence)
+
+                check = SeqInstance.query.filter_by(name=name).first()
+
+                # check = db.session.query(db.exists().where(SeqInstance.name== name)).scalar()
+
+                print ("CHECKING BABY")
+                print ("Name is" , name)
+                # print (current)
+                print (check)
+
+                if (check):
+                    print('Name we are checking on is ', name)
+
+                    print ("A1  ", check.a1)
+                    print ("A2  ", check.a2)
+                    print ("region is ", region)
+                    if region in current.annotations.keys():
+                        print ("YEAH BABY")
+                    else:
+                        print ("NAH BOY")
+                    setattr(check, region.lower(), current.annotations[region] if region in current.annotations.keys() else "Not tested")
+                    setattr(check, region.lower() + "_loc", current.annotations[region + "_location"] if region + "_location" in current.annotations.keys() else "Not tested")
+                    # print ('got here baby')
+
+                    # check = subMenu.addToRecord(check, current, region)
+                    # print ("A1  ", check.a1)
+                    # print ("A2  ", check.a2)
+
+                    db.session.add(check)
+                else:
+                    print('Name apparently not there is ', name)
+
+
+                    items = subMenu.seqDict.items()
+                    print ("Adding to db")
+                    seqList = []
+
+                    db.session.add(entry)
+                    # for k, v in items:
+                    #     print (record)
+                    #     print (v)
+                    #     seqList.append(v)
+
+                    seqList.append(current)
+                    print ("Adding to bio_db")
+                    count = bio_db.load(seqList)
+                    print ("Making the bio commit")
+                    bio_server.commit()
+
+                    # print('Loaded %d sequences' % count)
+
+                ("Making the seqrecord commit")
+                db.session.commit()
 
             return self.render("upload_admin.html", form=form, records = records)
         return self.render("upload_admin.html", form=form)
@@ -443,21 +591,26 @@ class UploadView(BaseView):
 admin = Admin(app, name="Phylo Island", template_mode="bootstrap3")
 admin.add_view(UploadView(name='Upload', endpoint='upload_admin'))
 
-# admin.add_view(SeqRecordView(SeqInstance, db.session)) // working version
+admin.add_view(SeqInstanceView(SeqInstance, db.session, endpoint="seq_view")) # working version
 
 
 
-admin.add_view(SeqView(BioEntry, db.session))
-admin.add_view(UserView(User, db.session))
-
+# admin.add_view(BioView(BioEntry, db.session))
+# admin.add_view(UserView(User, db.session))
+# admin.add_view(BioEntryDBXRefView(BioEntryDBXRef, db.session))
 
 
 # admin.add_view(SeqRecordView(SeqRecord, db.session))
 
 
 
-path = op.join(op.dirname(__file__), 'static')
-admin.add_view(FileAdmin(path, '/static/', name='Static Files'))
+# path = op.join(op.dirname(__file__), 'static') # path for static view
+# admin.add_view(FileAdmin(path, '/static/', name='Static Files')) # static view
+
+
+# admin.add_view(SelectedView(SeqInstance, db.session, endpoint="selected_view")) # selected view
+
+
 # admin.add_view(FileView(File, db.session))
 # admin.add_view(FileView(File, db.session))
 # admin.add_view(UserView(User, db.session, name='User'))
@@ -468,7 +621,7 @@ admin.add_view(FileAdmin(path, '/static/', name='Static Files'))
 def index():
     form = UploadForm()
     # return render_template("index.html", form=form)
-    return '<a href="/admin/">Click me to get to Admin!</a> <a href="/upload">Click me to get to Upload!</a>'
+    return '<a href="/admin/">Click me to get to Admin!</a>'
 
 # @app.route("/upload", methods = ['GET', 'POST'])
 # def upload():

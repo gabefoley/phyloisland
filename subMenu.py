@@ -504,6 +504,13 @@ def unique_strains():
 
     profile_menu()
 
+def getUniqueSpecies(refseq, records):
+
+    for record in records:
+        pass
+
+
+
 
 def unique_species():
     species = {}

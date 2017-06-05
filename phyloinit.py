@@ -16,12 +16,8 @@ from Bio.pairwise2 import format_alignment
 
 
 
-# from BioSQL import BioSeqDatabase
-# server = BioSeqDatabase.open_database(driver="MySQLdb", user="pi",
-#                      passwd = "", host = "localhost", db="phyloisland")
-# db = server.new_database("phylomain", description="Just for testing")
-# server.commit() #On Biopython 1.49 or older, server.adaptor.commit()
-
-from Bio import pairwise2
-alignments = pairwise2.align.globalms("AAAAGGGGCGA", "AAGGT", 2, -1, -.5, -.1)
-print(format_alignment(*alignments[0]))
+from BioSQL import BioSeqDatabase
+server = BioSeqDatabase.open_database(driver="MySQLdb", user="pi",
+                     passwd = "", host = "localhost", db="phyloisland6")
+db = server.new_database("phylomain", description="Just for testing")
+server.commit() #On Biopython 1.49 or older, server.adaptor.commit()

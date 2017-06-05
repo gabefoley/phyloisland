@@ -1,1 +1,7 @@
 CREATE TABLE seqrecord(uid SERIAL PRIMARY KEY, name TEXT, species TEXT, strain TEXT, description TEXT, a1 TEXT, a1_loc TEXT, a2 TEXT, a2_loc TEXT, overlap VARCHAR(255), distance VARCHAR(255), sequence TEXT, fullrecord TEXT, UNIQUE(name)); 
+
+
+mysqladmin -p create phyloisland
+mysql -p phyloisland2 < biosqldb-mysql.sql
+
+run 'phyloinit.py'
