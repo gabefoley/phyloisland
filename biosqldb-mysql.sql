@@ -40,6 +40,22 @@
 -- CONFIG and read the documentation you find there.
 --
 
+CREATE TABLE seqrecord(
+  uid SERIAL, 
+  name TEXT, 
+  species TEXT, 
+  strain TEXT, 
+  description TEXT, 
+  a1 TEXT, 
+  a1_loc TEXT, 
+  a2 TEXT, 
+  a2_loc TEXT, 
+  overlap VARCHAR(255), 
+  distance VARCHAR(255), 
+  sequence LONGTEXT, 
+  PRIMARY KEY (uid), 
+  UNIQUE(name(255))); 
+
 -- database have bioentries. That is about it.
 -- we do not store different versions of a database as different dbids
 -- (there is no concept of versions of database). There is a concept of
