@@ -5,15 +5,13 @@ from flask_admin.contrib.fileadmin import FileAdmin
 from flask_admin.contrib.sqla import ModelView
 from werkzeug.security import generate_password_hash, check_password_hash
 from BioSQL import BioSeqDatabase
-from forms import UploadForm
 import os
 import os.path as op
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, TextAreaField, FileField
-from wtforms.validators import DataRequired, Email, Length, ValidationError
-import subMenu
+from wtforms import StringField, SubmitField, FileField
+from wtforms.validators import DataRequired
+import phyloisland
 from flask_uploads import UploadSet, configure_uploads, ALL
-from Table import SortableTable, Item
 from flask_admin.actions import action
 import gettext
 from Bio import Entrez, SeqIO, GenBank, AlignIO, pairwise2
@@ -21,13 +19,11 @@ from Bio.Align.Applications import MuscleCommandline
 from Bio.SubsMat.MatrixInfo import blosum62
 from Bio.Seq import Seq
 from Bio.Alphabet import generic_protein
-import requests
 import subprocess
 import sys
 from Bio.SeqRecord import SeqRecord
 from flask import Flask, make_response, request
 from flask_admin.contrib.sqla import filters
-from flask_admin.contrib.sqla.filters import BooleanEqualFilter
 from flask_admin.contrib.sqla.filters import BaseSQLAFilter
 
 
@@ -219,7 +215,7 @@ class SeqInstanceView(ModelView):
                     pass
                 else:
                     print (record.name, " is being checked")
-                    distance = str(subMenu.getDistance(record.a1_loc, record.a2_loc))
+                    distance = str(phyloisland.getDistance(record.a1_loc, record.a2_loc))
                     if len(distance) > 1:
                         record.overlap = "False"
                         record.distance = distance
@@ -311,7 +307,7 @@ class SeqInstanceView(ModelView):
                     #
                     # print ("** KEYS **")
                     # print (subMenu.seqRecords.get(record.name.split(".")[0]).annotations.keys())
-                    for feature in subMenu.seqDict.get(record.name.split(".")[0]).features:
+                    for feature in phyloisland.seqDict.get(record.name.split(".")[0]).features:
                         if 'gene' in feature.qualifiers and 'translation' in feature.qualifiers:
                             if "A2" in feature.qualifiers['gene'][0]:
                                 print ("FOUND AN A2")
@@ -461,12 +457,12 @@ class UploadView(BaseView):
             print (filename, region, "##")
 
             # Create the initial seqRecords
-            subMenu.seqDict = {}
-            subMenu.unmappable = []
-            subMenu.defaultValue("static/uploads/"  + filename, region)
-            print ("@@@@@@@@@@@@@@Couldn't map@@@@@@@@@@@@@" , len(subMenu.unmappable))
+            phyloisland.seqDict = {}
+            phyloisland.unmappable = []
+            phyloisland.defaultValue("static/uploads/" + filename, region)
+            print ("@@@@@@@@@@@@@@Couldn't map@@@@@@@@@@@@@", len(phyloisland.unmappable))
 
-            records = subMenu.seqDict
+            records = phyloisland.seqDict
 
 
 
@@ -522,7 +518,7 @@ class UploadView(BaseView):
                     print('Name apparently not there is ', name)
 
 
-                    items = subMenu.seqDict.items()
+                    items = phyloisland.seqDict.items()
                     print ("Adding to db")
                     seqList = []
 
