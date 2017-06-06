@@ -91,42 +91,6 @@ class User(db.Model):
 
 
 
-# class BioEntry(db.Model):
-#     __tablename__ = 'bioentry'
-#     bioentry_id = db.Column(db.Integer, primary_key=True)
-#     biodatabase_id = db.Column(db.Integer, unique = True)
-#     taxon_id = db.Column(db.Integer)
-#     name = db.Column(db.VARCHAR(40))
-#     accession = db.Column(db.VARCHAR(128), unique=True)
-#     identifier = db.Column(db.VARCHAR(40))
-#     division = db.Column(db.VARCHAR(6))
-#     description = db.Column(db.TEXT)
-#     version = db.Column(db.SMALLINT, unique=True)
-#
-#     def __str__(self):
-#         return str(self.bioentry_id)
-#
-# class BioEntryDBXRef(db.Model):
-#     __tablename__ = 'bioentry_dbxref'
-#     bioentry_id = db.Column(db.Integer, db.ForeignKey('bioentry.bioentry_id'), primary_key=True)
-#     dbxref_id = db.Column(db.Integer)
-#     rank = db.Column(db.Integer)
-#     bioentry_name = db.Column(db.Column(db.VARCHAR(40)), db.ForeignKey('bioentry.name'))
-#
-#
-#
-#     relationship = db.relationship("BioEntry", backref="bioentry_dbxref")
-#     # relationship = db.relationship("BioEntry", backref="bioentry_dbxref")
-#
-#
-#     # form_ajax_refs = {
-#     #     'relationship': {
-#     #         'fields': ['name', 'description'],
-#     #         'page_size': 10
-#     #     }
-#     # }
-
-
 class SeqInstance(db.Model):
     __tablename__ = 'seqrecord'
     uid = db.Column(db.Integer, primary_key=True)
@@ -610,7 +574,7 @@ class UploadView(BaseView):
 # admin.add_view(AnalyticsView(name='Analytics', endpoint='analytics'))
 
 
-@application.route('/')
+@application.route('/testgi')
 def index():
     form = UploadForm()
     # return render_template("index.html", form=form)
