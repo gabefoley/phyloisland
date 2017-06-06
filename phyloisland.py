@@ -1,24 +1,15 @@
-# import sys
 import requests
 import subprocess
 import re
-# from collections import defaultdict
-# from io import StringIO
+
 
 from Bio import Entrez, SeqIO, GenBank, AlignIO, pairwise2
 from Bio.SeqFeature import ExactPosition
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 from Bio.Alphabet import generic_protein
-from Bio.Align import MultipleSeqAlignment
 from Bio.Align.Applications import MuscleCommandline
 from Bio.SubsMat.MatrixInfo import blosum62
-from subprocess import DEVNULL
-
-
-
-
-
 
 seqDict = {}
 feature_to_record = {}
@@ -40,8 +31,6 @@ class SmallRecord():
     def __str__(self):
         return "RefSeq ID = " + self.refseqID + " EMBL ID = " + self.emblID + " UniProt ID = " + self.uniprotID
 
-
-
     def get_refseqID(self):
         return self.refseqID
 
@@ -57,9 +46,9 @@ class SmallRecord():
     def get_sequence(self):
         return self.sequence
 
+
 def defaultValue(region1, region1_name):
         region = SeqIO.parse(region1, "fasta")
-
 
         genes = mapToGene(region, region1_name)
         region_names.append(region1_name)
@@ -79,11 +68,8 @@ def defaultValue(region1, region1_name):
 
 def defaultValues(region1, region1_name):
     region = SeqIO.parse(region1, "fasta")
-
     genes = mapToGene(region, region1_name)
     region_names.append(region1_name)
-
-
 
     for protein_id, small_record in genes.items():
         if (small_record): # If the smallRecord mapped successfully
@@ -114,18 +100,15 @@ def getSpecies(protein_id, small_record):
     species_name = split_line[0] + " " + split_line[1]
     seqDict[small_record.get_emblID()].annotations["species"] = species_name
 
+
 def mapToGene(seq_records, setID):
-
     protDict = {}
-
     # Build up a string to store multiple queries to UniProt
     queryString = ""
-
 
     for seq_record in seq_records:
         queryString += seq_record.id + "+OR+"
         protDict[seq_record.id] = "" # Add all of the protein IDs to a dictionary
-
 
     # Remove the final "+OR+" from the queryString
     queryString = queryString[:-4]
@@ -137,9 +120,6 @@ def mapToGene(seq_records, setID):
     params = {"query": queryString, "format": "tab", "columns": "database(RefSeq),database(EMBL),entry+name,organism,sequence"}
 
     response = requests.get("http://www.uniprot.org/uniprot/", params)
-
-
-
 
     for line in response.text.split("\n")[1:-1]: # Ignore the header line
         split_line = line.split("\t")
@@ -158,6 +138,7 @@ def mapToGene(seq_records, setID):
             protDict[refseq_id] = small_record # Add a genbank ID for every protein ID that mapped successfully
 
     return protDict
+
 
 def getGene(protein_id, small_record, set_id):
     Entrez.email = "gabriel.foley@uqconnect.edu.au"
@@ -191,7 +172,6 @@ def getGene(protein_id, small_record, set_id):
             feature_to_record[set_id] = [small_record.get_emblID()]
 
 
-
 def getCoords(record, set_id):
     for feature in record.features:
         if 'translation' in feature.qualifiers:
@@ -200,6 +180,7 @@ def getCoords(record, set_id):
                 location_1_end = feature.location.end
                 return str(location_1_start) + ":" + str(location_1_end)
     return "No coords found"
+
 
 def getDistance(overlap_1, overlap_2):
     loc_1_start, loc_1_end = overlap_1.split(":")
@@ -210,6 +191,7 @@ def getDistance(overlap_1, overlap_2):
         return str(loc_2_start - loc_1_end)
     elif loc_2_end < loc_1_start:
         return str(loc_1_start - loc_2_end)
+
 
 def addToRecord(old, new, region):
     setattr(old, region, 21)
@@ -253,11 +235,6 @@ def check_overlap(overlap_1, overlap_2):
                 user_annotations.add(overlap_2 + ":" + overlap_1 + " Distance")
 
 
-
-
-
-
-
 def checkForFeature(seqRecords, featureText):
     for record in seqRecords:
         for feature in seqRecords.get(record).features:
@@ -267,14 +244,18 @@ def checkForFeature(seqRecords, featureText):
 
                     # print ("Found", feature.qualifiers['gene'][0], feature.qualifiers['translation'][0])
 
+
 def checkForFlankingFeature():
     pass
+
 
 def getFullGenome(seqRecords):
     pass
 
+
 def recordContains():
     pass
+
 
 def getUniqueSpecies():
     pass
@@ -296,45 +277,6 @@ def print_map_menu():
     print ("3. Return to main menu")
     print (67 * "-")
 
-
-
-# loop = True
-#
-# while loop:  ## While loop which will keep going until loop = False
-#     print_menu()  ## Displays menu
-#     choice = input("Enter your choice [1-5]: ")
-#
-#     if choice == '1':
-#         filename = input("Enter the filename: ")
-#         region_name = input("Enter a name for this region: ")
-#         filename = "files/YenA1_tiny.fasta"
-#         region = SeqIO.parse(filename, "fasta")
-#         genes = mapToGene(region, region_name)
-#
-#         for protein_id, small_record in genes.items():
-#             if (small_record):  # If the smallRecord mapped successfully
-#                 getGene(protein_id, small_record, region_name)
-#             else:
-#                 unmappable.append(protein_id)
-#
-#
-#     elif choice == '2':
-#         print_map_menu()
-#     elif choice == '3':
-#         print ("Menu 3 has been selected")
-#         ## You can add your code or functions here
-#     elif choice == '4':
-#         for record in seqRecords:
-#             print (seqRecords[record])
-#         ## You can add your code or functions here
-#     elif choice == '5':
-#         print ("Exiting")
-#         ## You can add your code or functions here
-#         loop = False  # This will make the while loop to end as not value of loop is set to False
-#     else:
-#         # Any integer inputs other than values 1-5 we print an error message
-#         input("Wrong option selection. Enter any key to try again..")
-
 # Import the modules needed to run the script.
 import sys, os
 
@@ -347,9 +289,6 @@ summary_dict = {'1' : '16', '2' : '17', '3' : 'main_menu'}
 
 region_names = []
 user_annotations = set()
-
-
-
 
 # =======================
 #     MENUS FUNCTIONS
@@ -387,6 +326,7 @@ def exec_menu(choice):
             menu_actions['main_menu']()
     return
 
+
 def map_to_record():
 
     try:
@@ -400,7 +340,6 @@ def map_to_record():
         print ("\n *** ERROR: Filename doesn't exist. *** \n ")
         main_menu()
         return
-
 
     for protein_id, small_record in genes.items():
         if (small_record):  # If the smallRecord mapped successfully
@@ -441,6 +380,7 @@ def overlap_menu():
 
     annotate_menu()
 
+
 def profile_menu():
     os.system('clear')
     print (20 * "-", " SELECT RECORDS AND BUILD A PROFILE", 20 * "-")
@@ -457,6 +397,7 @@ def profile_menu():
     exec_menu(choice)
     return
 
+
 def set_reference():
     global referenceSeqs
     referenceSeqs = {}
@@ -465,6 +406,7 @@ def set_reference():
     referenceSeqs[feature] = ref_sequence
     print (ref_sequence, "has been set as the reference sequence for", feature)
     profile_menu()
+
 
 def select_records():
     print ("\n")
@@ -504,13 +446,11 @@ def unique_strains():
 
     profile_menu()
 
+
 def getUniqueSpecies(refseq, records):
 
     for record in records:
         pass
-
-
-
 
 def unique_species():
     species = {}
@@ -564,13 +504,13 @@ def unique_species():
 
     profile_menu()
 
+
 def getAlignmentScore(seq1, seq2):
     print (seq1)
     print (seq2)
 
     alignment_score = pairwise2.align.globalds(seq1, seq2, blosum62, -10, -0.5, score_only=True)
     return alignment_score
-
 
 
 def select_features():
@@ -582,6 +522,7 @@ def select_features():
         selected_features.clear()
         selected_features.add(required_features)
     profile_menu()
+
 
 def feature_summary():
     global selected_records, selected_features
@@ -596,14 +537,13 @@ def feature_summary():
     print (selected_features)
     profile_menu()
 
+
 def build_profile():
     global selected_records, selected_features
     align_list = []
 
-
     if len(selected_features) == 0:
         selected_features = user_annotations
-
 
     if len(selected_records) == 0:
         selected_records = seqDict
@@ -635,8 +575,6 @@ def build_profile():
     profile_menu()
 
 
-
-
 def summary_menu():
     print (30 * "-", " PRINT SUMMARY", 30 * "-")
     print ("1. Print summary of all records")
@@ -649,8 +587,6 @@ def summary_menu():
     return
 
 
-
-
 def summary_all():
     print ("Here are all the loaded records: \n ")
     printRecords(seqDict, user_annotations)
@@ -658,8 +594,8 @@ def summary_all():
     if len(unmappable) > 0:
         print ("The following IDs couldn't be mapped to a GenBank record: ")
         for record in unmappable:
-            print (record)
-        print ("\n")
+            print(record)
+        print("\n")
     summary_menu()
 
 
@@ -667,27 +603,25 @@ def summary_selected():
     global selected_featur3es
 
     if len(selected_records) == 0:
-        print ("You haven't selected any records")
+        print("You haven't selected any records")
         summary_menu()
         return
 
     else:
-        print ("Here are all the selected records: ")
+        print("Here are all the selected records: ")
         printRecords(selected_records, selected_features)
 
         if len(unmappable) > 0:
-            print ("The following IDs couldn't be mapped to a GenBank record: ")
+            print("The following IDs couldn't be mapped to a GenBank record: ")
             for record in unmappable:
-                print (record)
-            print ("\n")
+                print(record)
+            print("\n")
     summary_menu()
 
 
 def printRecords(seqRecords, selected_features):
     if len(selected_features) == 0:
         selected_features = user_annotations
-
-
 
     for record in seqRecords:
         feature_present = any(i in selected_features for i in seqRecords[record].annotations.keys())
