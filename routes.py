@@ -584,10 +584,7 @@ class UploadView(BaseView):
 
 
 
-admin = Admin(application, name="Phylo Island", template_mode="bootstrap3")
-admin.add_view(UploadView(name='Upload', endpoint='upload_admin'))
 
-admin.add_view(SeqInstanceView(SeqInstance, db.session, endpoint="seq_view")) # working version
 
 
 
@@ -626,21 +623,25 @@ def index():
 #     return render_template("admin/upload_admin.html", form=form)
 
 
-@application.route("/admin", methods = ['GET', 'POST'])
-def admin():
-    form = UploadForm()
-    return render_template("admin/index.html", form=form)
-
-    if request.method == 'POST':
-        record = bio_db.lookup(accession="CPYD01000004")
-        print(record)
-    else:
-        return render_template("admin/index.html", form=form)
+# @application.route("/admin", methods = ['GET', 'POST'])
+# def admin():
+#     form = UploadForm()
+#     return render_template("admin/index.html", form=form)
+#
+#     if request.method == 'POST':
+#         record = bio_db.lookup(accession="CPYD01000004")
+#         print(record)
+#     else:
+#         return render_template("admin/index.html", form=form)
 
 
 
 
 
 if __name__ == "__main__":
-    application.run(debug=True, host='0.0.0.0')
+    admin = Admin(application, name="Phylo Island", template_mode="bootstrap3")
+    admin.add_view(UploadView(name='Upload', endpoint='upload_admin'))
+
+    admin.add_view(SeqInstanceView(SeqInstance, db.session, endpoint="seq_view"))  # working version
+    application.run(debug=True, host='10.10.0.0')
 
