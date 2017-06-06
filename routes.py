@@ -574,29 +574,12 @@ class UploadView(BaseView):
 # admin.add_view(AnalyticsView(name='Analytics', endpoint='analytics'))
 
 
-@application.route('/testgi')
+@application.route('/')
 def index():
     form = UploadForm()
     # return render_template("index.html", form=form)
     return '<a href="/admin/">Click me to get to Admin!</a>'
 
-# @app.route("/upload", methods = ['GET', 'POST'])
-# def upload():
-#
-#     form = UploadForm()
-#     return render_template("admin/upload_admin.html", form=form)
-
-
-# @application.route("/admin", methods = ['GET', 'POST'])
-# def admin():
-#     form = UploadForm()
-#     return render_template("admin/index.html", form=form)
-#
-#     if request.method == 'POST':
-#         record = bio_db.lookup(accession="CPYD01000004")
-#         print(record)
-#     else:
-#         return render_template("admin/index.html", form=form)
 
 
 
@@ -607,5 +590,5 @@ if __name__ == "__main__":
     admin.add_view(UploadView(name='Upload', endpoint='upload_admin'))
 
     admin.add_view(SeqInstanceView(SeqInstance, db.session, endpoint="seq_view"))  # working version
-    application.run(debug=True, host='10.10.0.0')
+    application.run(debug=True, host='0.0.0.0')
 

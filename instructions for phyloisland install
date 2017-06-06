@@ -1,0 +1,32 @@
+./pip install uwsgi
+
+
+
+
+**** Commands to install mysqlDB for Python 3 on Ubuntu
+
+
+sudo apt-get install libmysqlclient-dev
+pip install mysqlclient
+
+
+
+* Update /etc/nginx/sites-available/phyloisland
+* Remove the default_server tags from the file as per these instructions ().
+* Create symlink from this file to /etc/nginx/sites-enabled/phyloisland
+
+sudo ln -s /etc/nginx/sites-available/phyloisland /etc/nginx/sites-enabled/
+
+
+* Update /home/flask/www/phyloisland/uwsgi.ini
+	- socket = /home/flask/www/phyloisland/myproject.sock
+	- logto = /home/flask/www/phyloisland/error.log
+
+* Update /etc/systemd/system/phyloisland.service
+
+	- WorkingDirectory=/home/flask/www/phyloisland/
+	- ExecStart=/home/flask/www/phyloisland/env/bin/uwsgi --ini /home/flask/www/phyloisland/uwsgi.ini
+
+
+sudo systemctl reload nginx
+
