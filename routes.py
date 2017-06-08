@@ -60,11 +60,11 @@ try:
 except OSError:
     pass
 
-bio_server = BioSeqDatabase.open_database(driver="MySQLdb", user="pi", passwd="", host="localhost", db="phyloisland6")
+bio_server = BioSeqDatabase.open_database(driver="MySQLdb", user="pi", passwd="", host="localhost", db="bioseqdb")
 bio_db = bio_server["phylomain"]
 
 application = Flask(__name__)
-application.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://pi:@localhost/phyloisland6'
+application.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://pi:@localhost/bioseqdb'
 application.config['SECRET_KEY'] = 'developmentkey'
 application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
