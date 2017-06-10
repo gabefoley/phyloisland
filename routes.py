@@ -59,12 +59,32 @@ try:
     os.mkdir(file_path)
 except OSError:
     pass
+BASE_ROUTE = '/PHYLOISLAND'
 
-bio_server = BioSeqDatabase.open_database(driver="MySQLdb", user="pi", passwd="", host="localhost", db="bioseqdb")
+def local(route: str) -> str:
+    if BASE_ROUTE == '/':
+        return route
+    else:
+        return join(BASE_ROUTE, route[1:])
+
+def local_url_for(*args, **kwargs) -> str:
+    new_url = local(url_for(*args, **kwargs))
+    if new_url.count(BASE_ROUTE[1:]) == 1:
+        fixed_url = new_url
+        return new_url
+    else:
+        fixed_url = '/'.join(new_url.split('/')[2:])
+    assert fixed_url.count(BASE_ROUTE[1:]) == 1, fixed_url
+    return fixed_url
+
+def local_redirect(*args, **kwargs) -> Any:
+    return redirect(local_url_for(*args, **kwargs))
+
+bio_server = BioSeqDatabase.open_database(driver="MySQLdb", user="pi", passwd="", host="localhost", db="phyloisland6")
 bio_db = bio_server["phylomain"]
 
 application = Flask(__name__)
-application.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://pi:@localhost/bioseqdb'
+application.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://pi:@localhost/phyloisland6'
 application.config['SECRET_KEY'] = 'developmentkey'
 application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
@@ -401,7 +421,7 @@ class UploadView(BaseView):
         return self.render("upload_admin.html", form=form)
 
 
-@application.route('/')
+@application.route(local('/'))
 def index():
     return '<a href="/admin/">Click me to get to Admin!</a>'
 
