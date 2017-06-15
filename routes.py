@@ -1,3 +1,5 @@
+from typing import Any
+from os.path import join
 from flask import flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_admin import Admin, BaseView, expose
@@ -80,11 +82,11 @@ def local_url_for(*args, **kwargs) -> str:
 def local_redirect(*args, **kwargs) -> Any:
     return redirect(local_url_for(*args, **kwargs))
 
-bio_server = BioSeqDatabase.open_database(driver="MySQLdb", user="pi", passwd="", host="localhost", db="phyloisland6")
+bio_server = BioSeqDatabase.open_database(driver="MySQLdb", user="pi", passwd="", host="localhost", db="bioseqdb")
 bio_db = bio_server["phylomain"]
 
 application = Flask(__name__)
-application.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://pi:@localhost/phyloisland6'
+application.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://pi:@localhost/bioseqdb'
 application.config['SECRET_KEY'] = 'developmentkey'
 application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
