@@ -1,3 +1,4 @@
+
 from typing import Any
 from os.path import join
 from flask import flash
@@ -26,6 +27,7 @@ from flask import Flask, request
 from flask_admin.contrib.sqla import filters
 from flask_admin.contrib.sqla.filters import BaseSQLAFilter
 import re
+
 
 
 # Setup temporary best guesses for what the A1 and A2 region should look like
@@ -83,7 +85,9 @@ def local_redirect(*args, **kwargs) -> Any:
     return redirect(local_url_for(*args, **kwargs))
 
 bio_server = BioSeqDatabase.open_database(driver="MySQLdb", user="pi", passwd="", host="localhost", db="bioseqdb")
-bio_db = bio_server["phylomain"]
+# bio_db = bio_server["fishface"]
+bio_db = bio_server["grass"]
+
 
 application = Flask(__name__)
 application.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://pi:@localhost/bioseqdb'
@@ -132,7 +136,7 @@ class User(db.Model):
         return check_password_hash(self.pwdhash, password)
 
 
-class SeqInstance(db.Model):
+class SequenceRecords(db.Model):
     __tablename__ = 'seqrecord'
     uid = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text)
@@ -162,23 +166,33 @@ class SeqInstance(db.Model):
         self.distance = distance
         self.sequence = sequence
 
+    def after_model_delete(self, model):
+        print("model_here is")
 
-class BioView(ModelView):
-    column_sortable_list = ['name', 'division']
+    def after_delete(self):
+        print("deleted")
+
+
+
+
 
 
 class FilterInAListMaybe(BaseSQLAFilter):
 
     def apply(self, query, value, alias=None):
-        listup = ['JGVH01000004.1', 'FMWJ01000001.1']
+        listup = ['JGVH01000004.1', 'FMWJ01000001.1', 'CPYD01000004.1', 'DQ400808.1']
         return query.filter(self.get_column(alias).in_(listup))
 
     def operation(self):
-        return 'BX571867.1'
+        return 'Yes'
+
+
 
 
 class FilterGetUnique(BaseSQLAFilter):
-    list = ['JGVH01000004.1', 'FMWJ01000001.1']
+    list = ['JGVH01000004.1', 'FMWJ01000001.1', 'CPYD01000004.1', 'DQ400808.1' ]
+
+    print ('get unique')
 
     # def __init__(self, column, name, options=None, data_type=None):
     #     super(filters.FilterInList, self).__init__(column, name, options, data_type='select2-tags')
@@ -193,10 +207,12 @@ class FilterGetUnique(BaseSQLAFilter):
         return 'in list'
 
 
-class SeqInstanceView(ModelView):
+class SequenceRecordsView(ModelView):
     column_searchable_list = ['name', 'species', 'a1', 'a2', 'overlap']
     create_modal = True
     edit_modal = True
+    can_create = False
+    can_view_details = True
 
     def _a1description_formatter(view, context, model, name):
         # Format your string here e.g show first 20 characters
@@ -214,6 +230,7 @@ class SeqInstanceView(ModelView):
         # Format your string here e.g show first 20 characters
         # can return any valid HTML e.g. a link to another view to show the detail or a popup window
 
+
         return model.sequence[:15] + "..."
     column_formatters = {
         'a1': _a1description_formatter,
@@ -227,16 +244,20 @@ class SeqInstanceView(ModelView):
                       'description',
                       'a1',
                       'a2',
-                      filters.FilterLike(SeqInstance.overlap, 'Overlap',
+                      filters.FilterLike(SequenceRecords.overlap, 'Overlap',
                                          options=(('True', 'True'), ('False', 'False'))),
                       'sequence',
                       FilterInAListMaybe(
-                          SeqInstance.name, 'Get unique species'))
+                          SequenceRecords.name, 'Get unique species'))
+
+    def after_model_delete(self, model):
+        print ("model gone")
+        print (model)
 
     @action('c_getoverlap', 'Get Overlap')
     def action_getoverlap(self, ids):
         try:
-            query = SeqInstance.query.filter(SeqInstance.uid.in_(ids))
+            query = SequenceRecords.query.filter(SequenceRecords.uid.in_(ids))
             for record in query.all():
                 if record.a1 == "Not tested" or record.a2 == "Not tested":
                     pass
@@ -262,7 +283,7 @@ class SeqInstanceView(ModelView):
     def action_check_a1(self, ids):
         try:
             best_align = 0
-            query = SeqInstance.query.filter(SeqInstance.uid.in_(ids))
+            query = SequenceRecords.query.filter(SequenceRecords.uid.in_(ids))
             for record in query.all():
                 print(record.name)
                 seq_record = bio_db.lookup(primary_id=record.name)
@@ -279,8 +300,9 @@ class SeqInstanceView(ModelView):
 
                 flash("Found an A1 region in %s" % record.name)
                 location = re.search(r"\d*:\d*", str(best_location))
+
                 setattr(record, "a1", best_seq)
-                setattr(record, "a1_loc", location)
+                setattr(record, "a1_loc", location[0])
                 db.session.add(record)
                 db.session.commit()
 
@@ -294,7 +316,7 @@ class SeqInstanceView(ModelView):
     def action_check_a2(self, ids):
         try:
             best_align = 0
-            query = SeqInstance.query.filter(SeqInstance.uid.in_(ids))
+            query = SequenceRecords.query.filter(SequenceRecords.uid.in_(ids))
             for record in query.all():
                 print(record.name)
                 seq_record = bio_db.lookup(primary_id=record.name)
@@ -312,7 +334,7 @@ class SeqInstanceView(ModelView):
                 flash("Found an A2 region in %s" % record.name)
                 location = re.search(r"\d*:\d*", str(best_location))
                 setattr(record, "a2", best_seq)
-                setattr(record, "a2_loc", location)
+                setattr(record, "a2_loc", location[0])
                 db.session.add(record)
                 db.session.commit()
 
@@ -325,7 +347,7 @@ class SeqInstanceView(ModelView):
     @action('d_buildprofile_a2', 'Build profile based on A2')
     def action_build_profile_a2(self, ids):
         try:
-            query = SeqInstance.query.filter(SeqInstance.uid.in_(ids))
+            query = SequenceRecords.query.filter(SequenceRecords.uid.in_(ids))
             align_list = []
             for record in query.all():
                 if record.a2 == "Not tested":
@@ -344,7 +366,7 @@ class SeqInstanceView(ModelView):
             AlignIO.write(alignment, "align.aln", "fasta")
             file = subprocess.call(["hmmbuild", "profile.hmm", "align.aln"])
 
-            # file_contents = file.stream.read().decode("utf-8")
+            file_contents = file.stream.read().decode("utf-8")
 
         except Exception as ex:
             if not self.handle_view_exception(ex):
@@ -399,8 +421,8 @@ class UploadView(BaseView):
                 distance = "Not tested"
                 sequence = str(current.seq)
 
-                entry = SeqInstance(name, species, strain, description, a1, a1_loc, a2, a2_loc, overlap, distance, sequence)
-                check = SeqInstance.query.filter_by(name=name).first()
+                entry = SequenceRecords(name, species, strain, description, a1, a1_loc, a2, a2_loc, overlap, distance, sequence)
+                check = SequenceRecords.query.filter_by(name=name).first()
 
                 if check:
                     if region in current.annotations.keys():
@@ -429,7 +451,8 @@ def index():
 
 
 if __name__ == "__main__":
+    print ('got here')
     admin = Admin(application, name="Phylo Island", template_mode="bootstrap3")
     admin.add_view(UploadView(name='Upload', endpoint='upload_admin'))
-    admin.add_view(SeqInstanceView(SeqInstance, db.session, endpoint="seq_view"))  # working version
+    admin.add_view(SequenceRecordsView(SequenceRecords, db.session, endpoint="seq_view"))  # working version
     application.run(debug=True, host='0.0.0.0')
