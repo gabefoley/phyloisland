@@ -84,13 +84,13 @@ def local_url_for(*args, **kwargs) -> str:
 def local_redirect(*args, **kwargs) -> Any:
     return redirect(local_url_for(*args, **kwargs))
 
-bio_server = BioSeqDatabase.open_database(driver="MySQLdb", user="pi", passwd="", host="localhost", db="bioseqdb")
+bio_server = BioSeqDatabase.open_database(driver="MySQLdb", user="pi", passwd="", host="localhost", db="hedgehogdb")
 # bio_db = bio_server["fishface"]
-bio_db = bio_server["grass"]
+bio_db = bio_server["hedgehog"]
 
 
 application = Flask(__name__)
-application.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://pi:@localhost/bioseqdb'
+application.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://pi:@localhost/hedgehogdb'
 application.config['SECRET_KEY'] = 'developmentkey'
 application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
@@ -166,12 +166,6 @@ class SequenceRecords(db.Model):
         self.distance = distance
         self.sequence = sequence
 
-    def after_model_delete(self, model):
-        print("model_here is")
-
-    def after_delete(self):
-        print("deleted")
-
 
 
 
@@ -191,8 +185,6 @@ class FilterInAListMaybe(BaseSQLAFilter):
 
 class FilterGetUnique(BaseSQLAFilter):
     list = ['JGVH01000004.1', 'FMWJ01000001.1', 'CPYD01000004.1', 'DQ400808.1' ]
-
-    print ('get unique')
 
     # def __init__(self, column, name, options=None, data_type=None):
     #     super(filters.FilterInList, self).__init__(column, name, options, data_type='select2-tags')
@@ -250,9 +242,25 @@ class SequenceRecordsView(ModelView):
                       FilterInAListMaybe(
                           SequenceRecords.name, 'Get unique species'))
 
+    # Delete the record from the BioSQL database as well
     def after_model_delete(self, model):
         print ("model gone")
-        print (model)
+        print (model.uid)
+        print (model.name)
+        del bio_db[model.uid]
+        bio_server.commit()
+
+
+
+
+
+    @action('do_something', 'Do Something')
+    def do_something(self, ids):
+        for id in ids:
+            del bio_db[str(id)]
+        bio_server.commit()
+
+
 
     @action('c_getoverlap', 'Get Overlap')
     def action_getoverlap(self, ids):
@@ -375,19 +383,14 @@ class SequenceRecordsView(ModelView):
             flash(gettext('Failed to approve users. %(error)s', error=str(ex)), 'error')
 
 
-
+# Form for uploading files
 class UploadForm(FlaskForm):
     name = StringField('What ID should we give this feature?', validators=[DataRequired("Not completed")])
     file = FileField('Upload the FASTA file', validators=[DataRequired("Not completed")])
 
     upload_submit = SubmitField("Upload files")
 
-
-class SelectedView(ModelView):
-    def get_query(self):
-        return self.session.query(self.model).filter(self.model.species=="Yersinia nurmii")
-
-
+# View for uploading files
 class UploadView(BaseView):
 
     @expose("/", methods =('GET', 'POST'))
@@ -407,8 +410,6 @@ class UploadView(BaseView):
 
             for record in records:
                 current = records[record]
-                # for feat in current.features:
-                #     print ("**", feat)
                 name = current.id
                 species = current.annotations['species']
                 strain = current.annotations['source']
@@ -451,7 +452,6 @@ def index():
 
 
 if __name__ == "__main__":
-    print ('got here')
     admin = Admin(application, name="Phylo Island", template_mode="bootstrap3")
     admin.add_view(UploadView(name='Upload', endpoint='upload_admin'))
     admin.add_view(SequenceRecordsView(SequenceRecords, db.session, endpoint="seq_view"))  # working version
