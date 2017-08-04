@@ -26,6 +26,7 @@ from Bio.SeqRecord import SeqRecord
 from flask import Flask, request
 from flask_admin.contrib.sqla import filters
 from flask_admin.contrib.sqla.filters import BaseSQLAFilter
+from flask_admin import AdminIndexView
 import re
 
 
@@ -63,7 +64,7 @@ try:
     os.mkdir(file_path)
 except OSError:
     pass
-BASE_ROUTE = '/PHYLOISLAND'
+BASE_ROUTE = '/phyloisland'
 
 def local(route: str) -> str:
     if BASE_ROUTE == '/':
@@ -84,13 +85,13 @@ def local_url_for(*args, **kwargs) -> str:
 def local_redirect(*args, **kwargs) -> Any:
     return redirect(local_url_for(*args, **kwargs))
 
-bio_server = BioSeqDatabase.open_database(driver="MySQLdb", user="pi", passwd="", host="localhost", db="hedgehogdb")
+bio_server = BioSeqDatabase.open_database(driver="MySQLdb", user="pi", passwd="", host="localhost", db="fishtank")
 # bio_db = bio_server["fishface"]
-bio_db = bio_server["hedgehog"]
+bio_db = bio_server["fish"]
 
 
 application = Flask(__name__)
-application.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://pi:@localhost/hedgehogdb'
+application.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://pi:@localhost/fishtank'
 application.config['SECRET_KEY'] = 'developmentkey'
 application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
@@ -445,14 +446,24 @@ class UploadView(BaseView):
             return self.render("upload_admin.html", form=form, records=records)
         return self.render("upload_admin.html", form=form)
 
+class MyHomeView(AdminIndexView):
+	@expose('/phyloisland_experimental')
+	def index(self):
+		return self.render('admin/index.html')
+
 
 @application.route(local('/'))
 def index():
-    return '<a href="/admin/">Click me to get to Admin!</a>'
+    return '<a href="/admin/">Click me to get to Phylo Island please!</a>'
 
+
+
+#admin = Admin(application,name="Phylo Island", template_mode="bootstrap3")
+admin = Admin(application, index_view=AdminIndexView(name='Experimental', url="/phyloisland_experimental"))
+#admin = Admin(application, index_view=MyHomeView())
+admin.add_view(UploadView(name='Upload', endpoint='upload_admin'))
+admin.add_view(SequenceRecordsView(SequenceRecords, db.session, endpoint="seq_view"))  # working version
 
 if __name__ == "__main__":
-    admin = Admin(application, name="Phylo Island", template_mode="bootstrap3")
-    admin.add_view(UploadView(name='Upload', endpoint='upload_admin'))
-    admin.add_view(SequenceRecordsView(SequenceRecords, db.session, endpoint="seq_view"))  # working version
-    application.run(debug=True, host='0.0.0.0')
+	application.run(debug=True, host='0.0.0.0')
+
