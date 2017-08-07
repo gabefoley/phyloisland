@@ -104,39 +104,6 @@ db = SQLAlchemy(application)
 
 
 # Create models
-class File(db.Model):
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.Unicode(64))
-    path = db.Column(db.Unicode(128))
-
-    def __unicode__(self):
-        return self.name
-
-
-class User(db.Model):
-    __tablename__ = 'users'
-    uid = db.Column(db.Integer, primary_key=True)
-    firstname = db.Column(db.String(100))
-    lastname = db.Column(db.String(100))
-    studentno = db.Column(db.Integer)
-    email = db.Column(db.String(120), unique=True)
-    pwdhash = db.Column(db.String(54))
-
-    def __init__(self, firstname="", lastname="", studentno="", email="", password=""):
-        self.firstname = firstname.title()
-        self.lastname = lastname.title()
-        self.studentno = studentno
-        self.email = email
-        self.set_password(password)
-
-    def set_password(self, password):
-        self.pwdhash = generate_password_hash(password)
-
-    def check_password(self, password):
-        return check_password_hash(self.pwdhash, password)
-
-
 class SequenceRecords(db.Model):
     __tablename__ = 'seqrecord'
     uid = db.Column(db.Integer, primary_key=True)
