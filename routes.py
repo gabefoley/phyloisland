@@ -135,8 +135,15 @@ class SequenceRecords(db.Model):
         self.sequence = sequence
 
 
+class Profiles(db.Model):
+    __tablename__ = 'profile'
+    uid = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.Text)
+    profile = db.Column(db.BLOB)
 
-
+    def __init__(self, name="", profile=""):
+        self.name = name
+        self.profile = profile
 
 
 class FilterInAListMaybe(BaseSQLAFilter):
@@ -351,6 +358,15 @@ class SequenceRecordsView(ModelView):
             flash(gettext('Failed to approve users. %(error)s', error=str(ex)), 'error')
 
 
+class ProfileView(ModelView):
+
+    create_modal = True
+    edit_modal = True
+    can_create = False
+    can_view_details = True
+
+
+
 # Form for uploading files
 class UploadForm(FlaskForm):
     name = StringField('What ID should we give this feature?', validators=[DataRequired("Not completed")])
@@ -430,7 +446,7 @@ admin = Admin(application, index_view=AdminIndexView(name='Experimental', url="/
 #admin = Admin(application, index_view=MyHomeView())
 admin.add_view(UploadView(name='Upload', endpoint='upload_admin'))
 admin.add_view(SequenceRecordsView(SequenceRecords, db.session, endpoint="seq_view"))  # working version
-
+admin.add_view(ProfileView(Profiles, db.session, endpoint="profiles"))
 if __name__ == "__main__":
 	application.run(debug=True, host='0.0.0.0')
 
