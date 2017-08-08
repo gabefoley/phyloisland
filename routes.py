@@ -2,18 +2,14 @@
 from typing import Any
 from os.path import join
 from flask import flash
-from flask_sqlalchemy import SQLAlchemy
 from flask_admin import Admin, BaseView, expose
 from flask_admin.contrib.sqla import ModelView
-from werkzeug.security import generate_password_hash, check_password_hash
-from BioSQL import BioSeqDatabase
 import os
 import os.path as op
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, FileField
 from wtforms.validators import DataRequired
 import phyloisland
-from flask_uploads import UploadSet, configure_uploads, ALL
 from flask_admin.actions import action
 import gettext
 from Bio import SeqIO, AlignIO, pairwise2
@@ -23,11 +19,33 @@ from Bio.Alphabet import generic_protein
 import subprocess
 import sys
 from Bio.SeqRecord import SeqRecord
-from flask import Flask, request
+from flask import request
 from flask_admin.contrib.sqla import filters
 from flask_admin.contrib.sqla.filters import BaseSQLAFilter
 from flask_admin import AdminIndexView
 import re
+from servers import *
+from flask_admin.contrib.fileadmin import FileAdmin
+from werkzeug.datastructures import FileStorage
+import os.path as op
+import urllib
+import wget
+
+import io
+from gettext import gettext
+from flask import Flask, send_file
+from markupsafe import Markup
+from werkzeug.datastructures import FileStorage
+from wtforms import ValidationError, fields
+from wtforms.validators import required
+from wtforms.widgets import HTMLString, html_params, FileInput
+
+try:
+    from wtforms.fields.core import _unset_value as unset_value
+except ImportError:
+    from wtforms.utils import unset_value
+
+# Flask setup here
 
 
 
@@ -59,7 +77,7 @@ yenA2 = "MSNSIEAKLQEDLRDALVDYYLGQIVPNSKDFINLRSTIKNVDDLYDHLLLDTQVSAKVITSRLSLVTQSV
         "SLSTGVNDSGLFMLNFDDERFLPFEGSGVDSSWRLQFTNLKQNLDSLNDVILHVKYTAAIGSSTFSQGVRKILANINNDE"
 
 # Create directory for file fields to use
-file_path = op.join(op.dirname(__file__), 'files')
+file_path = op.join(op.dirname(__file__), 'filesdir')
 try:
     os.mkdir(file_path)
 except OSError:
@@ -72,36 +90,139 @@ def local(route: str) -> str:
     else:
         return join(BASE_ROUTE, route[1:])
 
-def local_url_for(*args, **kwargs) -> str:
-    new_url = local(url_for(*args, **kwargs))
-    if new_url.count(BASE_ROUTE[1:]) == 1:
-        fixed_url = new_url
-        return new_url
-    else:
-        fixed_url = '/'.join(new_url.split('/')[2:])
-    assert fixed_url.count(BASE_ROUTE[1:]) == 1, fixed_url
-    return fixed_url
-
-def local_redirect(*args, **kwargs) -> Any:
-    return redirect(local_url_for(*args, **kwargs))
-
-bio_server = BioSeqDatabase.open_database(driver="MySQLdb", user="pi", passwd="", host="localhost", db="fishtank")
-# bio_db = bio_server["fishface"]
-bio_db = bio_server["fish"]
+# def local_url_for(*args, **kwargs) -> str:
+#     new_url = local(url_for(*args, **kwargs))
+#     if new_url.count(BASE_ROUTE[1:]) == 1:
+#         fixed_url = new_url
+#         return new_url
+#     else:
+#         fixed_url = '/'.join(new_url.split('/')[2:])
+#     assert fixed_url.count(BASE_ROUTE[1:]) == 1, fixed_url
+#     return fixed_url
+#
+# def local_redirect(*args, **kwargs) -> Any:
+#     return redirect(local_url_for(*args, **kwargs))
 
 
-application = Flask(__name__)
-application.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://pi:@localhost/fishtank'
-application.config['SECRET_KEY'] = 'developmentkey'
-application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
-allfiles = UploadSet('all', ALL)
-application.config['UPLOADS_ALL_DEST'] = 'static/uploads'
-application.config['UPLOADED_ALL_DEST'] = 'static/uploads'
-configure_uploads(application, allfiles)
 
-db = SQLAlchemy(application)
+class BlobMixin(object):
+    mimetype = db.Column(db.Unicode(length=255), nullable=False)
+    filename = db.Column(db.Unicode(length=255), nullable=False)
+    profile = db.Column(db.BLOB, nullable=False)
+    size = db.Column(db.Integer, nullable=False)
 
+
+class Profile(db.Model, BlobMixin):
+    __tablename__ = 'profile_blob'
+
+    uid = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.Unicode(length=255), nullable=False, unique=True)
+
+    def __unicode__(self):
+        return u"name : {name}; filename : {filename})".format(name=self.name, filename=self.filename)
+
+
+class BlobUploadField(fields.StringField):
+
+    widget = FileInput()
+
+    def __init__(self, label=None, allowed_extensions=None, size_field=None, filename_field=None, mimetype_field=None, **kwargs):
+
+        self.allowed_extensions = allowed_extensions
+        self.size_field = size_field
+        self.filename_field = filename_field
+        self.mimetype_field = mimetype_field
+        validators = [required()]
+
+        super(BlobUploadField, self).__init__(label, validators, **kwargs)
+
+    def is_file_allowed(self, filename):
+        """
+            Check if file extension is allowed.
+
+            :param filename:
+                File name to check
+        """
+        if not self.allowed_extensions:
+            return True
+
+        return ('.' in filename and
+                filename.rsplit('.', 1)[1].lower() in
+                map(lambda x: x.lower(), self.allowed_extensions))
+
+    def _is_uploaded_file(self, data):
+        return (data and isinstance(data, FileStorage) and data.filename)
+
+    def pre_validate(self, form):
+        super(BlobUploadField, self).pre_validate(form)
+        if self._is_uploaded_file(self.data) and not self.is_file_allowed(self.data.filename):
+            raise ValidationError(gettext('Invalid file extension'))
+
+    def process_formdata(self, valuelist):
+        if valuelist:
+            data = valuelist[0]
+            self.data = data
+
+    def populate_obj(self, obj, name):
+
+        print ('name is ', name)
+
+        if self._is_uploaded_file(self.data):
+
+            _profile = self.data.read()
+
+            print ('got here')
+            print (_profile)
+
+            setattr(obj, name, _profile)
+
+            # setattr(obj, self.profile, _blob)
+
+
+            if self.size_field:
+                setattr(obj, self.size_field, len(_profile))
+
+            if self.filename_field:
+                setattr(obj, self.filename_field, self.data.filename)
+
+            if self.mimetype_field:
+                setattr(obj, self.mimetype_field, self.data.content_type)
+
+
+class ImageView(ModelView):
+    column_list = ('name', 'size', 'filename', 'mimetype', 'download')
+    form_columns = ('name', 'profile')
+
+    form_extra_fields = {'profile': BlobUploadField(
+        label='File',
+        allowed_extensions=['pdf', 'doc', 'docx', 'xls', 'xlsx', 'png', 'jpg', 'jpeg', 'gif', 'hmm', 'fa', 'fasta'],
+        size_field='size',
+        filename_field='filename',
+        mimetype_field='mimetype'
+    )}
+
+    def _download_formatter(self, context, model, name):
+        return Markup(
+            "<a href='{url}' target='_blank'>Download</a>".format(url=self.get_url('download_blob', id=model.uid)))
+
+    column_formatters = {
+        'download': _download_formatter,
+    }
+
+# download route
+@application.route("/download/<int:id>", methods=['GET'])
+def download_blob(id):
+    print ('HERE IS ID', id)
+    _profile = Profile.query.get_or_404(id)
+    print (_profile.filename)
+    print (_profile.mimetype)
+    print(_profile.profile)
+    return send_file(
+        io.BytesIO(_profile.profile),
+        attachment_filename=_profile.filename,
+        mimetype=_profile.mimetype
+    )
 
 # Create models
 class SequenceRecords(db.Model):
@@ -135,15 +256,15 @@ class SequenceRecords(db.Model):
         self.sequence = sequence
 
 
-class Profiles(db.Model):
-    __tablename__ = 'profile'
-    uid = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.Text)
-    profile = db.Column(db.BLOB)
-
-    def __init__(self, name="", profile=""):
-        self.name = name
-        self.profile = profile
+# class Profiles(db.Model):
+#     __tablename__ = 'profile'
+#     uid = db.Column(db.Integer, primary_key=True)
+#     name = db.Column(db.Text)
+#     profile = db.Column(db.Text)
+#
+#     def __init__(self, name="", profile=""):
+#         self.name = name
+#         self.profile = profile
 
 
 class FilterInAListMaybe(BaseSQLAFilter):
@@ -343,13 +464,26 @@ class SequenceRecordsView(ModelView):
 
             SeqIO.write(align_list, "align.fasta", "fasta")
             muscle_cline = MuscleCommandline(input="align.fasta")
+
+            print (type(muscle_cline))
+            # result = subprocess.run(str(muscle_cline), stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True) )
             child = subprocess.Popen(str(muscle_cline), stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                                      universal_newlines=True, shell=(sys.platform != "win32"))
+
             alignment = AlignIO.read(child.stdout, "fasta")
             AlignIO.write(alignment, "align.aln", "fasta")
-            file = subprocess.call(["hmmbuild", "profile.hmm", "align.aln"])
+            result = subprocess.call(["hmmbuild", "profile2.hmm", "align.aln"], stdout=subprocess.PIPE)
+            file = open('profile2.hmm', 'rb')
+            file_storage = FileStorage(file)
+            # file_content = file.read()
 
-            file_contents = file.stream.read().decode("utf-8")
+            saveProfile(file_storage)
+
+
+
+
+
+            # file_contents = file.stream.read().decode("utf-8")
 
         except Exception as ex:
             if not self.handle_view_exception(ex):
@@ -365,6 +499,20 @@ class ProfileView(ModelView):
     can_create = False
     can_view_details = True
 
+    @action('download_profile', 'Download profile')
+    def download_profile(self, ids):
+        for id in ids:
+            print (id)
+        print()
+        print (request.url)
+        url = request.url[:-7]
+        print (url)
+        wget.download(url, id)
+
+        testfile = urllib.request.urlretrieve(url, id)
+        print (testfile)
+        # testfile.retrieve(file_path + id)
+
 
 
 # Form for uploading files
@@ -373,6 +521,26 @@ class UploadForm(FlaskForm):
     file = FileField('Upload the FASTA file', validators=[DataRequired("Not completed")])
 
     upload_submit = SubmitField("Upload files")
+
+
+class FileForm(FileAdmin):
+
+    @expose('/phyloisland_experimental/filesdir',  methods =('GET', 'POST'))
+    def delete_file(self, file_path):
+        print ('deleting')
+        os.remove(file_path)
+    def save_file(self, path, file_data):
+        print ('calling a save')
+        print (path)
+        print (file_data)
+        file_data.save(path)
+
+    can_upload = True
+    can_delete = True
+    can_delete_dirs = False
+    can_mkdir = False
+    can_rename = True
+
 
 # View for uploading files
 class UploadView(BaseView):
@@ -435,18 +603,36 @@ class MyHomeView(AdminIndexView):
 		return self.render('admin/index.html')
 
 
-@application.route(local('/'))
-def index():
-    return '<a href="/admin/">Click me to get to Phylo Island please!</a>'
+# @application.route(local('/'))
+# def index():
+#     return '<a href="/admin/">Click me to get to Phylo Island please!</a>'
+
+
+# def saveProfile(profile):
+#     print (type(profile))
+#     # print(profile)
+#     # print (type(profile))
+#
+#     # FileForm.save_file("", file_path + "/testname", profile) # Save profile to Files directory
+#
+#
+#     profileEntry = Profiles('Testname', profile)
+#     db.session.add(profileEntry)
+#     db.session.commit()
 
 
 
-#admin = Admin(application,name="Phylo Island", template_mode="bootstrap3")
-admin = Admin(application, index_view=AdminIndexView(name='Experimental', url="/phyloisland_experimental"))
+# admin = Admin(application,name="Phylo Island", template_mode="bootstrap3")
+admin = Admin(application, index_view=AdminIndexView(name='Experimental', url="/phyloisland_experimental"), template_mode="bootstrap3")
 #admin = Admin(application, index_view=MyHomeView())
 admin.add_view(UploadView(name='Upload', endpoint='upload_admin'))
 admin.add_view(SequenceRecordsView(SequenceRecords, db.session, endpoint="seq_view"))  # working version
-admin.add_view(ProfileView(Profiles, db.session, endpoint="profiles"))
-if __name__ == "__main__":
-	application.run(debug=True, host='0.0.0.0')
+# admin.add_view(ProfileView(Profiles, db.session, endpoint="profiles"))
+admin.add_view(FileForm(file_path, '/filesdir/', name='Files'))
+admin.add_view(ImageView(model=Profile, session=db.session, name='Images'))
 
+# if __name__ == "__main__":
+# 	application.run(debug=True, host='0.0.0.0')
+
+if __name__ == '__main__':
+    application.run(debug=True, port=7777)

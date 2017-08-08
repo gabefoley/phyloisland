@@ -56,11 +56,15 @@ CREATE TABLE seqrecord(
   PRIMARY KEY (uid), 
   UNIQUE(name(255))); 
 
-CREATE TABLE profile(
-  uid SERIAL,
-  name TEXT,
-  profile LONGBLOB,
-  PRIMARY KEY (uid));
+CREATE TABLE profile_blob(
+  uid INT(10) NOT NULL AUTO_INCREMENT,
+  name VARCHAR(255),
+  mimetype VARCHAR(255),
+  filename VARCHAR(255),
+  profile BLOB,
+  size INT(10),
+  PRIMARY KEY (uid),
+  UNIQUE (name));
 
 -- database have bioentries. That is about it.
 -- we do not store different versions of a database as different dbids
