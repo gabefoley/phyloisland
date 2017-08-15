@@ -61,7 +61,7 @@ CREATE TABLE profile_blob(
   name VARCHAR(255),
   mimetype VARCHAR(255),
   filename VARCHAR(255),
-  profile BLOB,
+  profile LONGBLOB,
   size INT(10),
   PRIMARY KEY (uid),
   UNIQUE (name));

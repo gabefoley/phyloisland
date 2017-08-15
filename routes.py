@@ -39,6 +39,7 @@ from werkzeug.datastructures import FileStorage
 from wtforms import ValidationError, fields
 from wtforms.validators import required
 from wtforms.widgets import HTMLString, html_params, FileInput
+import numpy as np
 
 try:
     from wtforms.fields.core import _unset_value as unset_value
@@ -112,12 +113,30 @@ class BlobMixin(object):
     profile = db.Column(db.BLOB, nullable=False)
     size = db.Column(db.Integer, nullable=False)
 
+    def __init__(self, mimetype, filename, profile, size):
+        self.mimetype = mimetype
+        self.filename = filename
+        self.profile = profile
+        self.size = size
+
 
 class Profile(db.Model, BlobMixin):
     __tablename__ = 'profile_blob'
 
     uid = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Unicode(length=255), nullable=False, unique=True)
+
+    def __init__(self, name = "", blobMix = ""):
+        self.name = name
+        self.blobMix = blobMix
+
+    def set_blobMix(self, blobMix):
+        self.blobMix = blobMix
+        self.mimetype = blobMix.mimetype
+        self.filename = blobMix.filename
+        self.profile = blobMix.profile
+        self.size = blobMix.size
+
 
     def __unicode__(self):
         return u"name : {name}; filename : {filename})".format(name=self.name, filename=self.filename)
@@ -177,6 +196,7 @@ class BlobUploadField(fields.StringField):
 
             setattr(obj, name, _profile)
 
+
             # setattr(obj, self.profile, _blob)
 
 
@@ -190,7 +210,7 @@ class BlobUploadField(fields.StringField):
                 setattr(obj, self.mimetype_field, self.data.content_type)
 
 
-class ImageView(ModelView):
+class ProfileView(ModelView):
     column_list = ('name', 'size', 'filename', 'mimetype', 'download')
     form_columns = ('name', 'profile')
 
@@ -472,12 +492,32 @@ class SequenceRecordsView(ModelView):
 
             alignment = AlignIO.read(child.stdout, "fasta")
             AlignIO.write(alignment, "align.aln", "fasta")
-            result = subprocess.call(["hmmbuild", "profile2.hmm", "align.aln"], stdout=subprocess.PIPE)
-            file = open('profile2.hmm', 'rb')
-            file_storage = FileStorage(file)
-            # file_content = file.read()
+            result = subprocess.call(["hmmbuild", "profile3.hmm", "align.aln"], stdout=subprocess.PIPE)
+            file = open('profile3.hmm', 'rb')
+            # file_storage = FileStorage(file)
+            #
+            #
+            #
+            # # print ('file storage', file_storage)
+            # # file_content = file.read()
+            #
+            # print ('******************')
+            # # print (file_storage)
+            # print ('PROFILE')
+            # print (file.read())
+            # print (type(file.read()))
+            #
+            # a = np.fromfile(file, dtype=np.uint32)
+            # print ("AAAA")
+            # print (a)
+            # fileContent = file.read().decode()
+            # fileContent = str(file.read())
+            # print ("FILE CONTENT")
+            # print (fileContent)
+            # print (type(fileContent))
 
-            saveProfile(file_storage)
+
+            saveProfile(file)
 
 
 
@@ -489,30 +529,30 @@ class SequenceRecordsView(ModelView):
             if not self.handle_view_exception(ex):
                 raise
 
-            flash(gettext('Failed to approve users. %(error)s', error=str(ex)), 'error')
+            flash(gettext(ex))
 
 
-class ProfileView(ModelView):
-
-    create_modal = True
-    edit_modal = True
-    can_create = False
-    can_view_details = True
-
-    @action('download_profile', 'Download profile')
-    def download_profile(self, ids):
-        for id in ids:
-            print (id)
-        print()
-        print (request.url)
-        url = request.url[:-7]
-        print (url)
-        wget.download(url, id)
-
-        testfile = urllib.request.urlretrieve(url, id)
-        print (testfile)
-        # testfile.retrieve(file_path + id)
-
+# class ProfileView(ModelView):
+#
+#     create_modal = True
+#     edit_modal = True
+#     can_create = False
+#     can_view_details = True
+#
+#     @action('download_profile', 'Download profile')
+#     def download_profile(self, ids):
+#         for id in ids:
+#             print (id)
+#         print()
+#         print (request.url)
+#         url = request.url[:-7]
+#         print (url)
+#         wget.download(url, id)
+#
+#         testfile = urllib.request.urlretrieve(url, id)
+#         print (testfile)
+#         # testfile.retrieve(file_path + id)
+#
 
 
 # Form for uploading files
@@ -608,17 +648,36 @@ class MyHomeView(AdminIndexView):
 #     return '<a href="/admin/">Click me to get to Phylo Island please!</a>'
 
 
-# def saveProfile(profile):
-#     print (type(profile))
-#     # print(profile)
-#     # print (type(profile))
-#
-#     # FileForm.save_file("", file_path + "/testname", profile) # Save profile to Files directory
-#
-#
-#     profileEntry = Profiles('Testname', profile)
-#     db.session.add(profileEntry)
-#     db.session.commit()
+def saveProfile(profile):
+    # print ('profile info')
+    # print (type(profile))
+    # profile.seek(0, 2)
+    # file_length = profile.tell()
+
+    # print(profile)
+    # print (type(profile))
+
+    print ("THIS IS ", "newname")
+    print (profile)
+
+    blobMix = BlobMixin("application/octet-stream", "newname", profile.read(), '566666')
+    profileEntry = Profile("newname")
+    profileEntry.set_blobMix(blobMix)
+
+    # print ('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
+    # print ('Profile entry info')
+    # print (profileEntry)
+    # print (profileEntry.name)
+    # print (profileEntry.blobMix)
+    # print (profileEntry.size)
+    # print (profileEntry.profile.read())
+
+    # FileForm.save_file("", file_path + "/testname", profile) # Save profile to Files directory
+
+    # print (profileEntry)
+    # profileEntry = Profiles('Testname', profile)
+    db.session.add(profileEntry)
+    db.session.commit()
 
 
 
@@ -628,8 +687,8 @@ admin = Admin(application, index_view=AdminIndexView(name='Experimental', url="/
 admin.add_view(UploadView(name='Upload', endpoint='upload_admin'))
 admin.add_view(SequenceRecordsView(SequenceRecords, db.session, endpoint="seq_view"))  # working version
 # admin.add_view(ProfileView(Profiles, db.session, endpoint="profiles"))
-admin.add_view(FileForm(file_path, '/filesdir/', name='Files'))
-admin.add_view(ImageView(model=Profile, session=db.session, name='Images'))
+# admin.add_view(FileForm(file_path, '/filesdir/', name='Files'))
+admin.add_view(ProfileView(model=Profile, session=db.session, name='Profiles'))
 
 # if __name__ == "__main__":
 # 	application.run(debug=True, host='0.0.0.0')
