@@ -4,4 +4,6 @@ CREATE TABLE seqrecord(uid SERIAL PRIMARY KEY, name TEXT, species TEXT, strain T
 mysqladmin -p create phyloisland
 mysql -p phyloisland < biosqldb-mysql.sql
 
+GRANT ALL on phyloisland.* to 'pi'@'localhost';
+
 run 'phyloinit.py'
