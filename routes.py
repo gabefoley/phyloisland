@@ -231,13 +231,13 @@ class ProfileView(ModelView):
     }
 
 # download route
-@application.route("/download/<int:id>", methods=['GET'])
+@application.route("/phyloisland_experimental/<int:id>", methods=['GET'])
 def download_blob(id):
     print ('HERE IS ID', id)
     _profile = Profile.query.get_or_404(id)
     print (_profile.filename)
     print (_profile.mimetype)
-    print(_profile.profile)
+    #print(_profile.profile)
     return send_file(
         io.BytesIO(_profile.profile),
         attachment_filename=_profile.filename,
@@ -489,6 +489,8 @@ class SequenceRecordsView(ModelView):
             # result = subprocess.run(str(muscle_cline), stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True) )
             child = subprocess.Popen(str(muscle_cline), stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                                      universal_newlines=True, shell=(sys.platform != "win32"))
+            child.wait()
+
 
             alignment = AlignIO.read(child.stdout, "fasta")
             AlignIO.write(alignment, "align.aln", "fasta")
@@ -562,24 +564,6 @@ class UploadForm(FlaskForm):
 
     upload_submit = SubmitField("Upload files")
 
-
-class FileForm(FileAdmin):
-
-    @expose('/phyloisland_experimental/filesdir',  methods =('GET', 'POST'))
-    def delete_file(self, file_path):
-        print ('deleting')
-        os.remove(file_path)
-    def save_file(self, path, file_data):
-        print ('calling a save')
-        print (path)
-        print (file_data)
-        file_data.save(path)
-
-    can_upload = True
-    can_delete = True
-    can_delete_dirs = False
-    can_mkdir = False
-    can_rename = True
 
 
 # View for uploading files

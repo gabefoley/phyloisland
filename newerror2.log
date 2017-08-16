@@ -986,3 +986,128 @@ bioinf.scmb.uq.edu.au:81 [pid: 3545|app: 0|req: 5/5] 10.184.5.113 () {48 vars in
 bioinf.scmb.uq.edu.au:81 [pid: 3545|app: 0|req: 6/6] 10.184.5.113 () {48 vars in 1166 bytes} [Wed Aug  2 15:23:56 2017] GET /phyloisland_experimental/ => generated 2751 bytes in 11 msecs (HTTP/1.1 200) 2 headers in 81 bytes (1 switches on core 0)
 bioinf.scmb.uq.edu.au:81 [pid: 3545|app: 0|req: 7/7] 10.184.5.113 () {46 vars in 1152 bytes} [Wed Aug  2 15:23:58 2017] GET /phyloisland_experimental/upload_admin/ => generated 3020 bytes in 32 msecs (HTTP/1.1 200) 2 headers in 81 bytes (1 switches on core 0)
 bioinf.scmb.uq.edu.au:81 [pid: 3545|app: 0|req: 8/8] 10.184.5.113 () {46 vars in 1157 bytes} [Wed Aug  2 15:23:58 2017] GET /phyloisland_experimental/seq_view/ => generated 35421 bytes in 397 msecs (HTTP/1.1 200) 2 headers in 82 bytes (1 switches on core 0)
+*** Starting uWSGI 2.0.15 (64bit) on [Tue Aug 15 20:36:39 2017] ***
+compiled with version: 5.4.0 20160609 on 26 May 2017 23:30:05
+os: Linux-4.4.0-36-generic #55-Ubuntu SMP Thu Aug 11 18:01:55 UTC 2016
+nodename: bioinf
+machine: x86_64
+clock source: unix
+pcre jit disabled
+detected number of CPU cores: 12
+current working directory: /etc/uwsgi/sites_python3-enabled
+detected binary path: /var/www/python3uwsgi/.env/bin/uwsgi
+setgid() to 33
+set additional group 1003 (share)
+setuid() to 33
+chdir() to /var/www/PythonApps/phyloisland_experimental
+your processes number limit is 257311
+your memory page size is 4096 bytes
+detected max file descriptor number: 1024
+VirtualHosting mode enabled.
+lock engine: pthread robust mutexes
+thunder lock: disabled (you can enable it with --thunder-lock)
+uwsgi socket 0 bound to UNIX address /tmp/phyloisland_experimental.sock fd 3
+Python version: 3.5.2 (default, Nov 17 2016, 17:05:23)  [GCC 5.4.0 20160609]
+Set PythonHome to /var/www/PythonApps/phyloisland_experimental/.env
+Python main interpreter initialized at 0x220d6c0
+python threads support enabled
+your server socket listen backlog is limited to 100 connections
+your mercy for graceful operations on workers is 60 seconds
+mapped 145520 bytes (142 KB) for 1 cores
+*** Operational MODE: single process ***
+Traceback (most recent call last):
+  File "./routes.py", line 32, in <module>
+    import wget
+ImportError: No module named 'wget'
+unable to load app 0 (mountpoint='') (callable not found or import error)
+*** no app loaded. going in full dynamic mode ***
+*** uWSGI is running in multiple interpreter mode ***
+spawned uWSGI master process (pid: 15261)
+spawned uWSGI worker 1 (pid: 15353, cores: 1)
+--- no python application found, check your startup logs for errors ---
+bioinf.scmb.uq.edu.au:81 [pid: 15353|app: -1|req: -1/1] 1.121.129.153 () {48 vars in 1231 bytes} [Tue Aug 15 20:36:43 2017] GET /phyloisland_experimental/upload_admin/ => generated 21 bytes in 0 msecs (HTTP/1.1 500) 2 headers in 83 bytes (0 switches on core 0)
+announcing my loyalty to the Emperor...
+*** Starting uWSGI 2.0.15 (64bit) on [Tue Aug 15 20:37:34 2017] ***
+compiled with version: 5.4.0 20160609 on 26 May 2017 23:30:05
+os: Linux-4.4.0-36-generic #55-Ubuntu SMP Thu Aug 11 18:01:55 UTC 2016
+nodename: bioinf
+machine: x86_64
+clock source: unix
+pcre jit disabled
+detected number of CPU cores: 12
+current working directory: /etc/uwsgi/sites_python3-enabled
+detected binary path: /var/www/python3uwsgi/.env/bin/uwsgi
+setgid() to 33
+set additional group 1003 (share)
+setuid() to 33
+chdir() to /var/www/PythonApps/phyloisland_experimental
+your processes number limit is 257311
+your memory page size is 4096 bytes
+detected max file descriptor number: 1024
+VirtualHosting mode enabled.
+lock engine: pthread robust mutexes
+thunder lock: disabled (you can enable it with --thunder-lock)
+uwsgi socket 0 bound to UNIX address /tmp/phyloisland_experimental.sock fd 3
+Python version: 3.5.2 (default, Nov 17 2016, 17:05:23)  [GCC 5.4.0 20160609]
+Set PythonHome to /var/www/PythonApps/phyloisland_experimental/.env
+Python main interpreter initialized at 0xbdd6c0
+python threads support enabled
+your server socket listen backlog is limited to 100 connections
+your mercy for graceful operations on workers is 60 seconds
+mapped 145520 bytes (142 KB) for 1 cores
+*** Operational MODE: single process ***
+Traceback (most recent call last):
+  File "./routes.py", line 32, in <module>
+    import wget
+ImportError: No module named 'wget'
+unable to load app 0 (mountpoint='') (callable not found or import error)
+*** no app loaded. going in full dynamic mode ***
+*** uWSGI is running in multiple interpreter mode ***
+spawned uWSGI master process (pid: 15544)
+spawned uWSGI worker 1 (pid: 15641, cores: 1)
+--- no python application found, check your startup logs for errors ---
+bioinf.scmb.uq.edu.au:81 [pid: 15641|app: -1|req: -1/1] 1.121.129.153 () {48 vars in 1231 bytes} [Tue Aug 15 20:37:37 2017] GET /phyloisland_experimental/upload_admin/ => generated 21 bytes in 0 msecs (HTTP/1.1 500) 2 headers in 83 bytes (0 switches on core 0)
+announcing my loyalty to the Emperor...
+*** Starting uWSGI 2.0.15 (64bit) on [Tue Aug 15 20:38:52 2017] ***
+compiled with version: 5.4.0 20160609 on 26 May 2017 23:30:05
+os: Linux-4.4.0-36-generic #55-Ubuntu SMP Thu Aug 11 18:01:55 UTC 2016
+nodename: bioinf
+machine: x86_64
+clock source: unix
+pcre jit disabled
+detected number of CPU cores: 12
+current working directory: /etc/uwsgi/sites_python3-enabled
+detected binary path: /var/www/python3uwsgi/.env/bin/uwsgi
+setgid() to 33
+set additional group 1003 (share)
+setuid() to 33
+chdir() to /var/www/PythonApps/phyloisland_experimental
+your processes number limit is 257311
+your memory page size is 4096 bytes
+detected max file descriptor number: 1024
+VirtualHosting mode enabled.
+lock engine: pthread robust mutexes
+thunder lock: disabled (you can enable it with --thunder-lock)
+uwsgi socket 0 bound to UNIX address /tmp/phyloisland_experimental.sock fd 3
+Python version: 3.5.2 (default, Nov 17 2016, 17:05:23)  [GCC 5.4.0 20160609]
+Set PythonHome to /var/www/PythonApps/phyloisland_experimental/.env
+Python main interpreter initialized at 0x255b6c0
+python threads support enabled
+your server socket listen backlog is limited to 100 connections
+your mercy for graceful operations on workers is 60 seconds
+mapped 145520 bytes (142 KB) for 1 cores
+*** Operational MODE: single process ***
+Traceback (most recent call last):
+  File "./routes.py", line 32, in <module>
+    import wget
+ImportError: No module named 'wget'
+unable to load app 0 (mountpoint='') (callable not found or import error)
+*** no app loaded. going in full dynamic mode ***
+*** uWSGI is running in multiple interpreter mode ***
+spawned uWSGI master process (pid: 15884)
+spawned uWSGI worker 1 (pid: 15979, cores: 1)
+--- no python application found, check your startup logs for errors ---
+bioinf.scmb.uq.edu.au:81 [pid: 15979|app: -1|req: -1/1] 1.121.129.153 () {48 vars in 1231 bytes} [Tue Aug 15 20:38:55 2017] GET /phyloisland_experimental/upload_admin/ => generated 21 bytes in 0 msecs (HTTP/1.1 500) 2 headers in 83 bytes (0 switches on core 0)
+announcing my loyalty to the Emperor...
+--- no python application found, check your startup logs for errors ---
+bioinf.scmb.uq.edu.au:81 [pid: 15979|app: -1|req: -1/2] 1.121.129.153 () {44 vars in 1090 bytes} [Tue Aug 15 20:38:58 2017] GET /phyloisland_experimental => generated 21 bytes in 0 msecs (HTTP/1.1 500) 2 headers in 83 bytes (0 switches on core 0)

@@ -3,12 +3,12 @@ from flask_uploads import UploadSet, configure_uploads, ALL
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
 
-bio_server = BioSeqDatabase.open_database(driver="MySQLdb", user="pi", passwd="", host="localhost", db="fishtank")
-bio_db = bio_server["fish"]
+bio_server = BioSeqDatabase.open_database(driver="MySQLdb", user="pi", passwd="", host="localhost", db="walrus")
+bio_db = bio_server["water"]
 
 
 application = Flask(__name__)
-application.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://pi:@localhost/fishtank'
+application.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://pi:@localhost/walrus'
 application.config['SECRET_KEY'] = 'developmentkey'
 application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
