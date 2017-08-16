@@ -231,7 +231,7 @@ class ProfileView(ModelView):
     }
 
 # download route
-@application.route("/phyloisland_experimental/<int:id>", methods=['GET'])
+@application.route("/phyloisland_stable/<int:id>", methods=['GET'])
 def download_blob(id):
     print ('HERE IS ID', id)
     _profile = Profile.query.get_or_404(id)
@@ -622,7 +622,7 @@ class UploadView(BaseView):
         return self.render("upload_admin.html", form=form)
 
 class MyHomeView(AdminIndexView):
-	@expose('/phyloisland_experimental')
+	@expose('/phyloisland_stable')
 	def index(self):
 		return self.render('admin/index.html')
 
@@ -666,7 +666,7 @@ def saveProfile(profile):
 
 
 # admin = Admin(application,name="Phylo Island", template_mode="bootstrap3")
-admin = Admin(application, index_view=AdminIndexView(name='Experimental', url="/phyloisland_experimental"), template_mode="bootstrap3")
+admin = Admin(application, index_view=AdminIndexView(name='Stable', url="/phyloisland_stable"), template_mode="bootstrap3")
 #admin = Admin(application, index_view=MyHomeView())
 admin.add_view(UploadView(name='Upload', endpoint='upload_admin'))
 admin.add_view(SequenceRecordsView(SequenceRecords, db.session, endpoint="seq_view"))  # working version
