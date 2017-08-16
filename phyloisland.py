@@ -1,14 +1,7 @@
 import requests
-import subprocess
-import re
-
 
 from Bio import Entrez, SeqIO, GenBank, AlignIO, pairwise2
 from Bio.SeqFeature import ExactPosition
-from Bio.Seq import Seq
-from Bio.SeqRecord import SeqRecord
-from Bio.Alphabet import generic_protein
-from Bio.Align.Applications import MuscleCommandline
 from Bio.SubsMat.MatrixInfo import blosum62
 
 seqDict = {}
@@ -233,11 +226,6 @@ def checkForFeature(seqRecords, featureText):
                     seqRecords[record].annotations[featureText] = 'Found'
 
                     # print ("Found", feature.qualifiers['gene'][0], feature.qualifiers['translation'][0])
-
-
-
-
-
 
 
 def unique_strains():
