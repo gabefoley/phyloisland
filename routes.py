@@ -514,7 +514,7 @@ class SequenceRecordsView(ModelView):
                 flash("Found an A2 region in %s" % record.name)
                 location = re.search(r"\d*:\d*", str(best_location))
                 setattr(record, "a2", best_seq)
-                setattr(record, "a2_loc", location[0])
+                setattr(record, "a2_loc", location.group(1))
                 db.session.add(record)
                 db.session.commit()
 
