@@ -25,7 +25,7 @@ from flask_admin.contrib.sqla import filters
 from flask_admin.contrib.sqla.filters import BaseSQLAFilter
 from flask_admin import AdminIndexView
 import re
-from servers import *
+# from servers import *
 from flask_admin.contrib.fileadmin import FileAdmin
 from werkzeug.datastructures import FileStorage
 import os.path as op
@@ -33,6 +33,7 @@ import urllib
 import wget
 import random
 import string
+from Bio import Entrez
 
 import io
 from gettext import gettext
@@ -49,9 +50,42 @@ try:
 except ImportError:
     from wtforms.utils import unset_value
 
+from BioSQL import BioSeqDatabase
+from flask_uploads import UploadSet, configure_uploads, ALL
+from flask_sqlalchemy import SQLAlchemy
+from flask import Flask
+
 # Flask setup here
+base_name = "Experimental"
+base_route = "phyloisland_experimental"
+# bio_server_name = "snowman"
+# bio_db_name = "snowball"
+bio_server_name = "snowman"
+bio_db_name = "snowball"
+
+bio_server = BioSeqDatabase.open_database(driver="MySQLdb", user="pi", passwd="", host="localhost", db=bio_server_name)
+bio_db = bio_server[bio_db_name]
 
 
+application = Flask(__name__)
+application.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://pi:@localhost/' + bio_server_name
+application.config['SECRET_KEY'] = 'developmentkey'
+application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+
+allfiles = UploadSet('all', ALL)
+application.config['UPLOADS_ALL_DEST'] = 'static/uploads'
+application.config['UPLOADED_ALL_DEST'] = 'static/uploads'
+configure_uploads(application, allfiles)
+
+db = SQLAlchemy(application)
+
+# Entrez.email = "gabriel.foley@uqconnect.edu.au"
+#
+# handle = Entrez.efetch(db="nuccore", id="6273291,6273290,6273289", rettype="gb", retmode="text")
+#
+# count = bio_db.load(SeqIO.parse(handle, "genbank"))
+# print ("Loaded %i records" % count)
+# bio_server.commit()
 
 # Setup temporary best guesses for what the A1 and A2 region should look like
 yenA1 = "MDKYNNYSNVIKNKSSISPLLAAAAKIEPEITVLSSASKSNRSQYSQSLADTLLGLGYRSIFDIAKVSRQRFIKRHDESLLGNGAVIFDKAVSMANQVLQKYRKNRL" \
@@ -619,6 +653,7 @@ class UploadView(BaseView):
             phyloisland.seqDict = {}
             phyloisland.unmappable = []
 
+            print ('got here')
 
             phyloisland.getFullGenome("static/uploads/" + filename, region)
 
@@ -627,12 +662,16 @@ class UploadView(BaseView):
             records = phyloisland.seqDict
 
             for record in records:
+
                 current = records[record]
                 name = current.id
 
                 species = current.annotations.get('organism')
                 strain = current.annotations.get('organism')
                 sequence = "AAA"
+
+                print (name)
+                print (current)
 
                 # species = current.annotations['species']
                 # print ("YO THE SPECIES IS ", species)

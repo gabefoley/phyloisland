@@ -46,27 +46,33 @@ def makeQueryString(iter, info = "", link = "", final = ""):
         queryString += item + info + link
 
     # Remove the final joining string from the queryString
-    queryString = queryString[:-len(link)] + final
+    print ('This is the query string')
+    print (queryString)
 
+    queryString = queryString[:-len(link)] + final
+    print ('This is the query string')
     print (queryString)
     return queryString
 
 
 def getFullGenome(region_file, region_name):
-    region = SeqIO.parse(region_file, "fasta")
+    records = SeqIO.parse(region_file, "fasta")
     Entrez.email = "gabriel.foley@uqconnect.edu.au"
     species_names = set()
     genome_ids = set()
+    record_ids = []
 
-    queryString = makeQueryString(region, "+OR+")
+
+    for record in records:
+        record_ids.append(record.id)
+    queryString = makeQueryString(record_ids, link="+OR+")
     # queryString = ""
     #
-    # for protein in region:
+    # for protein in records:
     #     queryString += protein.id + "+OR+"
     #
     # # Remove the final "+OR+" from the queryString
     # queryString = queryString[:-4]
-    print (queryString)
 
     protein_handle = Entrez.efetch(db="protein", id=queryString, rettype="gb")
 
@@ -130,7 +136,7 @@ def getFullGenome(region_file, region_name):
     # for record in genome_records:
     #     print(record)
     #
-    # for seq_record in region:
+    # for seq_record in records:
     #     print (seq_record.id)
     #
     #     # For each protein ID get the genome ID
