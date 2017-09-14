@@ -63,6 +63,7 @@ def getFullGenome(region_file, region_name):
     record_ids = []
 
 
+
     for record in records:
         record_ids.append(record.id)
     queryString = makeQueryString(record_ids, link="+OR+")
@@ -113,7 +114,11 @@ def getFullGenome(region_file, region_name):
 
     records = SeqIO.parse(genome_records, "gb")
 
+    found_species = []
+    unmappable_species = []
+
     for record in records:
+        found_species.append(record.annotations.get('organism'))
 
         if record.description in seqDict:
             if 'RefSeq' not in record.annotations.get('keywords'):
@@ -127,7 +132,11 @@ def getFullGenome(region_file, region_name):
         else:
             seqDict[record.description] = record
 
-    print (len(seqDict))
+    for species in species_names:
+        if species not in found_species:
+            unmappable_species.append(species)
+
+    return unmappable_species
 
         # print (genome_handle.read())
 

@@ -9,15 +9,15 @@
 
             <div class="form-group">
 
-            {% with messages = get_flashed_messages() %}
-                  {% if messages %}
-                    <ul>
-                    {% for message in messages %}
-                        <li>{{ message }} </li>
-                    {% endfor %}
-                    </ul>
-                  {% endif %}
-                {% endwith %}
+{#            {% with messages = get_flashed_messages() %}#}
+{#                  {% if messages %}#}
+{#                    <ul>#}
+{#                    {% for message in messages %}#}
+{#                        <li>{{ message }} </li>#}
+{#                    {% endfor %}#}
+{#                    </ul>#}
+{#                  {% endif %}#}
+{#                {% endwith %}#}
 
 
             {{ form.name.label }}

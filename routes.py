@@ -474,13 +474,13 @@ class SequenceRecordsView(ModelView):
                     location = re.search(r"\d*:\d*", str(best_location))
 
                     setattr(record, "a1", best_seq)
-                    setattr(record, "a1_loc", location[0])
+                    setattr(record, "a1_loc", location.group(1))
                     db.session.add(record)
                     db.session.commit()
 
                 alignment = pairwise2.align.globalms(yenA1, best_seq,
                                                          2, -1, -1, -.5)
-                print(alignment)
+                # print(alignment)
 
         except Exception as ex:
             if not self.handle_view_exception(ex):
@@ -657,7 +657,9 @@ class UploadView(BaseView):
 
             print ('got here')
 
-            phyloisland.getFullGenome("static/uploads/" + filename, region)
+            genomeResults = phyloisland.getFullGenome("static/uploads/" + filename, region)
+
+            flash(gettext("Couldn't find").join([v for v in genomeResults]), 'error')
 
             # phyloisland.defaultValue("static/uploads/" + filename, region)
 
