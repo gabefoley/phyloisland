@@ -1,6 +1,6 @@
 import requests
 import lxml.etree as ET
-
+import random
 from Bio import Entrez, SeqIO, GenBank, AlignIO, pairwise2
 from Bio.SeqFeature import ExactPosition
 from Bio.SubsMat.MatrixInfo import blosum62
@@ -496,3 +496,6 @@ def getAlignmentScore(seq1, seq2):
     alignment_score = pairwise2.align.globalds(seq1, seq2, blosum62, -10, -0.5, score_only=True)
     return alignment_score
 
+def randstring(length=10):
+    valid_letters='ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    return ''.join((random.choice(valid_letters) for i in range(length)))
