@@ -1,4 +1,5 @@
 import requests
+import lxml.etree as ET
 
 from Bio import Entrez, SeqIO, GenBank, AlignIO, pairwise2
 from Bio.SeqFeature import ExactPosition
@@ -39,6 +40,178 @@ class SmallRecord():
     def get_sequence(self):
         return self.sequence
 
+def makeQueryString(iter, info = "", link = "", final = ""):
+    queryString = ""
+    for item in iter:
+        queryString += item + info + link
+
+    # Remove the final joining string from the queryString
+    queryString = queryString[:-len(link)] + final
+
+    print (queryString)
+    return queryString
+
+
+def getFullGenome(region_file, region_name):
+    region = SeqIO.parse(region_file, "fasta")
+    Entrez.email = "gabriel.foley@uqconnect.edu.au"
+    species_names = set()
+    genome_ids = set()
+
+    queryString = makeQueryString(region, "+OR+")
+    # queryString = ""
+    #
+    # for protein in region:
+    #     queryString += protein.id + "+OR+"
+    #
+    # # Remove the final "+OR+" from the queryString
+    # queryString = queryString[:-4]
+    print (queryString)
+
+    protein_handle = Entrez.efetch(db="protein", id=queryString, rettype="gb")
+
+    protein_records = SeqIO.parse(protein_handle, "gb")
+
+    for record in protein_records:
+        species_names.add(record.annotations.get('organism'))
+
+        #    genome_records = SeqIO.parse(genome_handle, "gb")
+        #
+        #     for record in genome_records:
+        #         print (record)
+
+    queryString = makeQueryString(species_names, "[orgn]", " OR ")
+    # queryString = ""
+    # for species in species_names:
+    #     queryString += species + "[orgn] OR "
+    #
+    # # Remove the final "+OR+" from the queryString
+    # queryString = queryString[:-4]
+
+    queryString +=" AND genome[title] NOT shotgun[title] NOT segment[title]"
+    print (queryString)
+
+
+    genome_handle = Entrez.esearch(db="nucleotide", term= queryString, rettype="gb")
+
+    root = ET.parse(genome_handle)
+    for result in root.xpath('///Id/text()'):
+        genome_ids.add(result)
+
+    queryString = ""
+
+    for genome_id in genome_ids:
+        queryString += genome_id + "+OR+"
+
+    genome_records = Entrez.efetch(db="nucleotide", id=queryString, rettype="gb")
+
+    records = SeqIO.parse(genome_records, "gb")
+
+    for record in records:
+
+        if record.description in seqDict:
+            if 'RefSeq' not in record.annotations.get('keywords'):
+                seqDict[record.description] = record
+
+        # print (record.description)
+        # print (record)
+        # print (record.name)
+        # print (record.annotations.get('keywords'))
+
+        else:
+            seqDict[record.description] = record
+
+    print (len(seqDict))
+
+        # print (genome_handle.read())
+
+    # genome_records = SeqIO.parse(genome_handle, "gb")
+    #
+    # for record in genome_records:
+    #     print(record)
+    #
+    # for seq_record in region:
+    #     print (seq_record.id)
+    #
+    #     # For each protein ID get the genome ID
+    #     handle = Entrez.elink(dbfrom="protein", db="genome", id =seq_record.id)
+    #
+    #     # print (handle.read())
+    #
+    #     # Store the mapping from protein ID to genome
+    #     root = ET.parse(handle)
+    #     for result in root.xpath('//Link/Id/text()'):
+    #         prot_To_Genome[seq_record.id] = result
+    #
+    #     genome_handle = Entrez.esearch(db='nucleotide',
+    #                                     term="Xenorhabdus bovienii[orgn] ", rettype="gb")
+    #
+    #     genome_records = SeqIO.parse(genome_handle, "gb")
+    #
+    #     for record in genome_records:
+    #         print (record)
+
+        # print (handle.read())
+        # print (prot_To_Genome)
+
+        # Get the full genome records
+        # for prot, genome in prot_To_Genome.items():
+        #     print (genome)
+        #     genome_handle = Entrez.efetch(db="genome", id=genome, rettype="gb")
+        #
+        #     genome_records = SeqIO.parse(genome_handle, "gb")
+        #
+        #     for record in genome_records:
+        #         print (record)
+
+
+
+    # handle = Entrez.elink(dbfrom="protein", id="WP_046335775.1", db="taxonomy")
+        # handle = Entrez.efetch(db="protein", id=seq_record.id, rettype="gb")
+        #
+        # records = SeqIO.parse(handle, "gb")
+        #
+        # for record in records:
+        #     handle = Entrez.esearch(db='nucleotide',
+        #                             term=record.annotations.get('organism') + "AND complete genome[title]")
+        #     print(handle.read())
+
+
+
+
+            #
+        # # handle = Entrez.efetch(db="protein", id="WP_046335775.1", rettype="gb")
+        #
+        # records = SeqIO.parse(handle, "xml")
+        #
+        # for record in records:
+        #     print (record)
+        #     print (record.annotations.get('organism'))
+        # records = SeqIO.parse("gb.gb", "gb")
+        # SeqIO.write(records, "gb.gb", "gb")
+
+        # feature_parser = GenBank.FeatureParser()
+        #
+        # for record in records:
+        #     if small_record.get_emblID() in seqDict:
+        #         seqDict[small_record.get_emblID()].annotations[set_id] = small_record.get_sequence()
+        #         seqDict[small_record.get_emblID()].annotations[set_id + "_location"] = getCoords(
+        #             seqDict[small_record.get_emblID()], set_id)
+        #         # user_annotations.add(set_id) # User annotations now contains this ID
+        #
+        #     else:
+        #         record.annotations[set_id] = small_record.get_sequence()
+        #         record.annotations[set_id + "_location"] = getCoords(record, set_id)
+        #         record.annotations[
+        #             'Uniprot'] = small_record.get_uniprotID()  # Append an annotation saying this record has been identified from this set
+        #         seqDict[small_record.get_emblID()] = record
+        #         # user_annotations.add(set_id) # User annotations now contains this ID
+        #
+        #     if set_id in feature_to_record:
+        #         feature_to_record[set_id].append(small_record.get_emblID())
+        #     else:
+        #         feature_to_record[set_id] = [small_record.get_emblID()]
+
 
 def defaultValue(region1, region1_name):
         region = SeqIO.parse(region1, "fasta")
@@ -59,22 +232,22 @@ def defaultValue(region1, region1_name):
         return "finish"
 
 
-def defaultValues(region1, region1_name):
-    region = SeqIO.parse(region1, "fasta")
-    genes = mapToGene(region, region1_name)
-    # region_names.append(region1_name)
-
-    for protein_id, small_record in genes.items():
-        if (small_record): # If the smallRecord mapped successfully
-            getGene(protein_id, small_record, region1_name)
-            getSpecies(protein_id, small_record)
-
-            # Get species
-            split_line = seqDict[small_record.get_emblID()].annotations['organism'].split()
-            species_name = split_line[0] + " " + split_line[1]
-            seqDict[small_record.get_emblID()].annotations["species"] = species_name
-        else:
-            unmappable.append(protein_id)
+# def defaultValues(region1, region1_name):
+#     region = SeqIO.parse(region1, "fasta")
+#     genes = mapToGene(region, region1_name)
+#     # region_names.append(region1_name)
+#
+#     for protein_id, small_record in genes.items():
+#         if (small_record): # If the smallRecord mapped successfully
+#             getGene(protein_id, small_record, region1_name)
+#             getSpecies(protein_id, small_record)
+#
+#             # Get species
+#             split_line = seqDict[small_record.get_emblID()].annotations['organism'].split()
+#             species_name = split_line[0] + " " + split_line[1]
+#             seqDict[small_record.get_emblID()].annotations["species"] = species_name
+#         else:
+#             unmappable.append(protein_id)
 
 
 
