@@ -1,11 +1,8 @@
-
-from typing import Any
 from os.path import join
 from flask import flash
 from flask_admin import Admin, BaseView, expose
 from flask_admin.contrib.sqla import ModelView
 import os
-import os.path as op
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, FileField
 from wtforms.validators import DataRequired
@@ -24,12 +21,8 @@ from flask_admin.contrib.sqla import filters
 from flask_admin.contrib.sqla.filters import BaseSQLAFilter
 from flask_admin import AdminIndexView
 import re
-from servers import *
-from flask_admin.contrib.fileadmin import FileAdmin
-from werkzeug.datastructures import FileStorage
 import os.path as op
-import urllib
-import wget
+
 
 import io
 from gettext import gettext
@@ -39,14 +32,15 @@ from werkzeug.datastructures import FileStorage
 from wtforms import ValidationError, fields
 from wtforms.validators import required
 from wtforms.widgets import HTMLString, html_params, FileInput
-import numpy as np
+
 
 try:
     from wtforms.fields.core import _unset_value as unset_value
 except ImportError:
     from wtforms.utils import unset_value
 
-# Flask setup here
+
+from servers import *
 
 
 
@@ -83,7 +77,7 @@ try:
     os.mkdir(file_path)
 except OSError:
     pass
-BASE_ROUTE = '/phyloisland'
+BASE_ROUTE = '/' + base_route
 
 def local(route: str) -> str:
     if BASE_ROUTE == '/':
@@ -231,7 +225,11 @@ class ProfileView(ModelView):
     }
 
 # download route
+<<<<<<< HEAD
 @application.route("/phyloisland_stable/<int:id>", methods=['GET'])
+=======
+@application.route("/" + base_route + "/<int:id>", methods=['GET'])
+>>>>>>> acbb05dec173221b51a8b90e105c1ed92f8e11c3
 def download_blob(id):
     print ('HERE IS ID', id)
     _profile = Profile.query.get_or_404(id)
@@ -407,28 +405,43 @@ class SequenceRecordsView(ModelView):
     def action_check_a1(self, ids):
         try:
             best_align = 0
+            best_location = None
+            best_seq = None
             query = SequenceRecords.query.filter(SequenceRecords.uid.in_(ids))
             for record in query.all():
                 print(record.name)
                 seq_record = bio_db.lookup(primary_id=record.name)
 
+                print (seq_record.description)
+                print (seq_record)
+
                 for feature in seq_record.features:
+                    print (feature)
                     if 'translation' in feature.qualifiers:
+
                         alignment = pairwise2.align.globalms(yenA1, feature.qualifiers['translation'][0],
-                                                             2, -1, -.5, -.1, score_only=True)
+                                                             2, -1, -1, -.5, score_only=True)
                         if alignment > best_align:
                             best_align = alignment
                             best_seq = feature.qualifiers['translation'][0]
                             best_location = feature.location
 
 
-                flash("Found an A1 region in %s" % record.name)
-                location = re.search(r"\d*:\d*", str(best_location))
+                if (best_seq):
+                    print ("best align is ", best_align)
+                    flash("Found an A1 region in %s" % record.name)
+                    location = re.search(r"\d*:\d*", str(best_location))
 
-                setattr(record, "a1", best_seq)
-                setattr(record, "a1_loc", location[0])
-                db.session.add(record)
-                db.session.commit()
+                    setattr(record, "a1", best_seq)
+                    print ('location is')
+                    print (location)
+                    setattr(record, "a1_loc", location[0])
+                    db.session.add(record)
+                    db.session.commit()
+
+                alignment = pairwise2.align.globalms(yenA1, best_seq,
+                                                         2, -1, -1, -.5)
+                # print(alignment)
 
         except Exception as ex:
             if not self.handle_view_exception(ex):
@@ -440,6 +453,8 @@ class SequenceRecordsView(ModelView):
     def action_check_a2(self, ids):
         try:
             best_align = 0
+            best_location = None
+            best_seq = None
             query = SequenceRecords.query.filter(SequenceRecords.uid.in_(ids))
             for record in query.all():
                 print(record.name)
@@ -448,13 +463,15 @@ class SequenceRecordsView(ModelView):
                 for feature in seq_record.features:
                     if 'translation' in feature.qualifiers:
                         alignment = pairwise2.align.globalms(yenA2, feature.qualifiers['translation'][0],
-                                                             2, -1, -.5, -.1, score_only=True)
+                                                             2, -1, -1, -.5, score_only=True)
                         if alignment > best_align:
                             best_align = alignment
                             best_seq = feature.qualifiers['translation'][0]
                             best_location = feature.location
 
 
+            if (best_seq):
+                print("best align is ", best_align)
                 flash("Found an A2 region in %s" % record.name)
                 location = re.search(r"\d*:\d*", str(best_location))
                 setattr(record, "a2", best_seq)
@@ -462,11 +479,29 @@ class SequenceRecordsView(ModelView):
                 db.session.add(record)
                 db.session.commit()
 
+            alignment = pairwise2.align.globalms(yenA2, best_seq,
+                                                     2, -1, -1, -.5)
+            print (alignment)
+
+
         except Exception as ex:
             if not self.handle_view_exception(ex):
                 raise
 
             flash(gettext('Failed to approve users. %(error)s', error=str(ex)), 'error')
+
+    @action('blast_a2', 'BLAST A2 region')
+    def action_blast_a2(self, ids):
+        try:
+            query = SequenceRecords.query.filter(SequenceRecords.uid.in_(ids))
+            for record in query.all():
+                print (record)
+
+
+        except Exception as ex:
+
+
+                flash(gettext('Failed to approve users. %(error)s', error=str(ex)), 'error')
 
     @action('d_buildprofile_a2', 'Build profile based on A2')
     def action_build_profile_a2(self, ids):
@@ -580,15 +615,35 @@ class UploadView(BaseView):
             # Create the initial seqRecords
             phyloisland.seqDict = {}
             phyloisland.unmappable = []
-            phyloisland.defaultValue("static/uploads/" + filename, region)
+
+            print ('got here')
+
+
+            genomeResults = phyloisland.getFullGenome("static/uploads/" + filename, region)
+
+            flash(gettext("Couldn't find").join([v for v in genomeResults]), 'error')
+
+            # phyloisland.defaultValue("static/uploads/" + filename, region)
 
             records = phyloisland.seqDict
 
             for record in records:
+
                 current = records[record]
                 name = current.id
-                species = current.annotations['species']
-                strain = current.annotations['source']
+
+                species = current.annotations.get('organism')
+                strain = current.annotations.get('organism')
+                sequence = "AAA"
+
+                print (name)
+                print (current)
+
+                # species = current.annotations['species']
+                # print ("YO THE SPECIES IS ", species)
+                # strain = current.annotations['source']
+                # sequence = str(current.seq)
+
                 description = current.description
                 a1 = current.annotations["A1"] if "A1" in current.annotations.keys() else "Not tested"
                 a1_loc = current.annotations["A1_location"] if "A1_location" in current.annotations.keys() else "Not tested"
@@ -596,7 +651,6 @@ class UploadView(BaseView):
                 a2_loc = current.annotations["A2_location"] if "A2_location" in current.annotations.keys() else "Not tested"
                 overlap = current.annotations["Overlap"] if "Overlap" in current.annotations.keys() else "Not tested"
                 distance = "Not tested"
-                sequence = str(current.seq)
 
                 entry = SequenceRecords(name, species, strain, description, a1, a1_loc, a2, a2_loc, overlap, distance, sequence)
                 check = SequenceRecords.query.filter_by(name=name).first()
@@ -622,7 +676,11 @@ class UploadView(BaseView):
         return self.render("upload_admin.html", form=form)
 
 class MyHomeView(AdminIndexView):
+<<<<<<< HEAD
 	@expose('/phyloisland_stable')
+=======
+	@expose(base_route)
+>>>>>>> acbb05dec173221b51a8b90e105c1ed92f8e11c3
 	def index(self):
 		return self.render('admin/index.html')
 
@@ -641,11 +699,9 @@ def saveProfile(profile):
     # print(profile)
     # print (type(profile))
 
-    print ("THIS IS ", "newname")
-    print (profile)
-
-    blobMix = BlobMixin("application/octet-stream", "newname", profile.read(), '566666')
-    profileEntry = Profile("newname")
+    name = phyloisland.randstring(5)
+    blobMix = BlobMixin("application/octet-stream", name, profile.read(), '566666')
+    profileEntry = Profile(name)
     profileEntry.set_blobMix(blobMix)
 
     # print ('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
@@ -665,17 +721,16 @@ def saveProfile(profile):
 
 
 
+<<<<<<< HEAD
 # admin = Admin(application,name="Phylo Island", template_mode="bootstrap3")
 admin = Admin(application, index_view=AdminIndexView(name='Stable', url="/phyloisland_stable"), template_mode="bootstrap3")
 #admin = Admin(application, index_view=MyHomeView())
+=======
+admin = Admin(application, index_view=AdminIndexView(name= base_name, url="/" + base_route), template_mode="bootstrap3")
+>>>>>>> acbb05dec173221b51a8b90e105c1ed92f8e11c3
 admin.add_view(UploadView(name='Upload', endpoint='upload_admin'))
 admin.add_view(SequenceRecordsView(SequenceRecords, db.session, endpoint="seq_view"))  # working version
-# admin.add_view(ProfileView(Profiles, db.session, endpoint="profiles"))
-# admin.add_view(FileForm(file_path, '/filesdir/', name='Files'))
 admin.add_view(ProfileView(model=Profile, session=db.session, name='Profiles'))
-
-# if __name__ == "__main__":
-# 	application.run(debug=True, host='0.0.0.0')
 
 if __name__ == '__main__':
     application.run(debug=True, port=7777)
