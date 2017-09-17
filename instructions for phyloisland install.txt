@@ -7,6 +7,11 @@
 
 
 sudo apt-get install libmysqlclient-dev
+
+# If installing for Python3.6
+sudo apt-get install python3.6-dev libmysqlclient-dev
+
+
 pip install mysqlclient
 
 

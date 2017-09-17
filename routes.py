@@ -1,23 +1,18 @@
-
-from typing import Any
 from os.path import join
 from flask import flash
 from flask_admin import Admin, BaseView, expose
 from flask_admin.contrib.sqla import ModelView
 import os
-import os.path as op
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, FileField
 from wtforms.validators import DataRequired
 import phyloisland
 from flask_admin.actions import action
 import gettext
-import numpy as np
 from Bio import SeqIO, AlignIO, pairwise2
 from Bio.Align.Applications import MuscleCommandline
 from Bio.Seq import Seq
 from Bio.Alphabet import generic_protein
-from Bio.Blast.Applications import NcbiblastpCommandline
 import subprocess
 import sys
 from Bio.SeqRecord import SeqRecord
@@ -26,15 +21,8 @@ from flask_admin.contrib.sqla import filters
 from flask_admin.contrib.sqla.filters import BaseSQLAFilter
 from flask_admin import AdminIndexView
 import re
-# from servers import *
-from flask_admin.contrib.fileadmin import FileAdmin
-from werkzeug.datastructures import FileStorage
 import os.path as op
-import urllib
-import wget
-import random
-import string
-from Bio import Entrez
+
 
 import io
 from gettext import gettext
@@ -51,43 +39,10 @@ try:
 except ImportError:
     from wtforms.utils import unset_value
 
-from BioSQL import BioSeqDatabase
-from flask_uploads import UploadSet, configure_uploads, ALL
-from flask_sqlalchemy import SQLAlchemy
-from flask import Flask
+
 from servers import *
 
-# Flask setup here
-#base_name = "Experimental"
-#base_route = "phyloisland_experimental"
-# bio_server_name = "snowman"
-# bio_db_name = "snowball"
-#bio_server_name = "snowman"
-#bio_db_name = "snowball"
 
-#bio_server = BioSeqDatabase.open_database(driver="MySQLdb", user="pi", passwd="", host="localhost", db=bio_server_name)
-#bio_db = bio_server[bio_db_name]
-
-
-#application = Flask(__name__)
-#application.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://pi:@localhost/' + bio_server_name
-#application.config['SECRET_KEY'] = 'developmentkey'
-#application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-
-#allfiles = UploadSet('all', ALL)
-#application.config['UPLOADS_ALL_DEST'] = 'static/uploads'
-#application.config['UPLOADED_ALL_DEST'] = 'static/uploads'
-#configure_uploads(application, allfiles)
-
-#db = SQLAlchemy(application)
-
-# Entrez.email = "gabriel.foley@uqconnect.edu.au"
-#
-# handle = Entrez.efetch(db="nuccore", id="6273291,6273290,6273289", rettype="gb", retmode="text")
-#
-# count = bio_db.load(SeqIO.parse(handle, "genbank"))
-# print ("Loaded %i records" % count)
-# bio_server.commit()
 
 # Setup temporary best guesses for what the A1 and A2 region should look like
 yenA1 = "MDKYNNYSNVIKNKSSISPLLAAAAKIEPEITVLSSASKSNRSQYSQSLADTLLGLGYRSIFDIAKVSRQRFIKRHDESLLGNGAVIFDKAVSMANQVLQKYRKNRL" \
@@ -474,7 +429,9 @@ class SequenceRecordsView(ModelView):
                     location = re.search(r"\d*:\d*", str(best_location))
 
                     setattr(record, "a1", best_seq)
-                    setattr(record, "a1_loc", location.group(1))
+                    print ('location is')
+                    print (location)
+                    setattr(record, "a1_loc", location[0])
                     db.session.add(record)
                     db.session.commit()
 
@@ -514,7 +471,7 @@ class SequenceRecordsView(ModelView):
                 flash("Found an A2 region in %s" % record.name)
                 location = re.search(r"\d*:\d*", str(best_location))
                 setattr(record, "a2", best_seq)
-                setattr(record, "a2_loc", location.group(1))
+                setattr(record, "a2_loc", location[0])
                 db.session.add(record)
                 db.session.commit()
 
@@ -656,6 +613,7 @@ class UploadView(BaseView):
             phyloisland.unmappable = []
 
             print ('got here')
+
 
             genomeResults = phyloisland.getFullGenome("static/uploads/" + filename, region)
 
