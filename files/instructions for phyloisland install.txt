@@ -7,12 +7,19 @@
 
 
 sudo apt-get install libmysqlclient-dev
+
+# If installing for Python3.6
+sudo apt-get install python3.6-dev libmysqlclient-dev
+
+
 pip install mysqlclient
 
 
 
 * Update /etc/nginx/sites-available/phyloisland
-* Remove the default_server tags from the file as per these instructions ().
+* Remove the default_server tags from the file as per these instructions  
+https://www.liberiangeek.net/2015/07/how-to-run-multiple-websites-using-nginx-webserver-on-ubuntu-15-04/
+
 * Create symlink from this file to /etc/nginx/sites-enabled/phyloisland
 
 sudo ln -s /etc/nginx/sites-available/phyloisland /etc/nginx/sites-enabled/
@@ -30,3 +37,6 @@ sudo ln -s /etc/nginx/sites-available/phyloisland /etc/nginx/sites-enabled/
 
 sudo systemctl reload nginx
 
+
+/var/log/uwsgi/app/phyloisland.log shows
+Tue Jun  6 14:59:25 2017 - detected binary path: /var/www/Flask/quiz/scie2100envp3/bin/uwsgi
