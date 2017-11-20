@@ -3,9 +3,7 @@ from flask import flash
 from flask_admin import Admin, BaseView, expose
 from flask_admin.contrib.sqla import ModelView
 import os
-from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, FileField
-from wtforms.validators import DataRequired
+
 import phyloisland
 from flask_admin.actions import action
 import gettext
@@ -22,16 +20,16 @@ from flask_admin.contrib.sqla.filters import BaseSQLAFilter
 from flask_admin import AdminIndexView
 import re
 import os.path as op
+import mapToGenome
+import checkForFeature
+import models
 
 
 import io
 from gettext import gettext
 from flask import Flask, send_file
 from markupsafe import Markup
-from werkzeug.datastructures import FileStorage
-from wtforms import ValidationError, fields
-from wtforms.validators import required
-from wtforms.widgets import HTMLString, html_params, FileInput
+
 
 
 try:
@@ -85,130 +83,14 @@ def local(route: str) -> str:
     else:
         return join(BASE_ROUTE, route[1:])
 
-# def local_url_for(*args, **kwargs) -> str:
-#     new_url = local(url_for(*args, **kwargs))
-#     if new_url.count(BASE_ROUTE[1:]) == 1:
-#         fixed_url = new_url
-#         return new_url
-#     else:
-#         fixed_url = '/'.join(new_url.split('/')[2:])
-#     assert fixed_url.count(BASE_ROUTE[1:]) == 1, fixed_url
-#     return fixed_url
-#
-# def local_redirect(*args, **kwargs) -> Any:
-#     return redirect(local_url_for(*args, **kwargs))
 
-
-
-
-class BlobMixin(object):
-    mimetype = db.Column(db.Unicode(length=255), nullable=False)
-    filename = db.Column(db.Unicode(length=255), nullable=False)
-    profile = db.Column(db.BLOB, nullable=False)
-    size = db.Column(db.Integer, nullable=False)
-
-    def __init__(self, mimetype, filename, profile, size):
-        self.mimetype = mimetype
-        self.filename = filename
-        self.profile = profile
-        self.size = size
-
-
-class Profile(db.Model, BlobMixin):
-    __tablename__ = 'profile_blob'
-
-    uid = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.Unicode(length=255), nullable=False, unique=True)
-
-    def __init__(self, name = "", blobMix = ""):
-        self.name = name
-        self.blobMix = blobMix
-
-    def set_blobMix(self, blobMix):
-        self.blobMix = blobMix
-        self.mimetype = blobMix.mimetype
-        self.filename = blobMix.filename
-        self.profile = blobMix.profile
-        self.size = blobMix.size
-
-
-    def __unicode__(self):
-        return u"name : {name}; filename : {filename})".format(name=self.name, filename=self.filename)
-
-
-class BlobUploadField(fields.StringField):
-
-    widget = FileInput()
-
-    def __init__(self, label=None, allowed_extensions=None, size_field=None, filename_field=None, mimetype_field=None, **kwargs):
-
-        self.allowed_extensions = allowed_extensions
-        self.size_field = size_field
-        self.filename_field = filename_field
-        self.mimetype_field = mimetype_field
-        validators = [required()]
-
-        super(BlobUploadField, self).__init__(label, validators, **kwargs)
-
-    def is_file_allowed(self, filename):
-        """
-            Check if file extension is allowed.
-
-            :param filename:
-                File name to check
-        """
-        if not self.allowed_extensions:
-            return True
-
-        return ('.' in filename and
-                filename.rsplit('.', 1)[1].lower() in
-                map(lambda x: x.lower(), self.allowed_extensions))
-
-    def _is_uploaded_file(self, data):
-        return (data and isinstance(data, FileStorage) and data.filename)
-
-    def pre_validate(self, form):
-        super(BlobUploadField, self).pre_validate(form)
-        if self._is_uploaded_file(self.data) and not self.is_file_allowed(self.data.filename):
-            raise ValidationError(gettext('Invalid file extension'))
-
-    def process_formdata(self, valuelist):
-        if valuelist:
-            data = valuelist[0]
-            self.data = data
-
-    def populate_obj(self, obj, name):
-
-        print ('name is ', name)
-
-        if self._is_uploaded_file(self.data):
-
-            _profile = self.data.read()
-
-            print ('got here')
-            print (_profile)
-
-            setattr(obj, name, _profile)
-
-
-            # setattr(obj, self.profile, _blob)
-
-
-            if self.size_field:
-                setattr(obj, self.size_field, len(_profile))
-
-            if self.filename_field:
-                setattr(obj, self.filename_field, self.data.filename)
-
-            if self.mimetype_field:
-                setattr(obj, self.mimetype_field, self.data.content_type)
 
 
 class ProfileView(ModelView):
     column_list = ('name', 'size', 'filename', 'mimetype', 'download')
     form_columns = ('name', 'profile')
 
-    form_extra_fields = {'profile': BlobUploadField(
+    form_extra_fields = {'profile': models.BlobUploadField(
         label='File',
         allowed_extensions=['pdf', 'doc', 'docx', 'xls', 'xlsx', 'png', 'jpg', 'jpeg', 'gif', 'hmm', 'fa', 'fasta'],
         size_field='size',
@@ -228,7 +110,7 @@ class ProfileView(ModelView):
 @application.route("/" + base_route + "/<int:id>", methods=['GET'])
 def download_blob(id):
     print ('HERE IS ID', id)
-    _profile = Profile.query.get_or_404(id)
+    _profile = models.Profile.query.get_or_404(id)
     print (_profile.filename)
     print (_profile.mimetype)
     #print(_profile.profile)
@@ -238,36 +120,7 @@ def download_blob(id):
         mimetype=_profile.mimetype
     )
 
-# Create models
-class SequenceRecords(db.Model):
-    __tablename__ = 'seqrecord'
-    uid = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.Text)
-    species = db.Column(db.String(255))
-    strain = db.Column(db.String(255))
-    description = db.Column(db.Text)
-    a1 = db.Column(db.Text)
-    a1_loc = db.Column(db.Text)
-    a2 = db.Column(db.Text)
-    a2_loc = db.Column(db.Text)
 
-    overlap = db.Column(db.String(255))
-    distance = db.Column(db.VARCHAR(255))
-    sequence = db.Column(db.Text)
-
-    def __init__(self, name="", species="", strain="", description="", a1="", a1_loc="", a2="", a2_loc="", overlap="",
-                 distance="", sequence=""):
-        self.name = name
-        self.species = species
-        self.strain = strain
-        self.description = description
-        self.a1 = a1
-        self.a1_loc = a1_loc
-        self.a2 = a2
-        self.a2_loc = a2_loc
-        self.overlap = overlap
-        self.distance = distance
-        self.sequence = sequence
 
 
 # class Profiles(db.Model):
@@ -346,11 +199,11 @@ class SequenceRecordsView(ModelView):
                       'description',
                       'a1',
                       'a2',
-                      filters.FilterLike(SequenceRecords.overlap, 'Overlap',
+                      filters.FilterLike(models.SequenceRecords.overlap, 'Overlap',
                                          options=(('True', 'True'), ('False', 'False'))),
                       'sequence',
                       FilterInAListMaybe(
-                          SequenceRecords.name, 'Get unique species'))
+                          models.SequenceRecords.name, 'Get unique species'))
 
     # Delete the record from the BioSQL database as well
     def after_model_delete(self, model):
@@ -375,7 +228,7 @@ class SequenceRecordsView(ModelView):
     @action('c_getoverlap', 'Get Overlap')
     def action_getoverlap(self, ids):
         try:
-            query = SequenceRecords.query.filter(SequenceRecords.uid.in_(ids))
+            query = models.SequenceRecords.query.filter(models.SequenceRecords.uid.in_(ids))
             for record in query.all():
                 if record.a1 == "Not tested" or record.a2 == "Not tested":
                     pass
@@ -400,43 +253,9 @@ class SequenceRecordsView(ModelView):
     @action('a_check_a1', 'Check for A1 region')
     def action_check_a1(self, ids):
         try:
-            best_align = 0
-            best_location = None
-            best_seq = None
-            query = SequenceRecords.query.filter(SequenceRecords.uid.in_(ids))
-            for record in query.all():
-                print(record.name)
-                seq_record = bio_db.lookup(primary_id=record.name)
 
-                print (seq_record.description)
-                print (seq_record)
+            checkForFeature.checkFeature(ids, yenA1, "a1", "a1_loc")
 
-                for feature in seq_record.features:
-                    print (feature)
-                    if 'translation' in feature.qualifiers:
-
-                        alignment = pairwise2.align.globalms(yenA1, feature.qualifiers['translation'][0],
-                                                             2, -1, -1, -.5, score_only=True)
-                        if alignment > best_align:
-                            best_align = alignment
-                            best_seq = feature.qualifiers['translation'][0]
-                            best_location = feature.location
-
-
-                if (best_seq):
-                    print ("best align is ", best_align)
-                    flash("Found an A1 region in %s" % record.name)
-                    location = re.search(r"\d*:\d*", str(best_location))
-
-                    setattr(record, "a1", best_seq)
-                    print ('location is')
-                    print (location)
-                    setattr(record, "a1_loc", location[0])
-                    db.session.add(record)
-                    db.session.commit()
-
-                alignment = pairwise2.align.globalms(yenA1, best_seq,
-                                                         2, -1, -1, -.5)
                 # print(alignment)
 
         except Exception as ex:
@@ -448,36 +267,10 @@ class SequenceRecordsView(ModelView):
     @action('b_check_a2', 'Check for A2 region')
     def action_check_a2(self, ids):
         try:
-            best_align = 0
-            best_location = None
-            best_seq = None
-            query = SequenceRecords.query.filter(SequenceRecords.uid.in_(ids))
-            for record in query.all():
-                print(record.name)
-                seq_record = bio_db.lookup(primary_id=record.name)
 
-                for feature in seq_record.features:
-                    if 'translation' in feature.qualifiers:
-                        alignment = pairwise2.align.globalms(yenA2, feature.qualifiers['translation'][0],
-                                                             2, -1, -1, -.5, score_only=True)
-                        if alignment > best_align:
-                            best_align = alignment
-                            best_seq = feature.qualifiers['translation'][0]
-                            best_location = feature.location
+            checkForFeature.checkFeature(ids, yenA2, "a2", "a2_loc")
 
 
-            if (best_seq):
-                print("best align is ", best_align)
-                flash("Found an A2 region in %s" % record.name)
-                location = re.search(r"\d*:\d*", str(best_location))
-                setattr(record, "a2", best_seq)
-                setattr(record, "a2_loc", location[0])
-                db.session.add(record)
-                db.session.commit()
-
-            alignment = pairwise2.align.globalms(yenA2, best_seq,
-                                                     2, -1, -1, -.5)
-            print (alignment)
 
 
         except Exception as ex:
@@ -489,7 +282,7 @@ class SequenceRecordsView(ModelView):
     @action('blast_a2', 'BLAST A2 region')
     def action_blast_a2(self, ids):
         try:
-            query = SequenceRecords.query.filter(SequenceRecords.uid.in_(ids))
+            query = models.SequenceRecords.query.filter(models.SequenceRecords.uid.in_(ids))
             for record in query.all():
                 print (record)
 
@@ -502,7 +295,7 @@ class SequenceRecordsView(ModelView):
     @action('d_buildprofile_a2', 'Build profile based on A2')
     def action_build_profile_a2(self, ids):
         try:
-            query = SequenceRecords.query.filter(SequenceRecords.uid.in_(ids))
+            query = models.SequenceRecords.query.filter(models.SequenceRecords.uid.in_(ids))
             align_list = []
             for record in query.all():
                 if record.a2 == "Not tested":
@@ -565,35 +358,6 @@ class SequenceRecordsView(ModelView):
             flash(gettext(ex))
 
 
-# class ProfileView(ModelView):
-#
-#     create_modal = True
-#     edit_modal = True
-#     can_create = False
-#     can_view_details = True
-#
-#     @action('download_profile', 'Download profile')
-#     def download_profile(self, ids):
-#         for id in ids:
-#             print (id)
-#         print()
-#         print (request.url)
-#         url = request.url[:-7]
-#         print (url)
-#         wget.download(url, id)
-#
-#         testfile = urllib.request.urlretrieve(url, id)
-#         print (testfile)
-#         # testfile.retrieve(file_path + id)
-#
-
-
-# Form for uploading files
-class UploadForm(FlaskForm):
-    name = StringField('What ID should we give this feature?', validators=[DataRequired("Not completed")])
-    file = FileField('Upload the FASTA file', validators=[DataRequired("Not completed")])
-
-    upload_submit = SubmitField("Upload files")
 
 
 
@@ -602,7 +366,7 @@ class UploadView(BaseView):
 
     @expose("/", methods =('GET', 'POST'))
     def upload(self):
-        form = UploadForm()
+        form = models.UploadForm()
 
         if request.method == 'POST':
             # Get the file and ID to name these sequences
@@ -612,16 +376,13 @@ class UploadView(BaseView):
             phyloisland.seqDict = {}
             phyloisland.unmappable = []
 
-            print ('got here')
-
-
-            genomeResults = phyloisland.getFullGenome("static/uploads/" + filename, region)
+            genomeResults = mapToGenome.getFullGenome("static/uploads/" + filename, region)
 
             flash(gettext("Couldn't find").join([v for v in genomeResults]), 'error')
 
             # phyloisland.defaultValue("static/uploads/" + filename, region)
 
-            records = phyloisland.seqDict
+            records = mapToGenome.seqDict
 
             for record in records:
 
@@ -648,8 +409,8 @@ class UploadView(BaseView):
                 overlap = current.annotations["Overlap"] if "Overlap" in current.annotations.keys() else "Not tested"
                 distance = "Not tested"
 
-                entry = SequenceRecords(name, species, strain, description, a1, a1_loc, a2, a2_loc, overlap, distance, sequence)
-                check = SequenceRecords.query.filter_by(name=name).first()
+                entry = models.SequenceRecords(name, species, strain, description, a1, a1_loc, a2, a2_loc, overlap, distance, sequence)
+                check = models.SequenceRecords.query.filter_by(name=name).first()
 
                 if check:
                     if region in current.annotations.keys():
@@ -677,11 +438,6 @@ class MyHomeView(AdminIndexView):
 		return self.render('admin/index.html')
 
 
-# @application.route(local('/'))
-# def index():
-#     return '<a href="/admin/">Click me to get to Phylo Island please!</a>'
-
-
 def saveProfile(profile):
     # print ('profile info')
     # print (type(profile))
@@ -692,8 +448,8 @@ def saveProfile(profile):
     # print (type(profile))
 
     name = phyloisland.randstring(5)
-    blobMix = BlobMixin("application/octet-stream", name, profile.read(), '566666')
-    profileEntry = Profile(name)
+    blobMix = models.BlobMixin("application/octet-stream", name, profile.read(), '566666')
+    profileEntry = models.Profile(name)
     profileEntry.set_blobMix(blobMix)
 
     # print ('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
@@ -715,8 +471,8 @@ def saveProfile(profile):
 
 admin = Admin(application, index_view=AdminIndexView(name= base_name, url="/" + base_route), template_mode="bootstrap3")
 admin.add_view(UploadView(name='Upload', endpoint='upload_admin'))
-admin.add_view(SequenceRecordsView(SequenceRecords, db.session, endpoint="seq_view"))  # working version
-admin.add_view(ProfileView(model=Profile, session=db.session, name='Profiles'))
+admin.add_view(SequenceRecordsView(models.SequenceRecords, db.session, endpoint="seq_view"))  # working version
+admin.add_view(ProfileView(model=models.Profile, session=db.session, name='Profiles'))
 
 if __name__ == '__main__':
     application.run(debug=True, port=7777)
