@@ -20,7 +20,7 @@ from flask_admin import AdminIndexView
 import os.path as op
 import mapToGenome
 import checkForFeature
-import models
+import models, servers
 import io
 from flask import send_file
 from markupsafe import Markup
@@ -33,16 +33,13 @@ except ImportError:
     from wtforms.utils import unset_value
 
 
-from servers import *
-
-
 # Create directory for file fields to use
 file_path = op.join(op.dirname(__file__), 'filesdir')
 try:
     os.mkdir(file_path)
 except OSError:
     pass
-BASE_ROUTE = '/' + base_route
+BASE_ROUTE = '/' + servers.base_route
 
 def local(route: str) -> str:
     if BASE_ROUTE == '/':
@@ -76,7 +73,7 @@ class ProfileView(ModelView):
     }
 
 
-@application.route("/" + base_route + "/<int:id>", methods=['GET'])
+@servers.application.route("/" + servers.base_route + "/<int:id>", methods=['GET'])
 def download_blob(id):
     """
     Route for downloading profiles from the Profile view
@@ -94,7 +91,19 @@ def download_blob(id):
 class FilterInAListMaybe(BaseSQLAFilter):
 
     def apply(self, query, value, alias=None):
-        listup = ['JGVH01000004.1', 'FMWJ01000001.1', 'CPYD01000004.1', 'DQ400808.1']
+        ids = {}
+        unique_ids = []
+        unique_items = []
+
+        for id in ids:
+            if id in unique_ids:
+                continue
+            else:
+                unique_ids.add(id)
+                unique_items.add()
+
+
+        listup = ['Bradyrhizobium diazoefficiens', 'FMWJ01000001.1', 'CPYD01000004.1', 'DQ400808.1']
         return query.filter(self.get_column(alias).in_(listup))
 
     def operation(self):
@@ -160,7 +169,7 @@ class SequenceRecordsView(ModelView):
                                          options=(('True', 'True'), ('False', 'False'))),
                       'sequence',
                       FilterInAListMaybe(
-                          models.SequenceRecords.name, 'Get unique species'),
+                          models.SequenceRecords.species, 'Get unique species'),
                       filters.IntGreaterFilter(models.SequenceRecords.distance, 'Distance greater than'),
                       filters.IntSmallerFilter(models.SequenceRecords.distance, 'Distance smaller than')
 
@@ -172,8 +181,8 @@ class SequenceRecordsView(ModelView):
         :param model: Record to delete
         :return:
         """
-        del bio_db[model.uid]
-        bio_server.commit()
+        del servers.bio_db[model.uid]
+        servers.bio_server.commit()
 
 
 
@@ -194,8 +203,8 @@ class SequenceRecordsView(ModelView):
                         record.overlap = "True"
                         record.distance = ""
 
-                    db.session.add(record)
-                    db.session.commit()
+                    servers.db.session.add(record)
+                    servers.db.session.commit()
 
         except Exception as ex:
             if not self.handle_view_exception(ex):
@@ -208,7 +217,7 @@ class SequenceRecordsView(ModelView):
         try:
 
             #TODO: This obviously shouldn't be hard coded!
-            checkForFeature.getFeatureLocation(ids, "files/A1_reference.fasta", "a1", "a1_loc")
+            checkForFeature.getFeatureLocation(ids, "files/A1_reference.fasta")
 
                 # print(alignment)
 
@@ -223,7 +232,7 @@ class SequenceRecordsView(ModelView):
         try:
 
             #TODO: This obviously shouldn't be hard coded either!
-            checkForFeature.getFeatureLocation(ids, "files/A2_reference.fasta", "a2", "a2_loc")
+            checkForFeature.getFeatureLocation(ids, "files/A2_reference.fasta")
 
 
 
@@ -312,12 +321,6 @@ class SequenceRecordsView(ModelView):
 
             saveProfile(file)
 
-
-
-
-
-            # file_contents = file.stream.read().decode("utf-8")
-
         except Exception as ex:
             if not self.handle_view_exception(ex):
                 raise
@@ -337,9 +340,11 @@ class UploadView(BaseView):
         form = models.UploadForm()
 
         if request.method == 'POST':
+
             # Get the file and ID to name these sequences
             region = form.name.data
-            filename = allfiles.save(request.files['file'])
+            filename = servers.allfiles.save(request.files['file'])
+
             # Create the initial seqRecords
             phyloisland.seqDict = {}
             phyloisland.unmappable = []
@@ -387,21 +392,21 @@ class UploadView(BaseView):
                     else:
                         setattr(check, region.lower(), current.annotations[region] if region in current.annotations.keys() else "")
                         setattr(check, region.lower() + "_loc", current.annotations[region + "_location"] if region + "_location" in current.annotations.keys() else "")
-                        db.session.add(check)
+                        servers.db.session.add(check)
 
                 else:
                     seq_list = []
-                    db.session.add(entry)
+                    servers.db.session.add(entry)
                     seq_list.append(current)
-                    bio_db.load(seq_list)
-                    bio_server.commit()
-                db.session.commit()
+                    servers.bio_db.load(seq_list)
+                    servers.bio_server.commit()
+                servers.db.session.commit()
 
             return self.render("upload_admin.html", form=form, records=records)
         return self.render("upload_admin.html", form=form)
 
 class MyHomeView(AdminIndexView):
-	@expose(base_route)
+	@expose(servers.base_route)
 	def index(self):
 		return self.render('admin/index.html')
 
@@ -417,17 +422,17 @@ def saveProfile(profile):
     blobMix = models.BlobMixin("application/octet-stream", name, profile.read(), '566666')
     profileEntry = models.Profile(name)
     profileEntry.set_blobMix(blobMix)
-    db.session.add(profileEntry)
-    db.session.commit()
+    servers.db.session.add(profileEntry)
+    servers.db.session.commit()
 
 
 # Setup the main flask-admin application
-admin = Admin(application, index_view=AdminIndexView(name= base_name, url="/" + base_route), template_mode="bootstrap3")
+admin = Admin(servers.application, index_view=AdminIndexView(name= servers.base_name, url="/" + servers.base_route), template_mode="bootstrap3")
 
 # Add the views to the flask-admin application
 admin.add_view(UploadView(name='Upload', endpoint='upload_admin'))
-admin.add_view(SequenceRecordsView(models.SequenceRecords, db.session, endpoint="seq_view"))  # working version
-admin.add_view(ProfileView(model=models.Profile, session=db.session, name='Profiles'))
+admin.add_view(SequenceRecordsView(models.SequenceRecords, servers.db.session, endpoint="seq_view"))  # working version
+admin.add_view(ProfileView(model=models.Profile, session=servers.db.session, name='Profiles'))
 
 if __name__ == '__main__':
-    application.run(debug=True, port=7777)
+    servers.application.run(debug=True, port=7777)

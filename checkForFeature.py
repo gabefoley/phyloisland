@@ -1,37 +1,37 @@
-
-from Bio.SeqRecord import SeqRecord
-from Bio import SeqIO, AlignIO, pairwise2
 import servers
 import models
-from flask import flash
-import re
 import BLAST
 import utilities
 import os
 import time
 
 def getFeatureLocation(ids, reference):
+
+    dbpath = "files/temp_blastfiles.fasta"
+    querypath = "files/psi.xml"
+
     query = models.SequenceRecords.query.filter(models.SequenceRecords.uid.in_(ids))
     for record in query.all():
+        print (record)
         seq_record = servers.bio_db.lookup(primary_id=record.name)
-        BLAST.makeBlastDB(seq_record)
+        BLAST.makeBlastDB(seq_record, dbpath)
 
-        while not os.path.exists("files/temp_blastfiles.fasta"):
+        while not os.path.exists(dbpath):
             time.sleep(1)
 
-        if os.path.isfile("files/temp_blastfiles.fasta"):
-            BLAST.tBlastN("files/temp_blastfiles.fasta", reference, 0.00005)
+        if os.path.isfile(dbpath):
+            BLAST.tBlastN(dbpath, reference, 0.00005)
 
-            while not os.path.exists("files/psi.xml"):
+            while not os.path.exists(querypath):
                 time.sleep(1)
 
-            if os.path.isfile("files/psi.xml"):
-                print ('made')
+            if os.path.isfile(querypath):
+                location = BLAST.getBlastLocation(open(querypath))
+                print (location )
+                # return location
 
-                location = BLAST.getBlastLocation(open("files/psi.xml"))
+                utilities.removeFile(dbpath, querypath)
                 return location
-
-                utilities.removeFile("files/temp_blastfiles.fasta", "files/psi.xml")
         else:
             raise ValueError("%s isn't a file!" % "files/temp_blastfiles.fasta")
 
@@ -91,11 +91,20 @@ def addToDatabase():
 
 
 def deleteFeature(ids, recordName, recordLocation):
+    """
+    Delete a certain feature in database
+    :param ids: List of ids to delete features from
+    :param recordName: Name of feature to delete
+    :param recordLocation: Name of feature location to delete
+    :return:
+    """
     query = models.SequenceRecords.query.filter(models.SequenceRecords.uid.in_(ids))
     for record in query.all():
         setattr(record, recordName, "")
         setattr(record, recordLocation, "")
         setattr(record, "Overlap", "")
+
+        # Update the database
         servers.db.session.add(record)
         servers.db.session.commit()
 

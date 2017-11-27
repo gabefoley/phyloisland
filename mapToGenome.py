@@ -1,6 +1,5 @@
 from Bio import Entrez, SeqIO, GenBank, AlignIO, pairwise2
 import utilities
-import lxml.etree as ET
 
 
 seqDict = {}
