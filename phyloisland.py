@@ -260,9 +260,11 @@ def getCoords(record, set_id):
 
 
 def getDistance(overlap_1, overlap_2):
-    loc_1_start, loc_1_end = overlap_1.split(":")
-    loc_2_start, loc_2_end = overlap_1.split(":")
-    if loc_1_end > loc_2_start or loc_2_end > loc_1_start:
+    print (overlap_1)
+    loc_1_start, loc_1_end = [int(x) for x in overlap_1.split(":")]
+    loc_2_start, loc_2_end = [int(x) for x in overlap_2.split(":")]
+
+    if loc_1_end > loc_2_start and loc_2_end > loc_1_start:
         return ""
     elif loc_1_end < loc_2_start:
         return str(loc_2_start - loc_1_end)
@@ -275,8 +277,8 @@ def addToRecord(old, new, region):
     print ("**OLD**", old)
     print ("**NEW**", new)
     print ("**REGION**", region)
-    old.a2 = new.annotations[region] if region in old.annotations.keys() else "Not tested"
-    old.a2_loc = new.annotations[region + "_location"] if region + "_location" in new.annotations.keys() else "Not tested"
+    old.a2 = new.annotations[region] if region in old.annotations.keys() else ""
+    old.a2_loc = new.annotations[region + "_location"] if region + "_location" in new.annotations.keys() else ""
     return old
 
 

@@ -6,6 +6,7 @@ from wtforms.widgets import HTMLString, html_params, FileInput
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, FileField
 from wtforms.validators import DataRequired
+from gettext import gettext
 
 # Create models
 class SequenceRecords(db.Model):

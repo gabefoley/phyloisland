@@ -1,49 +1,71 @@
-# First we must import the Seq module
 from Bio import SeqIO
-
-# Load in a file with a single sequence
-my_seq = SeqIO.parse("files/YenA1_single.fasta", "fasta")
-
-# Now we must specify the correct alphabet for the sequence
-from Bio.Alphabet import IUPAC
-
-# pre running checks
-# print your fasta to verify it is the correct one
-for seq in my_seq:
-    print(seq.id)
-    print(repr(seq.seq))
-    print(len(seq))
-
-# Time to use local BLAST
-from Bio.Blast.Applications import NcbiblastxCommandline
-blastn_cline = NcbiblastxCommandline(query="my_seq", db="nr", evalue=0.001,
-                                      outfmt=5, out="my_seq_blast_results.xml")
-blastx_cline = NcbiblastxCommandline(cmd='blastn', out='opuntia.xml', outfmt=5, query='opuntia.fasta',
-db='nr', evalue=0.001)
-print(blastn_cline)
-# blastn -out my_seq_blast_results.xml -outfmt 5 -query opuntia.fasta -db nr -evalue 0.001
-# stdout, stderr = blastx_cline()
-
-# create a handle to blast and open the file for viewing
-result_handle = open("my_seq_blast_results.xml")
-
-# Now you need to parse the blast output
+from Bio.Blast.Applications import NcbipsiblastCommandline, NcbitblastnCommandline
 from Bio.Blast import NCBIXML
-blast_records = NCBIXML.read(result_handle)
 
-# This will help to step through large BLAST outputs
-for blast_record in blast_records:
-     # Do something with blast_record
-    blast_records = list(blast_records)
+import sys
+import subprocess
+import os
 
-# Check out some of you BLAST result info
-E_VALUE_THRESH = 0.04 #you can adjust this
-for alignment in blast_record.alignments:
-     for hsp in alignment.hsps:
-         if hsp.expect < E_VALUE_THRESH:
+
+def makeBlastDB(records):
+    SeqIO.write(records, 'files/temp_blastfiles.fasta', "fasta")
+    blastdb_cmd = 'makeblastdb -in files/temp_blastfiles.fasta  -dbtype nucl -title temp_blastdb'
+    DB_process = subprocess.Popen(blastdb_cmd,
+                              shell=True,
+                              stdin=subprocess.PIPE,
+                              stdout=subprocess.PIPE,
+                              stderr=subprocess.PIPE)
+    DB_process.wait()
+    stdout, stderr = DB_process.communicate()
+    return stdout
+
+def psiBlast(dbFile, queryFile, evalNum):
+    psi_cline = NcbipsiblastCommandline('psiblast', db = dbFile , query = queryFile , evalue = evalNum , out =  "files/psi.xml", outfmt = 5, out_pssm = "_pssm")
+    p = subprocess.Popen(str(psi_cline),stdout=subprocess.PIPE, stderr=subprocess.PIPE,shell=(sys.platform!="win32"))
+
+def tBlastN(dbFile, queryFile, evalNum):
+    print ("got to tBlastN")
+    tN_cline = NcbitblastnCommandline(db = dbFile , query = queryFile , evalue = evalNum , out =  "files/psi.xml", outfmt = 5)
+    p = subprocess.Popen(str(tN_cline),stdout=subprocess.PIPE, stderr=subprocess.PIPE,shell=(sys.platform!="win32"))
+
+
+def getBlastLocation(xmlFile):
+    blast_parser = NCBIXML.parse(xmlFile)
+    for record in blast_parser:
+        for alignment in record.alignments:
+            for hsp in alignment.hsps:
+                return (str(hsp.sbjct_start) + ":" + str(hsp.sbjct_end))
+
+
+def parseBlastResults(xmlFile):
+    print ("got to pbr")
+    blast_parser = NCBIXML.parse(xmlFile)
+    for record in blast_parser:
+        print (record)
+        print (record.alignments)
+        for alignment in record.alignments:
+            for hsp in alignment.hsps:
+                print (hsp.sbjct_start)
+                print (hsp.sbjct_end)
+                print ()
+                print('****Alignment****')
                 print('sequence:', alignment.title)
                 print('length:', alignment.length)
-                print('e value:', hsp.expect)
-                print(hsp.query[0:75] + '...')
-                print(hsp.match[0:75] + '...')
-                print(hsp.sbjct[0:75] + '...')
+                print('score:', hsp.score)
+                print('gaps:', hsp.gaps)
+                print('e-value:', hsp.expect)
+                print(hsp.query[0:90] +'...')
+                print(hsp.match[0:90] +'...')
+                # print(hsp.subject[0:90] +'...')
+
+
+def removeFile(*args):
+    for arg in args:
+        os.remove(arg)
+
+
+# seqs = SeqIO.parse("files/YenA1_single.fasta", "fasta")
+# makeBlastDB(seqs)
+# queryBlastDB('files/temp_blastfiles.fasta', "files/YenA1_single.fasta", 0.00005)
+# parseBlastResults(open("files/psi.xml"))
+# removeFile("files/temp_blastfiles.fasta", "psi_xml")
