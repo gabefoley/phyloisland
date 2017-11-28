@@ -83,7 +83,7 @@ def getFullGenome(region_file, region_name):
 
     print ('this is the query string now')
     print (queryString)
-    genome_records = Entrez.efetch(db="nucleotide", id=queryString, rettype="gb")
+    genome_records = Entrez.efetch(db="nucleotide", id=queryString, rettype="gbwithparts")
 
     records = SeqIO.parse(genome_records, "gb")
 
@@ -94,16 +94,15 @@ def getFullGenome(region_file, region_name):
         print (record.annotations.get('organism'))
         found_species.append(record.annotations.get('organism'))
 
-        # print('seq dict here is ')
-        # print (seqDict)
-
         if record.description in seqDict:
 
             # Prefer RefSeq sequences
             if 'RefSeq' not in record.annotations.get('keywords'):
-                seqDict[record.description] = record
+                continue
+                # seqDict[record.description] = record
 
         else:
+            print (record)
             seqDict[record.description] = record
 
     # Join all the found species together so we can quickly search to see if we didn't find something

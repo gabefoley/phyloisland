@@ -32,14 +32,19 @@ def tBlastN(dbFile, queryFile, evalNum):
     p = subprocess.Popen(str(tN_cline),stdout=subprocess.PIPE, stderr=subprocess.PIPE,shell=(sys.platform!="win32"))
 
 
-def getBlastLocation(xmlFile):
+def getBlastInfo(xmlFile):
     """
-    Get the location of the top scoring hits from a BLAST results
-    :param xmlFile:
+    Get the location and sequence of the top scoring hits from a BLAST results
+    :param xmlFile: BLAST records
     :return:
     """
+    blast_info = {}
     blast_parser = NCBIXML.parse(xmlFile)
     for record in blast_parser:
         for alignment in record.alignments:
             for hsp in alignment.hsps:
-                return (str(hsp.sbjct_start) + ":" + str(hsp.sbjct_end))
+                blast_info["location"] = str(hsp.sbjct_start) + ":" + str(hsp.sbjct_end)
+                blast_info["sequence"] = hsp.sbjct
+                break
+    return blast_info
+
