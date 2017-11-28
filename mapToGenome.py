@@ -45,7 +45,7 @@ def getFullGenome(region_file, region_name):
 
     #TODO: Let the user decide how to filter the GenBank records (i.e. let user decide if we're not accepting shotgun, segments, etc...)
     queryString +=" AND genome[title] NOT shotgun[title] NOT segment[title]"
-    # queryString += " AND genome[title]"
+    # queryString += " AND genome[title] AND project[title]"
 
     print ('query string is')
     print (queryString)
@@ -83,7 +83,7 @@ def getFullGenome(region_file, region_name):
 
     print ('this is the query string now')
     print (queryString)
-    genome_records = Entrez.efetch(db="nucleotide", id=queryString, rettype="gbwithparts")
+    genome_records = Entrez.efetch(db="nucleotide", id=queryString, rettype="gb")
 
     records = SeqIO.parse(genome_records, "gb")
 
