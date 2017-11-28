@@ -46,13 +46,14 @@ pip install -r requirements.txt
 
 ```
 python phyloinit.py
-
 ```
 
 
 ## Usage
 
-1. Upload FASTA files through the 
+1. Upload FASTA files through the Upload tab
+2. Annotate the genomes through Sequence Records tab
+3. Any profiles built using the "Build profile" option are written to the Profiles tab
 
 ## Contributing
 
