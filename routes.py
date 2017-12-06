@@ -354,8 +354,8 @@ class UploadView(BaseView):
             print (genomeResults)
 
             for genome in genomeResults:
-                print (genome)
-                print (type(genome))
+                # print (genome)
+                # print (type(genome))
                 flash("Couldn't find " + str(genome))
                 # flash(gettext("Couldn't find").join(str(genome)), 'error')
 

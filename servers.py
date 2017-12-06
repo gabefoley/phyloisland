@@ -6,7 +6,7 @@ from flask import Flask
 # Names to use for our parameters
 base_name = "Experimental"
 base_route = "phyloisland_experimental"
-bio_server_name = "phyloisland"
+bio_server_name = "newbase"
 bio_db_name = "newsmall"
 
 
