@@ -217,7 +217,7 @@ class SequenceRecordsView(ModelView):
         try:
 
             #TODO: This obviously shouldn't be hard coded!
-            checkForFeature.getFeatureLocation(ids, "files/A1_reference.fasta", "a1", "a1_loc")
+            checkForFeature.getFeatureLocation(ids, "refs/A1_reference.fasta", "a1", "a1_loc")
 
                 # print(alignment)
 
@@ -232,7 +232,7 @@ class SequenceRecordsView(ModelView):
         try:
 
             #TODO: This obviously shouldn't be hard coded either!
-            checkForFeature.getFeatureLocation(ids, "files/A2_reference.fasta", "a2", "a2_loc")
+            checkForFeature.getFeatureLocation(ids, "refs/A2_reference.fasta", "a2", "a2_loc")
 
 
 
