@@ -3,5 +3,5 @@
 *.pyc
 .idea/
 static/uploads/
-servers.py
-phyloinit.py
+/servers.py
+/phyloinit.py
