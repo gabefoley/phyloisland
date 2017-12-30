@@ -9,8 +9,26 @@ from wtforms.validators import DataRequired
 from gettext import gettext
 
 # Create models
+
 class SequenceRecords(db.Model):
     __tablename__ = 'seqrecord'
+    uid = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.Text)
+    species = db.Column(db.String(255))
+    strain = db.Column(db.String(255))
+    description = db.Column(db.Text)
+    sequence = db.Column(db.Text)
+
+    def __init__(self, name="", species="", strain="", description="", sequence=""):
+        self.name = name
+        self.species = species
+        self.strain = strain
+        self.description = description
+        self.sequence = sequence
+
+
+class GenomeRecords(db.Model):
+    __tablename__ = 'genomerecord'
     uid = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text)
     species = db.Column(db.String(255))
@@ -143,7 +161,6 @@ class BlobUploadField(fields.StringField):
 
 # Form for uploading files
 class UploadForm(FlaskForm):
-    name = StringField('What ID should we give this feature?', validators=[DataRequired("Not completed")])
     file = FileField('Upload the FASTA file', validators=[DataRequired("Not completed")])
 
     upload_submit = SubmitField("Upload files")

@@ -40,7 +40,7 @@
 -- CONFIG and read the documentation you find there.
 --
 
-CREATE TABLE seqrecord(
+CREATE TABLE genomerecord(
   uid SERIAL, 
   name TEXT, 
   species TEXT, 
@@ -65,6 +65,17 @@ CREATE TABLE profile_blob(
   size INT(10),
   PRIMARY KEY (uid),
   UNIQUE (name));
+
+CREATE TABLE seqrecord(
+  uid SERIAL, 
+  name TEXT, 
+  species TEXT, 
+  strain TEXT, 
+  description TEXT, 
+  sequence LONGTEXT, 
+  PRIMARY KEY (uid), 
+  UNIQUE(name(255))); 
+
 
 -- database have bioentries. That is about it.
 -- we do not store different versions of a database as different dbids

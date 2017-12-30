@@ -127,8 +127,14 @@ class FilterGetUnique(BaseSQLAFilter):
     def operation(self):
         return 'in list'
 
-#
+
 class SequenceRecordsView(ModelView):
+    create_modal = True
+    edit_modal = True
+    can_create = False
+    can_view_details = True
+
+class GenomeRecordsView(ModelView):
     column_searchable_list = ['name', 'species', 'a1', 'a2', 'overlap']
     create_modal = True
     edit_modal = True
@@ -165,13 +171,13 @@ class SequenceRecordsView(ModelView):
                       'description',
                       'a1',
                       'a2',
-                      filters.FilterLike(models.SequenceRecords.overlap, 'Overlap',
+                      filters.FilterLike(models.GenomeRecords.overlap, 'Overlap',
                                          options=(('True', 'True'), ('False', 'False'))),
                       'sequence',
                       FilterInAListMaybe(
-                          models.SequenceRecords.species, 'Get unique species'),
-                      filters.IntGreaterFilter(models.SequenceRecords.distance, 'Distance greater than'),
-                      filters.IntSmallerFilter(models.SequenceRecords.distance, 'Distance smaller than')
+                          models.GenomeRecords.species, 'Get unique species'),
+                      filters.IntGreaterFilter(models.GenomeRecords.distance, 'Distance greater than'),
+                      filters.IntSmallerFilter(models.GenomeRecords.distance, 'Distance smaller than')
 
                       )
 
@@ -189,7 +195,7 @@ class SequenceRecordsView(ModelView):
     @action('c_getoverlap', 'Get Overlap')
     def action_getoverlap(self, ids):
         try:
-            query = models.SequenceRecords.query.filter(models.SequenceRecords.uid.in_(ids))
+            query = models.GenomeRecords.query.filter(models.GenomeRecords.uid.in_(ids))
             for record in query.all():
                 if record.a1 == "" or record.a2 == "":
                     pass
@@ -211,6 +217,23 @@ class SequenceRecordsView(ModelView):
                 raise
 
             flash(gettext('Failed to approve users. %(error)s', error=str(ex)), 'error')
+
+
+    @action('profile_align', 'Check for A2 region with a profile')
+    def action_profile_align_a2(self, ids):
+        try:
+
+            #TODO: This obviously shouldn't be hard coded!
+            checkForFeature.get_feature_location_with_profile(ids, "refs/testprofile.hmm", "a2", "a2_loc")
+
+                # print(alignment)
+
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+
+            flash(gettext('Failed to approve users. %(error)s', error=str(ex)), 'error')
+
 
     @action('a_check_a1', 'Check for A1 region')
     def action_check_a1(self, ids):
@@ -276,23 +299,12 @@ class SequenceRecordsView(ModelView):
             flash(gettext('Failed to delete records. %(error)s', error=str(ex)), 'error')
 
 
-    @action('blast_a2', 'BLAST A2 region')
-    def action_blast_a2(self, ids):
-        try:
-            query = models.SequenceRecords.query.filter(models.SequenceRecords.uid.in_(ids))
-            for record in query.all():
-                print (record)
 
-
-        except Exception as ex:
-
-
-                flash(gettext('Failed to BLAST region. %(error)s', error=str(ex)), 'error')
 
     @action('d_buildprofile_a2', 'Build profile based on A2')
     def action_build_profile_a2(self, ids):
         try:
-            query = models.SequenceRecords.query.filter(models.SequenceRecords.uid.in_(ids))
+            query = models.GenomeRecords.query.filter(models.GenomeRecords.uid.in_(ids))
             align_list = []
             for record in query.all():
                 if record.a2 == "":
@@ -342,14 +354,13 @@ class UploadView(BaseView):
         if request.method == 'POST':
 
             # Get the file and ID to name these sequences
-            region = form.name.data
             filename = servers.allfiles.save(request.files['file'])
 
             # Create the initial seqRecords
             phyloisland.seqDict = {}
             phyloisland.unmappable = []
 
-            genomeResults = mapToGenome.getFullGenome("static/uploads/" + filename, region)
+            genomeResults = mapToGenome.getFullGenome("static/uploads/" + filename)
 
             print (genomeResults)
 
@@ -383,16 +394,17 @@ class UploadView(BaseView):
                 overlap = current.annotations["Overlap"] if "Overlap" in current.annotations.keys() else ""
                 distance = ""
 
-                entry = models.SequenceRecords(name, species, strain, description, a1, a1_loc, a2, a2_loc, overlap, distance, sequence)
-                check = models.SequenceRecords.query.filter_by(name=name).first()
+                entry = models.GenomeRecords(name, species, strain, description, a1, a1_loc, a2, a2_loc, overlap, distance, sequence)
+                check = models.GenomeRecords.query.filter_by(name=name).first()
 
                 if check:
-                    if region in current.annotations.keys():
-                        continue
-                    else:
-                        setattr(check, region.lower(), current.annotations[region] if region in current.annotations.keys() else "")
-                        setattr(check, region.lower() + "_loc", current.annotations[region + "_location"] if region + "_location" in current.annotations.keys() else "")
-                        servers.db.session.add(check)
+                    continue
+                    # if region in current.annotations.keys():
+                    #     continue
+                    # else:
+                    #     setattr(check, region.lower(), current.annotations[region] if region in current.annotations.keys() else "")
+                    #     setattr(check, region.lower() + "_loc", current.annotations[region + "_location"] if region + "_location" in current.annotations.keys() else "")
+                    #     servers.db.session.add(check)
 
                 else:
                     seq_list = []
@@ -432,6 +444,8 @@ admin = Admin(servers.application, index_view=AdminIndexView(name= servers.base_
 # Add the views to the flask-admin application
 admin.add_view(UploadView(name='Upload', endpoint='upload_admin'))
 admin.add_view(SequenceRecordsView(models.SequenceRecords, servers.db.session, endpoint="seq_view"))  # working version
+
+admin.add_view(GenomeRecordsView(models.GenomeRecords, servers.db.session, endpoint="genome_view"))  # working version
 admin.add_view(ProfileView(model=models.Profile, session=servers.db.session, name='Profiles'))
 
 if __name__ == '__main__':

@@ -12,7 +12,7 @@ from gzip import GzipFile
 seqDict = {}
 
 
-def getFullGenome(region_file, region_name):
+def getFullGenome(region_file):
     records = SeqIO.parse(region_file, "fasta")
     Entrez.email = "gabriel.foley@uqconnect.edu.au"
     species_names = set()
