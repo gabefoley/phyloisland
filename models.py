@@ -15,14 +15,12 @@ class SequenceRecords(db.Model):
     uid = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text)
     species = db.Column(db.String(255))
-    strain = db.Column(db.String(255))
     description = db.Column(db.Text)
     sequence = db.Column(db.Text)
 
-    def __init__(self, name="", species="", strain="", description="", sequence=""):
+    def __init__(self, name="", species="", description="", sequence=""):
         self.name = name
         self.species = species
-        self.strain = strain
         self.description = description
         self.sequence = sequence
 

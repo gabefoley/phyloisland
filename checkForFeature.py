@@ -7,15 +7,20 @@ import time
 from flask import flash
 import subprocess
 import Bio
+from Bio import SeqIO
 
 def getFeatureLocation(ids, reference, recordName, recordLocation):
 
+    print (reference)
+
     dbpath = "files/temp_blastfiles.fasta"
     querypath = "files/psi.xml"
+    reference_path = "files/blast_reference"
+
+    SeqIO.write(reference, reference_path, "fasta")
 
     query = models.GenomeRecords.query.filter(models.GenomeRecords.uid.in_(ids))
     for record in query.all():
-        print (record)
         seq_record = servers.bio_db.lookup(primary_id=record.name)
         BLAST.makeBlastDB(seq_record, dbpath)
 
@@ -23,15 +28,15 @@ def getFeatureLocation(ids, reference, recordName, recordLocation):
             time.sleep(1)
 
         if os.path.isfile(dbpath):
-            BLAST.tBlastN(dbpath, reference, 0.00005)
+            BLAST.tBlastN(dbpath, reference_path, 0.00005)
 
             while not os.path.exists(querypath):
                 time.sleep(1)
 
             if os.path.isfile(querypath):
-                with open(querypath, "w") as handle:
-                    handle.replace("b'", "")
-                    handle.replace("'","")
+                # with open(querypath, "w") as handle:
+                #     handle.replace("b'", "")
+                #     handle.replace("'","")
 
 
                 blast_info = BLAST.getBlastInfo(open(querypath))
@@ -47,10 +52,11 @@ def getFeatureLocation(ids, reference, recordName, recordLocation):
                     servers.db.session.commit()
 
 
-                    # Remove created files
-                    # utilities.removeFile(dbpath, querypath)
+
                 else:
                     flash("Couldn't find an %s region in %s" % (recordName, record.name))
+            # Remove created files
+            utilities.removeFile(dbpath, querypath)
 
         else:
             raise ValueError("%s isn't a file!" % "files/temp_blastfiles.fasta")
@@ -81,14 +87,13 @@ def get_feature_location_with_profile(ids, reference, recordName, recordLocation
 
         # BLAST.makeBlastDB(seq_record, dbpath)
 
-        print('reptile')
         # pops = seq_record.seq.replace("b'", "").replace("'", "")
-        pops = Bio.Seq.Seq(str(seq_record.seq).replace("b'", "").replace("'", ""))
-        print (pops.translate())
-        print('pope')
+        nuc_seq = Bio.Seq.Seq(str(seq_record.seq).replace("b'", "").replace("'", ""))
 
         with open(cleaned_path, 'w') as handle:
-            handle.write(">" + seq_record.name + " " + seq_record.description + "\n" + str(seq_record.seq).replace("b'", "").replace("'", "").translate())
+            handle.write(">" + seq_record.name + " " + seq_record.description + "\n" + str(nuc_seq.translate(stop_symbol="M")))
+
+            # handle.write(">" + seq_record.name + " " + seq_record.description + "\n" + str(seq_record.seq).replace("b'", "").replace("'", "").translate())
             # Bio.SeqIO.write(seq_record, handle, 'fasta')
 
         #Temporary measure to remove byte characters from BlastDB

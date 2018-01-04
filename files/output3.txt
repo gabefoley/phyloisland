@@ -1,0 +1,171 @@
+# hmmsearch :: search profile(s) against a sequence database
+# HMMER 3.1b2 (February 2015); http://hmmer.org/
+# Copyright (C) 2015 Howard Hughes Medical Institute.
+# Freely distributed under the GNU General Public License (GPLv3).
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# query HMM file:                  refs/temperata2.hmm
+# target sequence database:        ./files/cleanedblast.fasta
+# output directed to file:         ./files/output3.txt
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Query:       temp2  [M=836]
+Scores for complete sequences (score includes all domains):
+   --- full sequence ---   --- best 1 domain ---    -#dom-
+    E-value  score  bias    E-value  score  bias    exp  N  Sequence Description
+    ------- ------ -----    ------- ------ -----   ---- --  -------- -----------
+          0 2816.0  56.2          0 1987.3  22.2    4.8  3  CP011104  Photorhabdus temperata subsp. thracensis strain DSM
+
+
+Domain annotation for each sequence (and alignments):
+>> CP011104  Photorhabdus temperata subsp. thracensis strain DSM 15199, complete genome
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  415.8  11.8    2e-128    2e-128      55     757 .. 1059655 1060357 .. 1059648 1060413 .. 0.84
+   2 !  421.5   6.3  3.9e-130  3.9e-130      44     715 .. 1062874 1063563 .. 1062858 1063613 .. 0.89
+   3 ! 1987.3  22.2         0         0       1     836 [] 1078011 1078846 .. 1078011 1078846 .. 1.00
+
+  Alignments for each domain:
+  == domain 1  score: 415.8 bits;  conditional E-value: 2e-128
+     temp2      55 kselmdfngsnglyfwelffhlpflvatrfaneqqfssaqkslhyifdpamksksdnvpay.wnvrplveensdlsrhsgdsidpdtqayahp 146    
+                   + e mdf gsn lyfwelf++ p+lva r+  eq+f  a++ l+y++ p+      ++  y wnvrpl+e+ s       ds+dpd+ a   p
+  CP011104 1059655 HMEPMDFSGSNSLYFWELFYYTPMLVAQRLLHEQNFDEANRWLKYVWSPSGYIIHGQIQNYrWNVRPLLED-SGWNNDPLDSVDPDAVAQHDP 1059746
+                   5688**********************************************999999999888******975.789999*************** PP
+
+     temp2     147 viykkavfiayvsnliaqgdmwyrqltrdgltqarvyynlaaellgprpdvslsstwtpqtldilaagqktalrdfelqlvnsntilpa.lpg 238    
+                   + yk + f+  +  l+a+gd  yrql rd l +a+++y     llg +p + l  tw    ld  a  + t+ + +   +v      p+ l  
+  CP011104 1059747 MHYKVSTFMRTLDLLMARGDYAYRQLERDTLNEAKMWYMQVLHLLGDKPYLPLNPTWGDPRLDKAA--DITTQKAYSRSMVTLRQGTPTpLSL 1059837
+                   **************************************************************9754..5566666666666655555542444 PP
+
+     temp2     239 rnvsylkladngyfneplnvlmlshwdtldarlynlrhnltvdgkplslplyaapvdpvallaqraqsgtltngvsgamltvppyrfsamlpr 331    
+                   r      l+    f   +n +m+ +w+tl  rlynlrhnl++dg+pl lp+ya+p dp all+      +   g     ++   +rf  ml  
+  CP011104 1059838 RTANS--LT--DLFLPQVNEVMMNYWQTLAQRLYNLRHNLSIDGQPLNLPIYATPADPKALLSAAVAN-SQGSGNL-PQISTSLWRFPHMLEN 1059924
+                   44433..34..4688899*******************************************9754332.2222322.23556789******** PP
+
+     temp2     332 aysavgtltgfgqnllsllerseragqeelaqqqlldmssyaitlqqqaldglaadrlallasqataqqrhdhyytlyqnnissaeqlvmdtq 424    
+                   a s v  lt fg  l  ++er +    + l q+q  ++    +++q+++++ l a+++ l  ++a aq r d y  ly++ni + e+  m  +
+  CP011104 1059925 ARSMVSQLTQFGSTLQNIIERQDAEALNALLQNQAAELILTNLSIQDKTIEELDAEKVVLDKTRAGAQSRFDNYSKLYDENINAGEDRAMSLR 1060017
+                   ********************************************************************************************* PP
+
+     temp2     425 tsaqslissstgvqtasgalkvipnifgladggmryegvteaiasglvtagqvacvvaerlattenyrrrreewqiqyqqaqsevdalqkqld 517    
+                   +sa  l ++    + a  a  ++pnifg+a gg r+  ++ea    +  + +v    a++++ +e yrrrr+ew+iq ++a++e+  ++ ql 
+  CP011104 1060018 ASAAGLTTAVQASRLAGAAADLVPNIFGFAGGGSRWGAIAEATGYVMEFSANVMNTEADKITQSETYRRRRQEWEIQRNNAEAEIKQIDAQLK 1060110
+                   ******************************************99999999******************************************* PP
+
+     temp2     518 alavrekaaqtflqqakaqqvqirtmltylttrftqatlyqwlsgqlsalyyqaydavvalclsaqacwqyelgdyatafiqtgtwndhyrgl 610    
+                   +lavr  aa       ++qq q ++ l++l  +f++ +ly+wl g+l+a+y+q yd  va cl a+ ++++e  d a+ fi+ g+w+  y gl
+  CP011104 1060111 SLAVRREAAVLQKTSLRTQQEQTQAQLAFLQRKFSNQALYNWLRGRLAAIYFQFYDLAVARCLMAELAYRWETNDTAARFIKPGAWQGTYAGL 1060203
+                   *********9988899***************************************************************************** PP
+
+     temp2     611 qvgetlqlnlhqmeaaylarherrlnvirtvslknl...lgddgfn.....................kl........ktegkvdftlgeklfd 671    
+                     getl l l qme ++l + +r l+v rtvsl ++   l  d fn                     kl        kt  +  ++l +  + 
+  CP011104 1060204 LAGETLMLSLAQMEDTHLKQEQRALEVERTVSLAEVyagLSSDKFNlsekiselvgkgsgsagnssnKLafgtgtdtKTSLQTSISLADLNIR 1060296
+                   *********************************876333556777633322211111111111111133222211111222223345555567 PP
+
+     temp2     672 ndypghy..lrqiktvsvtlptligpyqnvkatltqtssstllaadingvkrlndttgkkegdathivtnlrasqqvvlssgindags 757    
+                   ndyp      r+ik +sv+lp+l+gpyq+v+a l+    +t la                              + + +s g+nd+g 
+  CP011104 1060297 NDYPASIgkTRRIKQISVSLPALLGPYQDVQAVLSYGGDTTGLAKGC---------------------------KALAVSHGVNDSGQ 1060357
+                   9***97533799********************998876666665322...........................22334445555555 PP
+
+  == domain 2  score: 421.5 bits;  conditional E-value: 3.9e-130
+     temp2      44 psleadlvtngkselmdfngsnglyfwelffhlpflvatrfaneqqfssaqkslhyifdpamksksdnvpay.wnvrplveensdlsrhsgds 135    
+                   p l +  v    +e mdf gsn lyfwelf+++p+l+a r+  eq+f  a++ l+y+++p+      ++  y wnvrpl+e+         +s
+  CP011104 1062874 PGLASTRVVPTFTEPMDFSGSNSLYFWELFYYVPMLIAQRLLHEQNFDEANRWLKYVWNPSGYIENGQIQHYnWNVRPLLEDT-RWNDDPLNS 1062965
+                   666677777888999************************************************9999999988*******875.56778899* PP
+
+     temp2     136 idpdtqayahpviykkavfiayvsnliaqgdmwyrqltrdgltqarvyynlaaellgprpdvslsstwtpqtldilaagqktalrdfelqlvn 228    
+                   +dpd+ a   p+ yk a f+  +  l+ +gd  yrql rd l +a+++y  a  llg +p + l stw  +     aa       + e q   
+  CP011104 1062966 VDPDAVAQYDPMHYKVATFMRTLDLLLDRGDYAYRQLERDTLNEAKMWYMQALHLLGDKPHLPLNSTWNNEKSLSDAA-------NPERQKAH 1063051
+                   ********************************************************************9875433333.......46889999 PP
+
+     temp2     229 sntilpalpgrnvsylkladngyfneplnvlmlshwdtldarlynlrhnltvdgkplslplyaapvdpvallaqraqsgtltngvsgamltvp 321    
+                   s +i     g        ++   f   +n +mls+w+ l+ rlynlrhnl++dg+ l lp+ya+p dp all+      +++n   ga l+ p
+  CP011104 1063052 SHAIAALRQGESTQV--SSQTDLFLPQVNEVMLSYWQKLEQRLYNLRHNLSIDGQLLHLPIYATPADPKALLS-----AAVANSQGGAALSQP 1063137
+                   999977666665544..3556689999********************************************95.....566777778887766 PP
+
+     temp2     322 ...pyrfsamlpraysavgtltgfgqnllsllerseragqeelaqqqlldmssyaitlqqqaldglaadrlallasqataqqrhdhyytlyqn 411    
+                       +rf  ml  a   v  lt fg  l  ++er +    + l q+q  ++    i++q+++++ l a++  l  s++ aq r + y  ly++
+  CP011104 1063138 fmsLWRFPHMLENARGMVSQLTQFGSTLQNIIERQDAEALNVLLQNQAKELILTNISIQNKTIEELDAEKTVLEKSKTGAQSRFNSYGKLYDE 1063230
+                   22258**************************************************************************************** PP
+
+     temp2     412 nissaeqlvmdtqtsaqslissstgvqtasgalkvipnifgladggmryegvteaiasglvtagqvacvvaerlattenyrrrreewqiqyqq 504    
+                   ni + e+  +d + +++s+ s    ++ a+ al ++pni+gla gg +y  +++aia g   a +   + a+++  +e +rrrr+ew+iq ++
+  CP011104 1063231 NINAGEHQALDMKVASHSITSGLKSLHMAAAALDMVPNIYGLAVGGSHYGAIANAIAIGGGIAADGLLIEADKVLQSEIWRRRRQEWEIQRNN 1063323
+                   ***********************************************************99999999************************** PP
+
+     temp2     505 aqsevdalqkqldalavrekaaqtflqqakaqqvqirtmltylttrftqatlyqwlsgqlsalyyqaydavvalclsaqacwqyelgdyataf 597    
+                   aq+e++ ++ ql +lavr  aa       k+qq q ++ lt+l  +f + +l++wl g+l+a+y+q yd  v+ cl a+ ++++e  + +t+f
+  CP011104 1063324 AQTELNQIDAQLGSLAVRREAAVLQKTSLKTQQEQTHAHLTFLQRKFNNQALFNWLRGRLAAIYFQFYDLAVSRCLMAEMAYRWETNETTTSF 1063416
+                   **********************9999999**************************************************************** PP
+
+     temp2     598 iqtgtwndhyrglqvgetlqlnlhqmeaaylarherrlnvirtvslknllgddgfnklk..te.....gkvdftlge.....klfdn...... 672    
+                   i+ g+w+  + gl  getl lnl qme a+l   +r l+v rtvsl ++  + g +++   te      k    lg+     +l dn      
+  CP011104 1063417 IKPGSWQGTHAGLLAGETLMLNLAQMEDAHLRWDKRALEVERTVSLADVYTEPGQDRIDlaTEitdllEKRKDNLGNdnngiRLNDNkliatv 1063509
+                   *************************************************99888876541133222221222223221111133333222223 PP
+
+     temp2     673 .........dypghy..lrqiktvsvtlptligpyqnvkatltqtssstllaad 715    
+                            dyp      r+ik +svtlp+l+gpyq+v+a l+   s t la  
+  CP011104 1063510 nlanlnireDYPASVgkTRRIKQISVTLPALLGPYQDVQAILSYGRSETRLAES 1063563
+                   33333344499987433799***************************9999865 PP
+
+  == domain 3  score: 1987.3 bits;  conditional E-value: 0
+     temp2       1 qyldfctsslpantrlnttfvrtliekanlgldsllnytlqadpsleadlvtngkselmdfngsnglyfwelffhlpflvatrfaneqqfssa 93     
+                   qyldfctsslpantrlnttfvrtliekanlgldsllnytlqadpsleadlvtngkselmdfngsnglyfwelffhlpflvatrfaneqqfssa
+  CP011104 1078011 QYLDFCTSSLPANTRLNTTFVRTLIEKANLGLDSLLNYTLQADPSLEADLVTNGKSELMDFNGSNGLYFWELFFHLPFLVATRFANEQQFSSA 1078103
+                   8******************************************************************************************** PP
+
+     temp2      94 qkslhyifdpamksksdnvpaywnvrplveensdlsrhsgdsidpdtqayahpviykkavfiayvsnliaqgdmwyrqltrdgltqarvyynl 186    
+                   qkslhyifdpamksksdnvpaywnvrplveensdlsrhsgdsidpdtqayahpviykkavfiayvsnliaqgdmwyrqltrdgltqarvyynl
+  CP011104 1078104 QKSLHYIFDPAMKSKSDNVPAYWNVRPLVEENSDLSRHSGDSIDPDTQAYAHPVIYKKAVFIAYVSNLIAQGDMWYRQLTRDGLTQARVYYNL 1078196
+                   ********************************************************************************************* PP
+
+     temp2     187 aaellgprpdvslsstwtpqtldilaagqktalrdfelqlvnsntilpalpgrnvsylkladngyfneplnvlmlshwdtldarlynlrhnlt 279    
+                   aaellgprpdvslsstwtpqtldilaagqktalrdfelqlvnsntilpalpgrnvsylkladngyfneplnvlmlshwdtldarlynlrhnlt
+  CP011104 1078197 AAELLGPRPDVSLSSTWTPQTLDILAAGQKTALRDFELQLVNSNTILPALPGRNVSYLKLADNGYFNEPLNVLMLSHWDTLDARLYNLRHNLT 1078289
+                   ********************************************************************************************* PP
+
+     temp2     280 vdgkplslplyaapvdpvallaqraqsgtltngvsgamltvppyrfsamlpraysavgtltgfgqnllsllerseragqeelaqqqlldmssy 372    
+                   vdgkplslplyaapvdpvallaqraqsgtltngvsgamltvppyrfsamlpraysavgtltgfgqnllsllerseragqeelaqqqlldmssy
+  CP011104 1078290 VDGKPLSLPLYAAPVDPVALLAQRAQSGTLTNGVSGAMLTVPPYRFSAMLPRAYSAVGTLTGFGQNLLSLLERSERAGQEELAQQQLLDMSSY 1078382
+                   ********************************************************************************************* PP
+
+     temp2     373 aitlqqqaldglaadrlallasqataqqrhdhyytlyqnnissaeqlvmdtqtsaqslissstgvqtasgalkvipnifgladggmryegvte 465    
+                   aitlqqqaldglaadrlallasqataqqrhdhyytlyqnnissaeqlvmdtqtsaqslissstgvqtasgalkvipnifgladggmryegvte
+  CP011104 1078383 AITLQQQALDGLAADRLALLASQATAQQRHDHYYTLYQNNISSAEQLVMDTQTSAQSLISSSTGVQTASGALKVIPNIFGLADGGMRYEGVTE 1078475
+                   ********************************************************************************************* PP
+
+     temp2     466 aiasglvtagqvacvvaerlattenyrrrreewqiqyqqaqsevdalqkqldalavrekaaqtflqqakaqqvqirtmltylttrftqatlyq 558    
+                   aiasglvtagqvacvvaerlattenyrrrreewqiqyqqaqsevdalqkqldalavrekaaqtflqqakaqqvqirtmltylttrftqatlyq
+  CP011104 1078476 AIASGLVTAGQVACVVAERLATTENYRRRREEWQIQYQQAQSEVDALQKQLDALAVREKAAQTFLQQAKAQQVQIRTMLTYLTTRFTQATLYQ 1078568
+                   ********************************************************************************************* PP
+
+     temp2     559 wlsgqlsalyyqaydavvalclsaqacwqyelgdyatafiqtgtwndhyrglqvgetlqlnlhqmeaaylarherrlnvirtvslknllgddg 651    
+                   wlsgqlsalyyqaydavvalclsaqacwqyelgdyatafiqtgtwndhyrglqvgetlqlnlhqmeaaylarherrlnvirtvslknllgddg
+  CP011104 1078569 WLSGQLSALYYQAYDAVVALCLSAQACWQYELGDYATAFIQTGTWNDHYRGLQVGETLQLNLHQMEAAYLARHERRLNVIRTVSLKNLLGDDG 1078661
+                   ********************************************************************************************* PP
+
+     temp2     652 fnklktegkvdftlgeklfdndypghylrqiktvsvtlptligpyqnvkatltqtssstllaadingvkrlndttgkkegdathivtnlrasq 744    
+                   fnklktegkvdftlgeklfdndypghylrqiktvsvtlptligpyqnvkatltqtssstllaadingvkrlndttgkkegdathivtnlrasq
+  CP011104 1078662 FNKLKTEGKVDFTLGEKLFDNDYPGHYLRQIKTVSVTLPTLIGPYQNVKATLTQTSSSTLLAADINGVKRLNDTTGKKEGDATHIVTNLRASQ 1078754
+                   ********************************************************************************************* PP
+
+     temp2     745 qvvlssgindagsfelrlederylsfegtgavskwtlnfprsvdehiddktlkademqaallanmddvlvqvhytacdggasfanqvkktls 836    
+                   qvvlssgindagsfelrlederylsfegtgavskwtlnfprsvdehiddktlkademqaallanmddvlvqvhytacdggasfanqvkktls
+  CP011104 1078755 QVVLSSGINDAGSFELRLEDERYLSFEGTGAVSKWTLNFPRSVDEHIDDKTLKADEMQAALLANMDDVLVQVHYTACDGGASFANQVKKTLS 1078846
+                   ******************************************************************************************98 PP
+
+
+
+Internal pipeline statistics summary:
+-------------------------------------
+Query model(s):                              1  (836 nodes)
+Target sequences:                            1  (1715699 residues searched)
+Passed MSV filter:                         1  (1); expected 0.0 (0.02)
+Passed bias filter:                        1  (1); expected 0.0 (0.02)
+Passed Vit filter:                         1  (1); expected 0.0 (0.001)
+Passed Fwd filter:                         1  (1); expected 0.0 (1e-05)
+Initial search space (Z):                  1  [actual number of targets]
+Domain search space  (domZ):               1  [number of targets reported over threshold]
+# CPU time: 8.82u 0.18s 00:00:09.00 Elapsed: 00:00:09.10
+# Mc/sec: 157.62
+//
+[ok]

@@ -70,7 +70,6 @@ CREATE TABLE seqrecord(
   uid SERIAL, 
   name TEXT, 
   species TEXT, 
-  strain TEXT, 
   description TEXT, 
   sequence LONGTEXT, 
   PRIMARY KEY (uid), 

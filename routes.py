@@ -48,6 +48,9 @@ def local(route: str) -> str:
         return join(BASE_ROUTE, route[1:])
 
 
+a1_reference = SeqRecord(Seq("MDKYNNYSNVIKNKSSISPLLAAAAKIEPEITVLSSASKSNRSQYSQSLADTLLGLGYRSIFDIAKVSRQRFIKRHDESLLGNGAVIFDKAVSMANQVLQKYRKNRLEKSNSPLVPQTSSSTDASSESQTNKLPEYNQLFPEPWDNFCRPGAIEALDSPASYLLDLYKFIQSVELDGSNQARKLETRRADIPKLSLDNDALYKEVTALSIVNDVLSGSAREYIDQSGQADKAVNQILGDTHFPFTLPYSLPTQQINKGLGASNIELGTVIQRVDPQFSWNTTQEKYNQVLLAYTQLSSEQIALLSLPDVFTQNFLTQTELSAGYLSASTTEILAEKDLSRHGYIVKAADNIKGPTQLVEHSDASYDVIELTCTNQAKETITVKLRGENIITYQRTKARMVPFDNSSPFSRQLKLTFVAEDNPSLGNLDKGPYFANMDIYAAEWVRENVSSETMVSRPFLTMTYRIAIAKAGASLEELQPEADAFFINNFGLSAEDSSQLVKLVAFGDQTGSKAEEIESLLSCGENLPIVSPNVIFANPIFGSYFNDEPFPAPYHFGGVYINAHQRNAMTIIRAEGGREIQSLSNFRLERLNRFIRLQRWLDLPSHQLDLLLTSVMQADADNSQQEITEPVLKSLGLFRHLNLQYKITPEIFSSWLYQLTPFAVSGEIAFFDRIFNREQLFDQPFILDGGSFTYLDAKGSDAKSVKQLCAGLNISAVTFQFIAPLVQSALGLEAGTLVRSFEVVSSLYRLVSIPQTFGLSTEDGLILMNILTDEMGYLAKQPAFDDKQTQDKDFLSIILKMEALSAWLTKNNLTPASLALLLGVTRLAVVPTNNMVTFFKGIANGLSENVCLTTDDFQRQELEGADWWTLLSTNQVIDDMGLVLDIHPVWGKSDEEMLMEKIQSIGVSNDNNTLSIIVQILIQAKNAQENLLSQTISAEYGVERSVVPLQLRWLGSNVYSVLNQVLNNTPTDISSIVPKLSELTYSLLIYTQLINSLKLNKEFIFLRLTQPNWLGLTQPKLSTQLSLPEIYLITCYQDWVVNANKNEDSIHEYLEFANIKKTEAEKTLVDNSEKCAELLAEILAWDAGEILKAASLLGLNPPQATNVFEIDWIRRLQTLSEKTMISTEYLWQMGDLTENSEFSLKEGVGEAVMAALKAQGDSDNV", generic_protein), id="Yersinia entomophaga A1")
+
+a2_reference = SeqRecord(Seq("MSNSIEAKLQEDLRDALVDYYLGQIVPNSKDFTNLRSTIKNVDDLYDHLLLDTQVSAKVITSRLSLVTQSVQQYINRIALNLEPGLSINQQEATDWEEFANRYGYWAANQQLRMFPEIYVDPTLRLTKTEFFFQLESALNQGKLTDDVAQKAVLGYLNNFEEVSNLEIIAGYQDGIDIENDKTYFVARTRMQPYRYFWRSLDASQRNANSQELYPTAWSEWKAISVPLENVANGIVRPIMMDNRLYISWFEVAEEKETDSDGNIIVSGRYRTKIRLAHLGFDGVWSSGTTLREEVLADQMEEMIAVVDRMEDEPRLALVAFKEMSESWDVVFSYICDSMLIESSNLPTTTHPPKPGDGDKGLSDLDDYGANLVWFYLHETANGGKAEYKQLILYPVIINRDWPIELDKTHQGDFGTVDDFTLNSNYTGDELSLYLQSSSTYKYDFSKSKNIIYGIWKEDANNNRCWLNYKLLTPEDYEPQINATLVMCDKGDVNIITGFSLPNGGVDAGGKIKVTLRVGKKLRDKFQIKQFSQTQYLQFPEASSADVWYIGKQIRLNTLFAKELIGKASRSLDLVLSWETQNSRLEEAILGGAAELIDLDGANGIYFWELFFHMPFMVSWRFNVEQRYEDANRWVKYLFNPFECEDEPALLLGKPPYWNSRPLVDEPFKGYSLTQPSDPDAIAASDPIHYRKAVFNFLTKNIIDQGDMEYRKLQPSARTLARLSYSTASSLLGRRPDVQLTSFWQPLTLEDASYKTDSEIRAIEMQSQPLTFEPVVHDQTMSAVDNDIFMYPMNNELRGLWDRIENRIYNLRHNLTLDGKEINMDLYDSSISPRGLMKQRYQRVVTARNASKMNFKVPNYRFEPMLNRSKSGVETLIQFGSTLLSLLERKDSLSFDAYQMIQSGDLYRFSIDLQQQDIDINKASLEALQVSKQSAQDRYDHFKELYDENISSTEQKVIELQSQAANSLLMAQGMRTAAAALDVIPNIYGLAVGGSHWGAPLNAAAEIIMIKYQADSSKSESLSVSESYRRRRQEWELQYKQAEWEVNSVEQQINLQNMQIKAANKRLEQVEAQQQQAMALLDYFSERFTNESLYTWLISQLSSLYLQAYDAVLSLCLSAEASLLYELNLGEQSFVGGGGWNDLYQGLMAGETLKLALMRMERVYVEQNSRRQEITKTISLKALLGESWPAELNKLKQKTPINFNLEEQIFVEDYQELYQRRIKSVSVSLPMLVGPYEDVCAQLTQTSSSYSTRADLKTVENMLTKRTFADTPHLVRSIQPNQQISLSTGVNDSGLFMLNFDDERFLPFEGSGVDSSWRLQFTNLKQNLDSLNDVILHVKYTAAIGSSTFSQGVRKILANINNDE", generic_protein), id="Yersinia entomophaga A2")
 
 
 class ProfileView(ModelView):
@@ -134,6 +137,29 @@ class SequenceRecordsView(ModelView):
     can_create = False
     can_view_details = True
 
+    @action('set_A1_reference', 'Set this sequence as the A1 reference')
+    def action_set_A1_reference(self, ids):
+        if len(ids) > 1:
+            flash('Only select a single record')
+        else:
+            query = models.SequenceRecords.query.filter(models.SequenceRecords.uid.in_(ids))
+            for record in query.all():
+                global a1_reference
+                a1_reference = SeqRecord(Seq(record.sequence, generic_protein), id=str(record.name) + "_reference")
+                flash ("The A1 region from %s has been set as the reference A1 sequence" % record.name)
+
+
+    @action('set_A2_reference', 'Set this sequence as the A2 reference')
+    def action_set_A2_reference(self, ids):
+        if len(ids) > 1:
+            flash('Only select a single record')
+        else:
+            query = models.SequenceRecords.query.filter(models.SequenceRecords.uid.in_(ids))
+            for record in query.all():
+                global a2_reference
+                a2_reference = SeqRecord(Seq(record.sequence, generic_protein), id=str(record.name) + "_reference")
+                flash ("The A1 region from %s has been set as the reference A2 sequence" % record.name)
+
 class GenomeRecordsView(ModelView):
     column_searchable_list = ['name', 'species', 'a1', 'a2', 'overlap']
     create_modal = True
@@ -218,15 +244,41 @@ class GenomeRecordsView(ModelView):
 
             flash(gettext('Failed to approve users. %(error)s', error=str(ex)), 'error')
 
+    @action('set_A1_reference', 'Set this A1 region as the reference region')
+    def action_set_A1_reference(self, ids):
+        if len(ids) > 1:
+            flash('Only select a single record')
+        else:
+            query = models.GenomeRecords.query.filter(models.GenomeRecords.uid.in_(ids))
+            for record in query.all():
+                if (record.a2):
+                    global a1_reference
+                    a1_reference = SeqRecord(Seq(record.a1, generic_protein), id=str(record.name) + "_reference")
+                    flash ("The A1 region from %s has been set as the reference A1 sequence" % record.name)
+                else:
+                    flash ("That record doesn't have an A1 region associated with it")
+
+
+    @action('set_A2_reference', 'Set this A2 region as the reference region')
+    def action_set_A2_reference(self, ids):
+        if len(ids) > 1:
+            flash('Only select a single record')
+        else:
+            query = models.GenomeRecords.query.filter(models.GenomeRecords.uid.in_(ids))
+            for record in query.all():
+                if (record.a2):
+                    global a2_reference
+                    a2_reference = SeqRecord(Seq(record.a2, generic_protein), id=str(record.name) + "_reference")
+                    flash ("The A2 region from %s has been set as the reference A2 sequence" % record.name)
+                else:
+                    flash ("That record doesn't have an A2 region associated with it")
+
 
     @action('profile_align', 'Check for A2 region with a profile')
     def action_profile_align_a2(self, ids):
         try:
 
-            #TODO: This obviously shouldn't be hard coded!
             checkForFeature.get_feature_location_with_profile(ids, "refs/testprofile.hmm", "a2", "a2_loc")
-
-                # print(alignment)
 
         except Exception as ex:
             if not self.handle_view_exception(ex):
@@ -239,10 +291,7 @@ class GenomeRecordsView(ModelView):
     def action_check_a1(self, ids):
         try:
 
-            #TODO: This obviously shouldn't be hard coded!
-            checkForFeature.getFeatureLocation(ids, "refs/A1_reference.fasta", "a1", "a1_loc")
-
-                # print(alignment)
+            checkForFeature.getFeatureLocation(ids, a1_reference, "a1", "a1_loc")
 
         except Exception as ex:
             if not self.handle_view_exception(ex):
@@ -255,7 +304,7 @@ class GenomeRecordsView(ModelView):
         try:
 
             #TODO: This obviously shouldn't be hard coded either!
-            checkForFeature.getFeatureLocation(ids, "refs/A2_reference.fasta", "a2", "a2_loc")
+            checkForFeature.getFeatureLocation(ids, a2_reference, "a2", "a2_loc")
 
 
 
@@ -353,12 +402,39 @@ class UploadView(BaseView):
 
         if request.method == 'POST':
 
-            # Get the file and ID to name these sequences
+            # Get the sequences
             filename = servers.allfiles.save(request.files['file'])
 
             # Create the initial seqRecords
             phyloisland.seqDict = {}
             phyloisland.unmappable = []
+
+            seq_records = SeqIO.parse("static/uploads/" + filename, "fasta")
+
+            print (seq_records)
+
+            for record in seq_records:
+                print (record)
+                print (record.annotations)
+
+
+                seq_name = record.id
+                seq_description = record.description.split(">")[0]
+                seq_species = seq_description.split("[")[1].split("]")[0]
+                seq_sequence = str(record.seq)
+
+                seq_entry = models.SequenceRecords(seq_name, seq_species, seq_description, seq_sequence)
+
+                # Check if the sequence record already exists
+                seq_check = models.GenomeRecords.query.filter_by(name=seq_name).first()
+                if not seq_check:
+                    servers.db.session.add(seq_entry)
+                    servers.db.session.commit()
+
+
+                print (seq_name)
+                print (seq_description)
+                print (seq_species)
 
             genomeResults = mapToGenome.getFullGenome("static/uploads/" + filename)
 
@@ -379,6 +455,7 @@ class UploadView(BaseView):
 
             for record in records:
 
+
                 current = records[record]
                 name = current.id
 
@@ -394,17 +471,25 @@ class UploadView(BaseView):
                 overlap = current.annotations["Overlap"] if "Overlap" in current.annotations.keys() else ""
                 distance = ""
 
+                print ('and the record id is ')
+                print (name)
+                print ('and the seq name is ')
+                print (seq_name)
+
+
                 entry = models.GenomeRecords(name, species, strain, description, a1, a1_loc, a2, a2_loc, overlap, distance, sequence)
                 check = models.GenomeRecords.query.filter_by(name=name).first()
-
+                print ('lets check')
+                print (check)
+                # Check to see if the genome record already exists
                 if check:
                     continue
-                    # if region in current.annotations.keys():
-                    #     continue
-                    # else:
-                    #     setattr(check, region.lower(), current.annotations[region] if region in current.annotations.keys() else "")
-                    #     setattr(check, region.lower() + "_loc", current.annotations[region + "_location"] if region + "_location" in current.annotations.keys() else "")
-                    #     servers.db.session.add(check)
+                #     # if region in current.annotations.keys():
+                #     #     continue
+                #     # else:
+                #     #     setattr(check, region.lower(), current.annotations[region] if region in current.annotations.keys() else "")
+                #     #     setattr(check, region.lower() + "_loc", current.annotations[region + "_location"] if region + "_location" in current.annotations.keys() else "")
+                #     #     servers.db.session.add(check)
 
                 else:
                     seq_list = []
@@ -412,7 +497,9 @@ class UploadView(BaseView):
                     seq_list.append(current)
                     servers.bio_db.load(seq_list)
                     servers.bio_server.commit()
-                servers.db.session.commit()
+                    servers.db.session.commit()
+
+
 
             return self.render("upload_admin.html", form=form, records=records)
         return self.render("upload_admin.html", form=form)

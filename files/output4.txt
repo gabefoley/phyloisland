@@ -1,0 +1,266 @@
+# hmmsearch :: search profile(s) against a sequence database
+# HMMER 3.1b2 (February 2015); http://hmmer.org/
+# Copyright (C) 2015 Howard Hughes Medical Institute.
+# Freely distributed under the GNU General Public License (GPLv3).
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# query HMM file:                  refs/temperata.hmm
+# target sequence database:        ./files/cleanedblast.fasta
+# output directed to file:         ./files/output4.txt
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Query:       temperata  [M=1361]
+Scores for complete sequences (score includes all domains):
+   --- full sequence ---   --- best 1 domain ---    -#dom-
+    E-value  score  bias    E-value  score  bias    exp  N  Sequence Description
+    ------- ------ -----    ------- ------ -----   ---- --  -------- -----------
+          0 1910.1  84.0   2.6e-194  633.9   6.9    9.5  8  CP011104  Photorhabdus temperata subsp. thracensis strain DSM
+
+
+Domain annotation for each sequence (and alignments):
+>> CP011104  Photorhabdus temperata subsp. thracensis strain DSM 15199, complete genome
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  167.2   8.3   1.9e-53   1.9e-53       3     284 .. 1058816 1059097 .. 1058814 1059110 .. 0.87
+   2 !    6.8   0.0   4.7e-05   4.7e-05     549     582 .. 1059487 1059520 .. 1059463 1059526 .. 0.85
+   3 !  393.6   9.2  8.7e-122  8.7e-122     584    1345 .. 1059651 1060416 .. 1059630 1060425 .. 0.87
+   4 !  175.7   6.7   5.1e-56   5.1e-56       3     289 .. 1061994 1062277 .. 1061992 1062286 .. 0.88
+   5 !    5.1   0.0   0.00015   0.00015     548     585 .. 1062731 1062767 .. 1062702 1062774 .. 0.78
+   6 !  384.5   9.1  4.9e-119  4.9e-119     589    1340 .. 1062886 1063632 .. 1062878 1063639 .. 0.85
+   7 !  168.5   2.8   7.3e-54   7.3e-54       4     282 .. 1077278 1077562 .. 1077275 1077580 .. 0.88
+   8 !  633.9   6.9  2.6e-194  2.6e-194     550    1355 .. 1078024 1078846 .. 1078011 1078850 .. 0.93
+
+  Alignments for each domain:
+  == domain 1  score: 167.2 bits;  conditional E-value: 1.9e-53
+  temperata       3 nlieaklqenlrdalvdyylgqivphdtafqsqrekiknvddlydfllldtqvsskvktarvahvtqsvqqyinrivlnlesgl..s.mtqe 91     
+                    n + a l+e    al  yy+ ++  +d+        ik  ddly++ll+d qvs+ +kt+r+a    s+q y+nr + n+e     s ++++
+   CP011104 1058816 NTLHAFLDEFRSAALSTYYIRKVASKDAV-------IKSRDDLYQYLLIDNQVSAAIKTTRIAEAIASIQLYVNRALENVEENAdsSvISRQ 1058900
+                    66777788888888899999888877765.......7778***************************************9865411314556 PP
+
+  temperata      92 dadnwqefanrygywaanqqlaiypevyvdptlrltktefffqlesalnqgkltddvaqkailgylnnfeevsnleviagyedgvgiaddkv 183    
+                       +w+++ +ry  wa   ql  ype y+dpt+r+ +t+++  l  ++ q +l  d  + a + yl  fe+v+nlevi+ y d +   +   
+   CP011104 1058901 FFIDWDKYNKRYSTWAGVSQLVYYPENYIDPTMRIGQTKMMGALLQSVSQSQLKSDTVEDAFMSYLTSFEQVANLEVISAYHDNINNDQGLT 1058992
+                    6789**********************************************************************************99999* PP
+
+  temperata     184 yfiaktrtqpyryfwrtldakqrnnqtdelyptawsewklinvplenayngivrpiilnnrlyiswfevseekqdkdns.......ikyrtk 268    
+                    yfi ++ t+   y+wr++d  +  +   ++   awsew  i+ p+ n y+  +rp+i + rly+ w+e  e  ++  ns         yr  
+   CP011104 1058993 YFIGRSETDAGEYYWRSVDHSKFSD--GKFAANAWSEWSKIDCPI-NPYKNTIRPVIYKSRLYLIWLEQKEITKQTGNSkdgyqteTDYRYE 1059081
+                    *******************876543..467789***********9.7899999***************9986655555422222226899** PP
+
+  temperata     269 lnlahlafdgtwstgt 284    
+                    l+lah+ +dgtw t  
+   CP011104 1059082 LKLAHIRYDGTWNTPI 1059097
+                    ************9965 PP
+
+  == domain 2  score: 6.8 bits;  conditional E-value: 4.7e-05
+  temperata     549 airlntlfakeliskasqkldkvlswetqnihee 582    
+                      rlntlfa++l+ +a+  +d +ls etqni+e 
+   CP011104 1059487 RTRLNTLFARQLVNRATTGIDTILSMETQNIQEP 1059520
+                    469****************************974 PP
+
+  == domain 3  score: 393.6 bits;  conditional E-value: 8.7e-122
+  temperata     584 itgndskpidlkgangiyfwelffhmpfmvawrfnveqryeeasrwikfifnpfessdepaltqdkprywnsrpiidepkrlrslieptdpd 675    
+                    i  +   p+d+ g+n +yfwelf++ p++va r+  eq ++ea rw+k+++ p          q +   wn rp++++       ++  dpd
+   CP011104 1059651 ILADHMEPMDFSGSNSLYFWELFYYTPMLVAQRLLHEQNFDEANRWLKYVWSPS---GYIIHGQIQNYRWNVRPLLEDSGWNNDPLDSVDPD 1059739
+                    6667789********************************************995...556667888889*********************** PP
+
+  temperata     676 aisasepihyrkaifnfyvknvidqgdmeyrklqptartlarlsyatassllgarpdlqlasswqpitledasykknsavralemisyplpy 767    
+                    a++  +p+hy+ + f   +  ++ +gd  yr+l+  +   a++ y     llg +p l l  +w    l+ a+        +  m++     
+   CP011104 1059740 AVAQHDPMHYKVSTFMRTLDLLMARGDYAYRQLERDTLNEAKMWYMQVLHLLGDKPYLPLNPTWGDPRLDKAADITTQKAYSRSMVTLRQGT 1059831
+                    *****************************************************************99**99998888888888888887776 PP
+
+  temperata     768 apvvhdktiraldndlfmkpineeltalwdrienriynlrhnltldgkeismdlydskisprglmnqryqrvvaarnasrmnfrvpnyrfep 859    
+                       +  +t  +l  dlf+  +ne +   w+ + +r+ynlrhnl++dg+ + + +y +   p+ l+         + n  ++      +rf  
+   CP011104 1059832 PTPLSLRTANSL-TDLFLPQVNEVMMNYWQTLAQRLYNLRHNLSIDGQPLNLPIYATPADPKALLSAAVANSQGSGNLPQIS--TSLWRFPH 1059920
+                    666777888888.69**************************************************99877777777766654..5679**** PP
+
+  temperata     860 mlaraksgvdtliqfgstllsllerkdnlsfesfqmvqnndlyrfavdlqqqdininqanldalqvskqsaqeryehykslydenissteqq 951    
+                    ml  a+s v  l qfgstl  ++er+d  +++++   q  +l    + +q++ i+  +a+   l+ ++  aq r++ y  lydeni + e++
+   CP011104 1059921 MLENARSMVSQLTQFGSTLQNIIERQDAEALNALLQNQAAELILTNLSIQDKTIEELDAEKVVLDKTRAGAQSRFDNYSKLYDENINAGEDR 1060012
+                    *********************************999999999999999999999999999999999************************** PP
+
+  temperata     952 vielqsqassallasqvsrtaaaaldlipniyglavggsrwgaalnavaeiatlkyqsdstkaeslsvsesyrrrrqewelqykqadwevks 1043   
+                     + l++ a+    a q sr a aa dl+pni+g+a ggsrwga  +a   +  +  +   t a+ ++ se+yrrrrqewe+q ++a+ e+k 
+   CP011104 1060013 AMSLRASAAGLTTAVQASRLAGAAADLVPNIFGFAGGGSRWGAIAEATGYVMEFSANVMNTEADKITQSETYRRRRQEWEIQRNNAEAEIKQ 1060104
+                    ******************************************************************************************** PP
+
+  temperata    1044 ieqqisiqqlqvsaarkrlaqveaqqqqsqallayfssrftneslytwmisqisslylqaydavsslclsaqaslqyelglgeqnfidgasw 1135   
+                    i+ q+    ++  aa  + + + +qq+q+qa la++  +f+n++ly w+  +++++y+q yd   + cl a+ + ++e       fi   +w
+   CP011104 1060105 IDAQLKSLAVRREAAVLQKTSLRTQQEQTQAQLAFLQRKFSNQALYNWLRGRLAAIYFQFYDLAVARCLMAELAYRWETNDTAARFIKPGAW 1060196
+                    *****9999999******************************************************************************** PP
+
+  temperata    1136 ndlyqgllvgenlklalqrmertyveqnsrkleiiktislksllgeswed..nl..kil...........qahnaitfnl..de...lk... 1204   
+                    +  y gll ge l l+l +me t+++q+ r le+ +t+sl  +      d  nl  ki            ++ n ++f    d    l+   
+   CP011104 1060197 QGTYAGLLAGETLMLSLAQMEDTHLKQEQRALEVERTVSLAEVYAGLSSDkfNLseKISelvgkgsgsagNSSNKLAFGTgtDTktsLQtsi 1060288
+                    ****************************************9876543333113322453112222222112345666643112111121111 PP
+
+  temperata    1205 .....qfgadypglf..nrriksvsvtlpmligpytdicaklslsgvssyttkadlktvekmlkegtraetpytvrsiqpnqqialstgind 1289   
+                         ++  dyp  +   rrik +sv+lp l+gpy d+ a ls  g ++             l +g +               +a+s g+nd
+   CP011104 1060289 sladlNIRNDYPASIgkTRRIKQISVSLPALLGPYQDVQAVLSYGGDTTG------------LAKGCK--------------ALAVSHGVND 1060354
+                    1111134679**9863369********************99998885322............334544..............589******* PP
+
+  temperata    1290 sgmftlnfdderflpfegvgvgs..swnfqftn.tsqd...ldsltdvilhirytaqegsas 1345   
+                    sg f l+f+d +flpfeg+ v    +  + f n ts++   l++l d+ilhiryt  e s  
+   CP011104 1060355 SGQFQLDFNDGKFLPFEGIAVDDkgTLTLSFPNaTSKQkamLQTLNDIILHIRYTILEMSLN 1060416
+                    *********************86224566777734433344899***********9998754 PP
+
+  == domain 4  score: 175.7 bits;  conditional E-value: 5.1e-56
+  temperata       3 nlieaklqenlrdalvdyylgqivphdtafqsqrekiknvddlydfllldtqvsskvktarvahvtqsvqqyinrivlnlesg.ls..mtqe 91     
+                    n + a ++e    al +yy+g++        sq   ikn ddly++ll+d qvs+ +kt+ +a    s+q yinr + n+e   +s  + + 
+   CP011104 1061994 NTLHAFVDESRSAALSEYYIGKV-------SSQNPAIKNRDDLYQYLLIDNQVSAAIKTTPIAEAIASIQLYINRALKNMEGNaVSqvVNRP 1062078
+                    677788889999999*****997.......588899********************************************964144112334 PP
+
+  temperata      92 dadnwqefanrygywaanqqlaiypevyvdptlrltktefffqlesalnqgkltddvaqkailgylnnfeevsnleviagyedgvgiaddkv 183    
+                       +w+++ +ry  wa+  +l  ype y+dpt+r+ +t+++  l  ++ q +l  d  ++a + yl  fe+v+nlev++ y d         
+   CP011104 1062079 FFTDWDKYNKRYSTWASIAKLVYYPENYIDPTMRIGQTKMMDALLQSISQSQLNTDTVENAFMSYLTVFEQVANLEVVSAYHDSTNSDRGLT 1062170
+                    4689*********************************************************************************999999* PP
+
+  temperata     184 yfiaktrtqpyryfwrtldakqrnnqtdelyp.tawsewklinvplenayngivrpiilnnrlyiswfevse.ekqdkdn..si.kyrtkln 270    
+                    yfi +++t+  +y+wr++d ++ n   d  +p  awsew  i+ p+ n y+  +rp+i++ rly+ w+e  +  kq   n  +i  y+  l+
+   CP011104 1062171 YFIGHSKTEVNQYYWRSVDHNKFN---DGKFPaNAWSEWYKIDCPI-NPYQSTIRPVIFQSRLYLIWLEQKKiSKQTESNhqTIeDYHYELK 1062258
+                    ******************976655...55666269**********8.79*******************9654245544441156369***** PP
+
+  temperata     271 lahlafdgtwstgtavred 289    
+                    lah+ +dgtwst  +v e 
+   CP011104 1062259 LAHIRYDGTWSTPITVGEK 1062277
+                    ************9999886 PP
+
+  == domain 5  score: 5.1 bits;  conditional E-value: 0.00015
+  temperata     548 qairlntlfakeliskasqkldkvlswetqniheepit 585    
+                       rlntlfa++l+s+a+  ++ +l  etqni+e p+ 
+   CP011104 1062731 YRTRLNTLFANQLVSRATAGINTILNMETQNIQE-PMM 1062767
+                    4469****************************86.554 PP
+
+  == domain 6  score: 384.5 bits;  conditional E-value: 4.9e-119
+  temperata     589 skpidlkgangiyfwelffhmpfmvawrfnveqryeeasrwikfifnpfessdepaltqdkprywnsrpiidepkrlrslieptdpdaisas 680    
+                    + p+d+ g+n +yfwelf+++p+++a r+  eq ++ea rw+k+++np    ++    q +   wn rp++++ +     ++  dpda++  
+   CP011104 1062886 TEPMDFSGSNSLYFWELFYYVPMLIAQRLLHEQNFDEANRWLKYVWNPSGYIENG---QIQHYNWNVRPLLEDTRWNDDPLNSVDPDAVAQY 1062974
+                    579*********************************************8777664...556678**************************** PP
+
+  temperata     681 epihyrkaifnfyvknvidqgdmeyrklqptartlarlsyatassllgarpdlqlasswqp.itledasykknsavralemisyplpyapvv 771    
+                    +p+hy+ a f   +  ++d+gd  yr+l+  +   a++ y  a  llg +p l l s+w+   +l da+       ++  + +         
+   CP011104 1062975 DPMHYKVATFMRTLDLLLDRGDYAYRQLERDTLNEAKMWYMQALHLLGDKPHLPLNSTWNNeKSLSDAANPERQKAHSHAIAAL------RQ 1063060
+                    ***********************************************************8626799998766655544443333......33 PP
+
+  temperata     772 hdktiraldndlfmkpineeltalwdrienriynlrhnltldgkeismdlydskisprglmnqryqrvvaarnasrmnfrvpnyrfepmlar 863    
+                     + t  + + dlf+  +ne + + w+++e+r+ynlrhnl++dg+ + + +y +   p+ l+             s  +  +  +rf  ml  
+   CP011104 1063061 GESTQVSSQTDLFLPQVNEVMLSYWQKLEQRLYNLRHNLSIDGQLLHLPIYATPADPKALLSAAVANSQGGAALS--QPFMSLWRFPHMLEN 1063150
+                    4566667788***************************************************98765554443333..3345679******** PP
+
+  temperata     864 aksgvdtliqfgstllsllerkdnlsfesfqmvqnndlyrfavdlqqqdininqanldalqvskqsaqeryehykslydenissteqqviel 955    
+                    a+  v  l qfgstl  ++er+d  +++ +   q ++l    + +q++ i+  +a+   l+ sk  aq r++ y  lydeni + e+q +++
+   CP011104 1063151 ARGMVSQLTQFGSTLQNIIERQDAEALNVLLQNQAKELILTNISIQNKTIEELDAEKTVLEKSKTGAQSRFNSYGKLYDENINAGEHQALDM 1063242
+                    ******************************************************************************************** PP
+
+  temperata     956 qsqassallasqvsrtaaaaldlipniyglavggsrwgaalnavaeiatlkyqsdstkaeslsvsesyrrrrqewelqykqadwevksieqq 1047   
+                    +  + s     +  + aaaald++pniyglavggs++ga  na+a    +  +     a+ +  se +rrrrqewe+q ++a+ e++ i+ q
+   CP011104 1063243 KVASHSITSGLKSLHMAAAALDMVPNIYGLAVGGSHYGAIANAIAIGGGIAADGLLIEADKVLQSEIWRRRRQEWEIQRNNAQTELNQIDAQ 1063334
+                    9988888888888899*****************************999999999999*********************************** PP
+
+  temperata    1048 isiqqlqvsaarkrlaqveaqqqqsqallayfssrftneslytwmisqisslylqaydavsslclsaqaslqyelglgeqnfidgaswndly 1139   
+                    +    ++  aa  + + +++qq+q++a l+++  +f n++l+ w+  +++++y+q yd   s cl a+ + ++e       fi   sw+  +
+   CP011104 1063335 LGSLAVRREAAVLQKTSLKTQQEQTHAHLTFLQRKFNNQALFNWLRGRLAAIYFQFYDLAVSRCLMAEMAYRWETNETTTSFIKPGSWQGTH 1063426
+                    ***9**************************************************************************************** PP
+
+  temperata    1140 qgllvgenlklalqrmertyveqnsrkleiiktislksllgeswednlkilqahnaitfnldelk.qfgadypglf...nrriksvsvtlpm 1227   
+                     gll ge l l l +me +++  + r le+ +t+sl  +  e  +d + +      it  l++ k ++g d  g+    n+ i +v ++   
+   CP011104 1063427 AGLLAGETLMLNLAQMEDAHLRWDKRALEVERTVSLADVYTEPGQDRIDLA---TEITDLLEKRKdNLGNDNNGIRlndNKLIATVNLANLN 1063515
+                    **************************************9999888876543...23444444433134555555421113334444443333 PP
+
+  temperata    1228 ligpytdicaklslsgvssyttkadl...ktvekmlkegtraetpytvrsiqpnqqialstgindsgmftlnfdderflpfegvgvgss..w 1314   
+                    +   y   + k       s t  a l   + v+ +l  g r+et    r  +  + +a+s g+ dsg f l+f++ +flpfeg+ v      
+   CP011104 1063516 IREDYPASVGKTRRIKQISVTLPALLgpyQDVQAILSYG-RSET----RLAESCKSLAVSHGMSDSGQFQLDFNNGKFLPFEGIAVDDKgtL 1063602
+                    444444444444444444444444331113344444433.5565....344566789*****************************875114 PP
+
+  temperata    1315 nfqftntsqd....ldsltdvilhirytaq 1340   
+                     + f n+++     l++l+d+ilhiryt +
+   CP011104 1063603 ILSFPNATDKqqamLQTLSDIILHIRYTIR 1063632
+                    56776654321234899**********976 PP
+
+  == domain 7  score: 168.5 bits;  conditional E-value: 7.3e-54
+  temperata       4 lieaklqenlrdalvdyylgqivphdtafqsqrekiknvddlydfllldtqvsskvktarvahvtqsvqqyinrivlnlesgl.smtqedad 94     
+                     +e +l+e  rdalv  y+  + p    ++ q      v+dly++ll+d +v+  v t+rva+   s+qqy+ r+v   e g  +m    a+
+   CP011104 1077278 TMEKQLNESQRDALVTGYMNFVAPTLKGVNKQ---PVTVEDLYEYLLIDPEVADEVETSRVAQAIASIQQYMTRLVNGSEPGRqAMEPSTAN 1077366
+                    68999*******************87666655...4679*****************************************9963688999** PP
+
+  temperata      95 nwqefanrygywaanqqlaiypevyvdptlrltktefffqlesalnqgkltddvaqkailgylnnfeevsnleviagyedgvgiaddkvyfi 186    
+                    +w++   +y  waa  ++  y e y+ p  r  k+ +f +le++lnq +l  d  q ++l yln fe vsnl v++gy +    a    yfi
+   CP011104 1077367 EWRDNDSQYAIWAAGAEVGNYAENYISPITRQEKSHYFSELETTLNQNRLDPDRVQDSVLAYLNAFEAVSNLYVLSGYINQDEFAKAIYYFI 1077458
+                    ******************************************************************************************** PP
+
+  temperata     187 aktrtqpyryfwrtld.akqrnnq.tdelyptawsewklinvpl..enayngivrpiilnnrlyiswfe....vseekqdkdnsikyrtkln 270    
+                     +t t+pyry+wr +d +k+r++   + + p +w +w+ i +pl  +   +  vrp+  n+rly++w+e    v ++ + kd    +   ++
+   CP011104 1077459 GRTTTKPYRYYWRQMDlSKNRQDPaGNPVTPNCWNDWQEITLPLsgDTVLEHTVRPVFYNDRLYVAWVErdpaVQKDANGKDIGKTHAYSIK 1077550
+                    ****************44666664156799**************43467899****************933334444455665556666777 PP
+
+  temperata     271 lahlafdgtwst 282    
+                    + +  +d tw++
+   CP011104 1077551 FGYKRYDDTWTA 1077562
+                    888889999975 PP
+
+  == domain 8  score: 633.9 bits;  conditional E-value: 2.6e-194
+  temperata     550 irlntlfakeliskasqkldkvlswetqn...iheepitgndskpidlkgangiyfwelffhmpfmvawrfnveqryeeasrwikfifnpfe 638    
+                     rlnt f + li ka   ld +l +  q    +  + +t   s  +d++g+ng+yfwelffh+pf+va rf  eq++  a + +++if+p  
+   CP011104 1078024 TRLNTTFVRTLIEKANLGLDSLLNYTLQAdpsLEADLVTNGKSELMDFNGSNGLYFWELFFHLPFLVATRFANEQQFSSAQKSLHYIFDPAM 1078115
+                    69***********************99853337778899999************************************************98 PP
+
+  temperata     639 ssdepaltqdkprywnsrpiidepkrl.rslieptdpdaisasepihyrkaifnfyvknvidqgdmeyrklqptartlarlsyatassllga 729    
+                     s      ++ p ywn rp+++e   l r   +  dpd+ + + p+ y+ka+f  yv n+i qgdm yr+l     t ar+ y  a+ llg 
+   CP011104 1078116 KSKS----DNVPAYWNVRPLVEENSDLsRHSGDSIDPDTQAYAHPVIYKKAVFIAYVSNLIAQGDMWYRQLTRDGLTQARVYYNLAAELLGP 1078203
+                    8764....678************99884677899********************************************************** PP
+
+  temperata     730 rpdlqlasswqpitledasykknsavralem..i..syplpyapvvhdktiraldndlfmkpineeltalwdrienriynlrhnltldgkei 817    
+                    rpd+ l+s+w p tl+  +  +++a+r +e+  +     lp  p      ++  dn  f  p+n  + + wd ++ r+ynlrhnlt+dgk +
+   CP011104 1078204 RPDVSLSSTWTPQTLDILAAGQKTALRDFELqlVnsNTILPALPGRNVSYLKLADNGYFNEPLNVLMLSHWDTLDARLYNLRHNLTVDGKPL 1078295
+                    *****************99999*****988632321345899999999999999************************************** PP
+
+  temperata     818 smdlydskisprglmnqryqrvvaarnasrmnfrvpnyrfepmlaraksgvdtliqfgstllsllerkdnlsfesfqmvqnndlyrfavdlq 909    
+                    s+ ly + + p  l+ qr q    +   s   + vp yrf  ml ra s v tl  fg  llsller +    e +   q  d+  +a+ lq
+   CP011104 1078296 SLPLYAAPVDPVALLAQRAQSGTLTNGVSGAMLTVPPYRFSAMLPRAYSAVGTLTGFGQNLLSLLERSERAGQEELAQQQLLDMSSYAITLQ 1078387
+                    ******************************************************************************************** PP
+
+  temperata     910 qqdininqanldalqvskqsaqeryehykslydenissteqqvielqsqassallasqvsrtaaaaldlipniyglavggsrwgaalnavae 1001   
+                    qq ++   a+  al  s+ +aq+r++hy +ly++niss+eq v++ q+ a s + +s   +ta+ al +ipni+gla gg r+    +a+a 
+   CP011104 1078388 QQALDGLAADRLALLASQATAQQRHDHYYTLYQNNISSAEQLVMDTQTSAQSLISSSTGVQTASGALKVIPNIFGLADGGMRYEGVTEAIAS 1078479
+                    ******************************************************************************************** PP
+
+  temperata    1002 iatlkyqsdstkaeslsvsesyrrrrqewelqykqadwevksieqqisiqqlqvsaarkrlaqveaqqqqsqallayfssrftneslytwmi 1093   
+                          q     ae l+ +e yrrrr+ew++qy+qa+ ev ++++q+    ++  aa+  l q +aqq q +++l+y+++rft+ +ly w+ 
+   CP011104 1078480 GLVTAGQVACVVAERLATTENYRRRREEWQIQYQQAQSEVDALQKQLDALAVREKAAQTFLQQAKAQQVQIRTMLTYLTTRFTQATLYQWLS 1078571
+                    99999*************************************************************************************** PP
+
+  temperata    1094 sqisslylqaydavsslclsaqaslqyelglgeqnfidgaswndlyqgllvgenlklalqrmertyveqnsrkleiiktislksllgeswed 1185   
+                     q+s+ly qaydav +lclsaqa  qyelg     fi+  +wnd y+gl vge l+l l++me +y+ +  r+l++i+t+slk llg+   d
+   CP011104 1078572 GQLSALYYQAYDAVVALCLSAQACWQYELGDYATAFIQTGTWNDHYRGLQVGETLQLNLHQMEAAYLARHERRLNVIRTVSLKNLLGD---D 1078660
+                    ***************************************************************************************7...6 PP
+
+  temperata    1186 nlkilqahnaitfnldelkqfgadypglfnrriksvsvtlpmligpytdicaklslsgvssyttkadlktvekmlkegtrae..tpytvrsi 1275   
+                     ++ l++   + f l e k f  dypg + r+ik+vsvtlp ligpy ++ a l+ +  ss    ad++ v+++     + e  + + v  +
+   CP011104 1078661 GFNKLKTEGKVDFTLGE-KLFDNDYPGHYLRQIKTVSVTLPTLIGPYQNVKATLTQTS-SSTLLAADINGVKRLNDTTGKKEgdATHIVTNL 1078750
+                    6777788999*****99.89******************************99988654.5556789*****9998776666512567799** PP
+
+  temperata    1276 qpnqqialstgindsgmftlnfdderflpfegvgvgsswnfqftntsqd................ldsltdvilhirytaqegsasfgvavk 1351   
+                    +  qq+ ls+gind+g f l ++der+l feg g  s w ++f  + ++                l  + dv+++++yta +g asf   vk
+   CP011104 1078751 RASQQVVLSSGINDAGSFELRLEDERYLSFEGTGAVSKWTLNFPRSVDEhiddktlkademqaalLANMDDVLVQVHYTACDGGASFANQVK 1078842
+                    ***************************************99996543211111222212222222446789********************9 PP
+
+  temperata    1352 ellk 1355   
+                    + l 
+   CP011104 1078843 KTLS 1078846
+                    9875 PP
+
+
+
+Internal pipeline statistics summary:
+-------------------------------------
+Query model(s):                              1  (1361 nodes)
+Target sequences:                            1  (1715699 residues searched)
+Passed MSV filter:                         1  (1); expected 0.0 (0.02)
+Passed bias filter:                        1  (1); expected 0.0 (0.02)
+Passed Vit filter:                         1  (1); expected 0.0 (0.001)
+Passed Fwd filter:                         1  (1); expected 0.0 (1e-05)
+Initial search space (Z):                  1  [actual number of targets]
+Domain search space  (domZ):               1  [number of targets reported over threshold]
+# CPU time: 15.44u 0.35s 00:00:15.79 Elapsed: 00:00:16.34
+# Mc/sec: 142.90
+//
+[ok]

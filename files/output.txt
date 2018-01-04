@@ -1,38 +1,21 @@
-# hmmsearch :: search profile(s) against a sequence database
-# HMMER 3.1b2 (February 2015); http://hmmer.org/
-# Copyright (C) 2015 Howard Hughes Medical Institute.
-# Freely distributed under the GNU General Public License (GPLv3).
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# query HMM file:                  refs/testprofile.hmm
-# target sequence database:        ./files/cleanedblast.fasta
-# output directed to file:         ./files/output.txt
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-Query:       align  [M=1362]
-Scores for complete sequences (score includes all domains):
-   --- full sequence ---   --- best 1 domain ---    -#dom-
-    E-value  score  bias    E-value  score  bias    exp  N  Sequence Description
-    ------- ------ -----    ------- ------ -----   ---- --  -------- -----------
-
-   [No hits detected that satisfy reporting thresholds]
-
-
-Domain annotation for each sequence (and alignments):
-
-   [No targets detected that satisfy reporting thresholds]
-
-
-Internal pipeline statistics summary:
--------------------------------------
-Query model(s):                              1  (1362 nodes)
-Target sequences:                            1  (4275406 residues searched)
-Passed MSV filter:                         0  (0); expected 0.0 (0.02)
-Passed bias filter:                        0  (0); expected 0.0 (0.02)
-Passed Vit filter:                         0  (0); expected 0.0 (0.001)
-Passed Fwd filter:                         0  (0); expected 0.0 (1e-05)
-Initial search space (Z):                  1  [actual number of targets]
-Domain search space  (domZ):               0  [number of targets reported over threshold]
-# CPU time: 0.45u 0.01s 00:00:00.46 Elapsed: 00:00:00.47
-# Mc/sec: 12389.58
-//
-[ok]
+#                                                                            --- full sequence --- -------------- this domain -------------   hmm coord   ali coord   env coord
+# target name        accession   tlen query name           accession   qlen   E-value  score  bias   #  of  c-Evalue  i-Evalue  score  bias  from    to  from    to  from    to  acc description of target
+#------------------- ---------- ----- -------------------- ---------- ----- --------- ------ ----- --- --- --------- --------- ------ ----- ----- ----- ----- ----- ----- ----- ---- ---------------------
+CP011104             -          1715699 align                -           1362         0 1877.7  84.7   1   8     1e-53     1e-53  168.1   8.9     3   311 1058816 1059121 1058814 1059176 0.82 Photorhabdus temperata subsp. thracensis strain DSM 15199, complete genome
+CP011104             -          1715699 align                -           1362         0 1877.7  84.7   2   8   5.9e-05   5.9e-05    6.5   0.0   538   592 1059467 1059521 1059447 1059527 0.84 Photorhabdus temperata subsp. thracensis strain DSM 15199, complete genome
+CP011104             -          1715699 align                -           1362         0 1877.7  84.7   3   8  5.9e-120  5.9e-120  387.6   9.2   596  1346 1059654 1060410 1059644 1060418 0.86 Photorhabdus temperata subsp. thracensis strain DSM 15199, complete genome
+CP011104             -          1715699 align                -           1362         0 1877.7  84.7   4   8   2.5e-55   2.5e-55  173.4   6.6     3   295 1061994 1062278 1061992 1062298 0.91 Photorhabdus temperata subsp. thracensis strain DSM 15199, complete genome
+CP011104             -          1715699 align                -           1362         0 1877.7  84.7   5   8   0.00059   0.00059    3.2   0.0   546   594 1062720 1062767 1062691 1062783 0.76 Photorhabdus temperata subsp. thracensis strain DSM 15199, complete genome
+CP011104             -          1715699 align                -           1362         0 1877.7  84.7   6   8  1.4e-124  1.4e-124  402.8  10.9   596  1348 1062884 1063633 1062874 1063640 0.87 Photorhabdus temperata subsp. thracensis strain DSM 15199, complete genome
+CP011104             -          1715699 align                -           1362         0 1877.7  84.7   7   8   6.6e-56   6.6e-56  175.3   2.4     3   290 1077277 1077565 1077275 1077584 0.87 Photorhabdus temperata subsp. thracensis strain DSM 15199, complete genome
+CP011104             -          1715699 align                -           1362         0 1877.7  84.7   8   8  1.6e-179  1.6e-179  584.9   6.4   558  1361 1078023 1078845 1078010 1078846 0.92 Photorhabdus temperata subsp. thracensis strain DSM 15199, complete genome
+#
+# Program:         hmmsearch
+# Version:         3.1b2 (February 2015)
+# Pipeline mode:   SEARCH
+# Query file:      refs/testprofile.hmm
+# Target file:     files/cleanedblast.fasta
+# Option settings: hmmsearch --domtblout files/output.txt refs/testprofile.hmm files/cleanedblast.fasta 
+# Current dir:     /Users/gabefoley/Dropbox/Code/Python Workspace/phyloisland
+# Date:            Wed Jan  3 15:40:07 2018
+# [ok]
