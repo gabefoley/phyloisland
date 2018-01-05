@@ -40,103 +40,9 @@ class SmallRecord():
     def get_sequence(self):
         return self.sequence
 
-def makeQueryString(iter, info = "", link = "", final = ""):
-    queryString = ""
-    for item in iter:
-        queryString += item + info + link
-
-    # Remove the final joining string from the queryString
-    print ('This is the query string')
-    print (queryString)
-
-    queryString = queryString[:-len(link)] + final
-    print ('This is the query string')
-    print (queryString)
-    return queryString
-
-
-def getFullGenome(region_file, region_name):
-    records = SeqIO.parse(region_file, "fasta")
-    Entrez.email = "gabriel.foley@uqconnect.edu.au"
-    species_names = set()
-    genome_ids = set()
-    record_ids = []
 
 
 
-    for record in records:
-        record_ids.append(record.id)
-    queryString = makeQueryString(record_ids, link="+OR+")
-    # queryString = ""
-    #
-    # for protein in records:
-    #     queryString += protein.id + "+OR+"
-    #
-    # # Remove the final "+OR+" from the queryString
-    # queryString = queryString[:-4]
-
-    protein_handle = Entrez.efetch(db="protein", id=queryString, rettype="gb")
-
-    protein_records = SeqIO.parse(protein_handle, "gb")
-
-    for record in protein_records:
-        species_names.add(record.annotations.get('organism'))
-
-        #    genome_records = SeqIO.parse(genome_handle, "gb")
-        #
-        #     for record in genome_records:
-        #         print (record)
-
-    queryString = makeQueryString(species_names, "[orgn]", " OR ")
-    # queryString = ""
-    # for species in species_names:
-    #     queryString += species + "[orgn] OR "
-    #
-    # # Remove the final "+OR+" from the queryString
-    # queryString = queryString[:-4]
-
-    queryString +=" AND genome[title] NOT shotgun[title] NOT segment[title]"
-    print (queryString)
-
-
-    genome_handle = Entrez.esearch(db="nucleotide", term= queryString, rettype="gb")
-
-    root = ET.parse(genome_handle)
-    for result in root.xpath('///Id/text()'):
-        genome_ids.add(result)
-
-    queryString = ""
-
-    for genome_id in genome_ids:
-        queryString += genome_id + "+OR+"
-
-    genome_records = Entrez.efetch(db="nucleotide", id=queryString, rettype="gb")
-
-    records = SeqIO.parse(genome_records, "gb")
-
-    found_species = []
-    unmappable_species = []
-
-    for record in records:
-        found_species.append(record.annotations.get('organism'))
-
-        if record.description in seqDict:
-            if 'RefSeq' not in record.annotations.get('keywords'):
-                seqDict[record.description] = record
-
-        # print (record.description)
-        # print (record)
-        # print (record.name)
-        # print (record.annotations.get('keywords'))
-
-        else:
-            seqDict[record.description] = record
-
-    for species in species_names:
-        if species not in found_species:
-            unmappable_species.append(species)
-
-    return unmappable_species
 
         # print (genome_handle.read())
 
@@ -354,9 +260,10 @@ def getCoords(record, set_id):
 
 
 def getDistance(overlap_1, overlap_2):
-    loc_1_start, loc_1_end = overlap_1.split(":")
-    loc_2_start, loc_2_end = overlap_1.split(":")
-    if loc_1_end > loc_2_start or loc_2_end > loc_1_start:
+    loc_1_start, loc_1_end = [int(x) for x in overlap_1.split(":")]
+    loc_2_start, loc_2_end = [int(x) for x in overlap_2.split(":")]
+
+    if loc_1_end > loc_2_start and loc_2_end > loc_1_start:
         return ""
     elif loc_1_end < loc_2_start:
         return str(loc_2_start - loc_1_end)
@@ -369,8 +276,8 @@ def addToRecord(old, new, region):
     print ("**OLD**", old)
     print ("**NEW**", new)
     print ("**REGION**", region)
-    old.a2 = new.annotations[region] if region in old.annotations.keys() else "Not tested"
-    old.a2_loc = new.annotations[region + "_location"] if region + "_location" in new.annotations.keys() else "Not tested"
+    old.a2 = new.annotations[region] if region in old.annotations.keys() else ""
+    old.a2_loc = new.annotations[region + "_location"] if region + "_location" in new.annotations.keys() else ""
     return old
 
 

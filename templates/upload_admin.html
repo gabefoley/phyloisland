@@ -20,17 +20,6 @@
 {#                {% endwith %}#}
 
 
-            {{ form.name.label }}
-                {{ form.name() }}
-
-              {% if form.name.errors %}
-                {% for error in form.name.errors %}
-                  <p class="error-message">{{ error }}</p>
-                {% endfor %}
-              {% endif %}
-
-            <br>
-            <br>
 
 
             {{ form.file.label }}

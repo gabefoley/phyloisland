@@ -1,0 +1,261 @@
+# hmmsearch :: search profile(s) against a sequence database
+# HMMER 3.1b2 (February 2015); http://hmmer.org/
+# Copyright (C) 2015 Howard Hughes Medical Institute.
+# Freely distributed under the GNU General Public License (GPLv3).
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# query HMM file:                  refs/testprofile.hmm
+# target sequence database:        files/cleanedblast.fasta
+# output directed to file:         files/output.txt
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Query:       align  [M=1362]
+Scores for complete sequences (score includes all domains):
+   --- full sequence ---   --- best 1 domain ---    -#dom-
+    E-value  score  bias    E-value  score  bias    exp  N  Sequence Description
+    ------- ------ -----    ------- ------ -----   ---- --  -------- -----------
+          0 1877.7  84.7   1.6e-179  584.9   6.4    9.7  8  CP011104  Photorhabdus temperata subsp. thracensis strain DSM
+
+
+Domain annotation for each sequence (and alignments):
+>> CP011104  Photorhabdus temperata subsp. thracensis strain DSM 15199, complete genome
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  168.1   8.9     1e-53     1e-53       3     311 .. 1058816 1059121 .. 1058814 1059176 .. 0.82
+   2 !    6.5   0.0   5.9e-05   5.9e-05     538     592 .. 1059467 1059521 .. 1059447 1059527 .. 0.84
+   3 !  387.6   9.2  5.9e-120  5.9e-120     596    1346 .. 1059654 1060410 .. 1059644 1060418 .. 0.86
+   4 !  173.4   6.6   2.5e-55   2.5e-55       3     295 .. 1061994 1062278 .. 1061992 1062298 .. 0.91
+   5 !    3.2   0.0   0.00059   0.00059     546     594 .. 1062720 1062767 .. 1062691 1062783 .. 0.76
+   6 !  402.8  10.9  1.4e-124  1.4e-124     596    1348 .. 1062884 1063633 .. 1062874 1063640 .. 0.87
+   7 !  175.3   2.4   6.6e-56   6.6e-56       3     290 .. 1077277 1077565 .. 1077275 1077584 .. 0.87
+   8 !  584.9   6.4  1.6e-179  1.6e-179     558    1361 .. 1078023 1078845 .. 1078010 1078846 .. 0.92
+
+  Alignments for each domain:
+  == domain 1  score: 168.1 bits;  conditional E-value: 1e-53
+     align       3 nsieaklqedlrdalvdyylgqivpkgkdfqfyrdkiknvddlydfllldtqvsskvitsrvshvtqsiqqyinrivlnlepgl..s.mtqee 92     
+                   n++ a l+e    al  yy+ ++  k          ik  ddly++ll+d qvs+ + t+r++    siq y+nr + n+e     s ++++ 
+  CP011104 1058816 NTLHAFLDEFRSAALSTYYIRKVASKD-------AVIKSRDDLYQYLLIDNQVSAAIKTTRIAEAIASIQLYVNRALENVEENAdsSvISRQF 1058901
+                   667777777777788888888887664.......4699******************************************9754224145566 PP
+
+     align      93 tydwqefanrygywsanqqlrlypeiyvdptlrltktefffqlesvlnqgkltdnvaqkavlgylnnfeevsnleiisgyedgidlandktyf 185    
+                     dw+++ +ry  w+   ql  ype y+dpt+r+ +t+++  l   + q +l  +  + a + yl  fe+v+nle+is y d i+  +  tyf
+  CP011104 1058902 FIDWDKYNKRYSTWAGVSQLVYYPENYIDPTMRIGQTKMMGALLQSVSQSQLKSDTVEDAFMSYLTSFEQVANLEVISAYHDNINNDQGLTYF 1058994
+                   77****************************************99999********************************************** PP
+
+     align     186 iaktrtqpyryfwrtldmkqrntdsnelyptawsewkpisvplenarngvvrpvimnnrlyiswfevsk..eeeknkndesktiiryrtklnl 276    
+                   i ++ t+   y+wr++d  +  +d  ++   awsew  i  p++  +n  +rpvi + rly+ w+e     ++  n +d  +t   yr  l+l
+  CP011104 1058995 IGRSETDAGEYYWRSVDHSKF-SD-GKFAANAWSEWSKIDCPINPYKNT-IRPVIYKSRLYLIWLEQKEitKQTGNSKDGYQTETDYRYELKL 1059084
+                   *****************7654.34.568899************988885.7**************9654113445778999************ PP
+
+     align     277 ahlgfdgtwssgtt..vreevlddamdkmiavldrtg 311    
+                   ah+ +dgtw +  t  v e++    +++    l  +g
+  CP011104 1059085 AHIRYDGTWNTPITfdVNEKISALKLENKAPGLYCAG 1059121
+                   *********9987733566666555555555555555 PP
+
+  == domain 2  score: 6.5 bits;  conditional E-value: 5.9e-05
+     align     538 qtqylqfpenpptpvwyadkqirlntlfakelvskasqkldlvlswdtqnlpees 592    
+                   ++  l+  en    + +   + rlntlfa++lv +a+  +d +ls +tqn+ e  
+  CP011104 1059467 NALTLHHNENGAQYMQWGVYRTRLNTLFARQLVNRATTGIDTILSMETQNIQEPQ 1059521
+                   4456777888888888888999****************************99865 PP
+
+  == domain 3  score: 387.6 bits;  conditional E-value: 5.9e-120
+     align     596 sgaepvdlkgangiyfwelffhmpfmvawrfnveqryeeanrwlkyifdpyenedkpalkqgkprywnsrplidepkknyslmqpsdpdaias 688    
+                      ep+d+ g+n +yfwelf++ p++va r+  eq ++eanrwlky++ p     +    q +   wn rpl+++   n   ++  dpda+a 
+  CP011104 1059654 DHMEPMDFSGSNSLYFWELFYYTPMLVAQRLLHEQNFDEANRWLKYVWSPSGYIIH---GQIQNYRWNVRPLLEDSGWNNDPLDSVDPDAVAQ 1059743
+                   5689**********************************************876554...4556678*************************** PP
+
+     align     689 gepihyrkaifyflvrnliddgdmeyrklqptartiarlsyatassllgrrpdvqlasfwqplsledal.yrydnselrqlemqsqplphipv 780    
+                    +p+hy+ + f   +  l+  gd  yr+l+  +   a++ y     llg +p + l   w    l+ a     +++  r +    q  p  p+
+  CP011104 1059744 HDPMHYKVSTFMRTLDLLMARGDYAYRQLERDTLNEAKMWYMQVLHLLGDKPYLPLNPTWGDPRLDKAAdITTQKAYSRSMVTLRQGTPT-PL 1059835
+                   ************************************************************998888776145566667777776776664.33 PP
+
+     align     781 vhdntiraldnelfmkpinnelteiwdrmenriynlrhnltldgkeinmalydekisprdlmnlryqrvvtarnasrlnfktpnyrfepllar 873    
+                       t  +l  +lf+  +n+ + + w+ + +r+ynlrhnl++dg+ +n+ +y     p+ l+         + n    ++ t+ +rf  +l +
+  CP011104 1059836 -SLRTANSL-TDLFLPQVNEVMMNYWQTLAQRLYNLRHNLSIDGQPLNLPIYATPADPKALLSAAVANSQGSGN--LPQISTSLWRFPHMLEN 1059924
+                   .23455555.59***********************************************999988877777777..45678999********* PP
+
+     align     874 aragvetliqfgstllsllerkdslsfekfqmlqssdlyrfsidlqqqeininqaslevlqvskksaqerhehfkglydenissteqqvielq 966    
+                   ar+ v  l qfgstl  ++er+d+ +++ +   q+++l    + +q++ i+  +a   vl+ ++  aq r + +  lydeni + e++ + l+
+  CP011104 1059925 ARSMVSQLTQFGSTLQNIIERQDAEALNALLQNQAAELILTNLSIQDKTIEELDAEKVVLDKTRAGAQSRFDNYSKLYDENINAGEDRAMSLR 1060017
+                   ********************************************************************************************* PP
+
+     align     967 sqsasallaaqtlrtgaaaldmlpniyglavggsrwgaalsaaaemvmikhqsdsikadslnvsesyrrrrqewevqykqaewevnsidqqin 1059   
+                   + +a    a q+ r   aa d++pni+g+a ggsrwga  +a+  ++    +     ad +  se+yrrrrqewe+q ++ae e++ id q++
+  CP011104 1060018 ASAAGLTTAVQASRLAGAAADLVPNIFGFAGGGSRWGAIAEATGYVMEFSANVMNTEADKITQSETYRRRRQEWEIQRNNAEAEIKQIDAQLK 1060110
+                   9999999999****************************99999999999999999************************************** PP
+
+     align    1060 vqnlqltasmkrlaqveaeqqkslalldyfssrftneslytwmisqlsnlylqaydavsslclsaeaslqyel.dseqtfiegsswndlyqgl 1151   
+                      ++  a++ + + + ++q+++ a l ++  +f+n++ly w+  +l+ +y+q yd   + cl ae + ++e  d+   fi+  +w+  y gl
+  CP011104 1060111 SLAVRREAAVLQKTSLRTQQEQTQAQLAFLQRKFSNQALYNWLRGRLAAIYFQFYDLAVARCLMAELAYRWETnDTAARFIKPGAWQGTYAGL 1060203
+                   ***********************************************************************97367889************** PP
+
+     align    1152 msgetlklalqrmerayveqnsrlqeitktislkal......rktawe..................sdla....tlkqhslit.fnlqesdfa 1215   
+                   ++getl l+l +me ++++q+ r  e+ +t+sl  +       k                      + la    t  + sl t + l + ++ 
+  CP011104 1060204 LAGETLMLSLAQMEDTHLKQEQRALEVERTVSLAEVyaglssDKFNLSekiselvgkgsgsagnssNKLAfgtgTDTKTSLQTsISLADLNIR 1060296
+                   ********************************9754111111122222111001111111111111233322212223333322566677888 PP
+
+     align    1216 kdypnla..nrriksvsvslpmligpyedicaqlslgvntrmvkadiqtmeklvkeginadspylarsihpnqqislstgindsgmftlnfdd 1306   
+                   +dyp      rrik +svslp l+gpy+d+ a ls g +t                        la+     + +++s g+ndsg f l+f+d
+  CP011104 1060297 NDYPASIgkTRRIKQISVSLPALLGPYQDVQAVLSYGGDTTG----------------------LAKG---CKALAVSHGVNDSGQFQLDFND 1060364
+                   9***8642379*************************987642......................3332...2457899*************** PP
+
+     align    1307 erflpfegagves..swtfgftnnsqn....ldsltdvilhvrytv 1346   
+                    +flpfeg  v+   + t+ f n + +    l++l d+ilh+ryt+
+  CP011104 1060365 GKFLPFEGIAVDDkgTLTLSFPNATSKqkamLQTLNDIILHIRYTI 1060410
+                   ***********87225667887764321234899**********97 PP
+
+  == domain 4  score: 173.4 bits;  conditional E-value: 2.5e-55
+     align       3 nsieaklqedlrdalvdyylgqivpkgkdfqfyrdkiknvddlydfllldtqvsskvitsrvshvtqsiqqyinrivlnlepg.lsmtqeety 94     
+                   n++ a ++e    al +yy+g++  +          ikn ddly++ll+d qvs+ + t+ ++    siq yinr + n+e   +s   +  +
+  CP011104 1061994 NTLHAFVDESRSAALSEYYIGKVSSQ-------NPAIKNRDDLYQYLLIDNQVSAAIKTTPIAEAIASIQLYINRALKNMEGNaVSQVVNRPF 1062079
+                   78888999999999*******99765.......4679*******************************************9642555544433 PP
+
+     align      95 ..dwqefanrygywsanqqlrlypeiyvdptlrltktefffqlesvlnqgkltdnvaqkavlgylnnfeevsnleiisgyedgidlandktyf 185    
+                     dw+++ +ry  w++  +l  ype y+dpt+r+ +t+++  l   + q +l  +  ++a + yl  fe+v+nle++s y d  +     tyf
+  CP011104 1062080 ftDWDKYNKRYSTWASIAKLVYYPENYIDPTMRIGQTKMMDALLQSISQSQLNTDTVENAFMSYLTVFEQVANLEVVSAYHDSTNSDRGLTYF 1062172
+                   34*****************************************999******99999************************************ PP
+
+     align     186 iaktrtqpyryfwrtldmkqrntdsnelyptawsewkpisvplenarngvvrpvimnnrlyiswfevskeeeknkndesktiiryrtklnlah 278    
+                   i +++t+  +y+wr++d ++ n    ++   awsew  i  p++   +  +rpvi++ rly+ w+e  k   k+ + + +ti  y+  l+lah
+  CP011104 1062173 IGHSKTEVNQYYWRSVDHNKFND--GKFPANAWSEWYKIDCPIN-PYQSTIRPVIFQSRLYLIWLEQKK-ISKQTESNHQTIEDYHYELKLAH 1062261
+                   *****************988774..345668***********95.667889***************765.5677788899************* PP
+
+     align     279 lgfdgtwssgttvreev 295    
+                   + +dgtws+  tv e+v
+  CP011104 1062262 IRYDGTWSTPITVGEKV 1062278
+                   *************9987 PP
+
+  == domain 5  score: 3.2 bits;  conditional E-value: 0.00059
+     align     546 enpptpvwyadkqirlntlfakelvskasqkldlvlswdtqnlpeesis 594    
+                    n    + +   + rlntlfa++lvs+a+  ++ +l  +tqn+ e    
+  CP011104 1062720 TNGAQYMQWGAYRTRLNTLFANQLVSRATAGINTILNMETQNIQEPM-M 1062767
+                   45555555666789****************************98754.3 PP
+
+  == domain 6  score: 402.8 bits;  conditional E-value: 1.4e-124
+     align     596 sgaepvdlkgangiyfwelffhmpfmvawrfnveqryeeanrwlkyifdpyenedkpalkqgkprywnsrplidepkknyslmqpsdpdaias 688    
+                   + +ep+d+ g+n +yfwelf+++p+++a r+  eq ++eanrwlky+++p    ++  +   +   wn rpl+++ + n   ++  dpda+a 
+  CP011104 1062884 TFTEPMDFSGSNSLYFWELFYYVPMLIAQRLLHEQNFDEANRWLKYVWNPSGYIENGQI---QHYNWNVRPLLEDTRWNDDPLNSVDPDAVAQ 1062973
+                   569***********************************************988777654...5578*************************** PP
+
+     align     689 gepihyrkaifyflvrnliddgdmeyrklqptartiarlsyatassllgrrpdvqlasfwqp.lsledalyrydnselrqlemqsqplphipv 780    
+                    +p+hy+ a f   +  l+d gd  yr+l+  +   a++ y  a  llg +p + l s w+   sl da     n e +  + +s+ +  +  
+  CP011104 1062974 YDPMHYKVATFMRTLDLLLDRGDYAYRQLERDTLNEAKMWYMQALHLLGDKPHLPLNSTWNNeKSLSDA----ANPERQ--KAHSHAIAALRQ 1063060
+                   ************************************************************852456655....566643..456777777765 PP
+
+     align     781 vhdntiraldnelfmkpinnelteiwdrmenriynlrhnltldgkeinmalydekisprdlmnlryqrvvtarnasrlnfktpnyrfepllar 873    
+                     + t  + + +lf+  +n+ + + w+++e+r+ynlrhnl++dg+ + + +y     p+ l+                +   + +rf  +l +
+  CP011104 1063061 G-ESTQVSSQTDLFLPQVNEVMLSYWQKLEQRLYNLRHNLSIDGQLLHLPIYATPADPKALLSAAVANSQGGAA--LSQPFMSLWRFPHMLEN 1063150
+                   4.566777899******************************************999999998876554443333..233345679******** PP
+
+     align     874 aragvetliqfgstllsllerkdslsfekfqmlqssdlyrfsidlqqqeininqaslevlqvskksaqerhehfkglydenissteqqvielq 966    
+                   ar  v  l qfgstl  ++er+d+ +++ +   q+ +l    i +q++ i+  +a   vl+ sk  aq r + +  lydeni + e+q ++++
+  CP011104 1063151 ARGMVSQLTQFGSTLQNIIERQDAEALNVLLQNQAKELILTNISIQNKTIEELDAEKTVLEKSKTGAQSRFNSYGKLYDENINAGEHQALDMK 1063243
+                   ******************************99************************************************************* PP
+
+     align     967 sqsasallaaqtlrtgaaaldmlpniyglavggsrwgaalsaaaemvmikhqsdsikadslnvsesyrrrrqewevqykqaewevnsidqqin 1059   
+                     s s     ++l+  aaaldm+pniyglavggs++ga  +a a    i  +   i ad +  se +rrrrqewe+q ++a+ e+n id q+ 
+  CP011104 1063244 VASHSITSGLKSLHMAAAALDMVPNIYGLAVGGSHYGAIANAIAIGGGIAADGLLIEADKVLQSEIWRRRRQEWEIQRNNAQTELNQIDAQLG 1063336
+                   ********************************************************************************************* PP
+
+     align    1060 vqnlqltasmkrlaqveaeqqkslalldyfssrftneslytwmisqlsnlylqaydavsslclsaeaslqyeldse.qtfiegsswndlyqgl 1151   
+                      ++  a++ + + ++++q+++ a l ++  +f n++l+ w+  +l+ +y+q yd   s cl ae + ++e +    +fi+  sw+  + gl
+  CP011104 1063337 SLAVRREAAVLQKTSLKTQQEQTHAHLTFLQRKFNNQALFNWLRGRLAAIYFQFYDLAVSRCLMAEMAYRWETNETtTSFIKPGSWQGTHAGL 1063429
+                   ************************************************************************9765156************** PP
+
+     align    1152 msgetlklalqrmerayveqnsrlqeitktislkal.....................rktawesdlatlk..qhsli.tfnlqesdfakdypn 1220   
+                   ++getl l l +me a++  + r  e+ +t+sl  +                     rk    +d   ++  +  li t+nl + ++  dyp 
+  CP011104 1063430 LAGETLMLNLAQMEDAHLRWDKRALEVERTVSLADVytepgqdridlateitdllekRKDNLGNDNNGIRlnDNKLIaTVNLANLNIREDYPA 1063522
+                   ********************************975422111111111111222222244444455444431144444489************8 PP
+
+     align    1221 la..nrriksvsvslpmligpyedicaqlslgvn.trmvkadiqtmeklvkeginadspylarsihpnqqislstgindsgmftlnfdderfl 1310   
+                        rrik +sv+lp l+gpy+d+ a ls g   tr                       la s    + +++s g+ dsg f l+f++ +fl
+  CP011104 1063523 SVgkTRRIKQISVTLPALLGPYQDVQAILSYGRSeTR-----------------------LAES---CKSLAVSHGMSDSGQFQLDFNNGKFL 1063589
+                   753379*************************953133.......................3333...3568899******************* PP
+
+     align    1311 pfegagvesswt..fgftnnsqn....ldsltdvilhvrytvki 1348   
+                   pfeg  v+   t  + f n +++    l++l+d+ilh+ryt+++
+  CP011104 1063590 PFEGIAVDDKGTliLSFPNATDKqqamLQTLSDIILHIRYTIRM 1063633
+                   *******98776224676654221124899***********986 PP
+
+  == domain 7  score: 175.3 bits;  conditional E-value: 6.6e-56
+     align       3 nsieaklqedlrdalvdyylgqivpkgkdfqfyrdkiknvddlydfllldtqvsskvitsrvshvtqsiqqyinrivlnlepgl.smtqeety 94     
+                    ++e +l+e  rdalv  y+  + p  k ++    +   v+dly++ll+d +v+  v tsrv++   siqqy+ r+v   epg  +m    + 
+  CP011104 1077277 STMEKQLNESQRDALVTGYMNFVAPTLKGVN---KQPVTVEDLYEYLLIDPEVADEVETSRVAQAIASIQQYMTRLVNGSEPGRqAMEPSTAN 1077366
+                   67899********************888764...455689*******************************************7256777778 PP
+
+     align      95 dwqefanrygywsanqqlrlypeiyvdptlrltktefffqlesvlnqgkltdnvaqkavlgylnnfeevsnleiisgyedgidlandktyfia 187    
+                   +w++   +y  w+a  ++  y e y+ p  r  k+ +f +le+ lnq +l  +  q +vl yln fe vsnl ++sgy +  ++a+   yfi 
+  CP011104 1077367 EWRDNDSQYAIWAAGAEVGNYAENYISPITRQEKSHYFSELETTLNQNRLDPDRVQDSVLAYLNAFEAVSNLYVLSGYINQDEFAKAIYYFIG 1077459
+                   9******************************************************************************************** PP
+
+     align     188 ktrtqpyryfwrtldmkqrntd..snelyptawsewkpisvple..narngvvrpvimnnrlyiswfevskeeeknkn..desktiiryrtkl 274    
+                   +t t+pyry+wr +d+ +   d   n + p +w +w+ i++pl      +  vrpv  n+rly++w+e     +k+ n  d  kt   y   +
+  CP011104 1077460 RTTTKPYRYYWRQMDLSKNRQDpaGNPVTPNCWNDWQEITLPLSgdTVLEHTVRPVFYNDRLYVAWVERDPAVQKDANgkDIGKTH-AYS--I 1077549
+                   ***************977665533699****************62256789***************99876665554411444543.344..5 PP
+
+     align     275 nlahlgfdgtwssgtt 290    
+                   ++ +  +d tw++  t
+  CP011104 1077550 KFGYKRYDDTWTAPNT 1077565
+                   5667789999987544 PP
+
+  == domain 8  score: 584.9 bits;  conditional E-value: 1.6e-179
+     align     558 qirlntlfakelvskasqkldlvlswdtqnlp...eesisgsgaepvdlkgangiyfwelffhmpfmvawrfnveqryeeanrwlkyifdpye 647    
+                   + rlnt f + l+ ka   ld +l +  q  p    + ++   +e +d++g+ng+yfwelffh+pf+va rf  eq++  a++ l+yifdp  
+  CP011104 1078023 NTRLNTTFVRTLIEKANLGLDSLLNYTLQADPsleADLVTNGKSELMDFNGSNGLYFWELFFHLPFLVATRFANEQQFSSAQKSLHYIFDPAM 1078115
+                   579************************9987733135566677899*********************************************87 PP
+
+     align     648 nedkpalkqgkprywnsrplidepkknys.lmqpsdpdaiasgepihyrkaifyflvrnliddgdmeyrklqptartiarlsyatassllgrr 739    
+                   +       +  p ywn rpl++e         +  dpd+ a   p+ y+ka+f   v nli +gdm yr+l     t ar+ y  a+ llg r
+  CP011104 1078116 KSK----SDNVPAYWNVRPLVEENSDLSRhSGDSIDPDTQAYAHPVIYKKAVFIAYVSNLIAQGDMWYRQLTRDGLTQARVYYNLAAELLGPR 1078204
+                   654....4567**********99876544044667********************************************************** PP
+
+     align     740 pdvqlasfwqplsledalyrydnselrqlemq....sqplphipvvhdntiraldnelfmkpinnelteiwdrmenriynlrhnltldgkein 828    
+                   pdv l+s w p +l d l   +++ lr++e+q       lp +p      ++  dn  f  p+n  + + wd ++ r+ynlrhnlt+dgk + 
+  CP011104 1078205 PDVSLSSTWTPQTL-DILAAGQKTALRDFELQlvnsNTILPALPGRNVSYLKLADNGYFNEPLNVLMLSHWDTLDARLYNLRHNLTVDGKPLS 1078296
+                   ***********999.7999999******999854423569999*999999******************************************* PP
+
+     align     829 malydekisprdlmnlryqrvvtarnasrlnfktpnyrfepllararagvetliqfgstllsllerkdslsfekfqmlqssdlyrfsidlqqq 921    
+                   + ly   + p  l+  r q    +  +s   + +p yrf ++l ra + v tl  fg  llsller +    e +   q  d+  ++i lqqq
+  CP011104 1078297 LPLYAAPVDPVALLAQRAQSGTLTNGVSGAMLTVPPYRFSAMLPRAYSAVGTLTGFGQNLLSLLERSERAGQEELAQQQLLDMSSYAITLQQQ 1078389
+                   *******************999999999999************************************************************** PP
+
+     align     922 eininqaslevlqvskksaqerhehfkglydenissteqqvielqsqsasallaaqtlrtgaaaldmlpniyglavggsrwgaalsaaaemvm 1014   
+                    ++   a    l  s+ +aq+rh+h+  ly++niss+eq v++ q+ + s + ++  ++t + al ++pni+gla gg r+    +a a  ++
+  CP011104 1078390 ALDGLAADRLALLASQATAQQRHDHYYTLYQNNISSAEQLVMDTQTSAQSLISSSTGVQTASGALKVIPNIFGLADGGMRYEGVTEAIASGLV 1078482
+                   ***9999999999********************************9888888888889*********************************** PP
+
+     align    1015 ikhqsdsikadslnvsesyrrrrqewevqykqaewevnsidqqinvqnlqltasmkrlaqveaeqqkslalldyfssrftneslytwmisqls 1107   
+                      q   + a+ l  +e yrrrr+ew++qy+qa+ ev+++++q++   ++  a+   l q +a+q +  ++l y+++rft+ +ly w+  qls
+  CP011104 1078483 TAGQVACVVAERLATTENYRRRREEWQIQYQQAQSEVDALQKQLDALAVREKAAQTFLQQAKAQQVQIRTMLTYLTTRFTQATLYQWLSGQLS 1078575
+                   ********************************************************************************************* PP
+
+     align    1108 nlylqaydavsslclsaeaslqyel.dseqtfiegsswndlyqglmsgetlklalqrmerayveqnsrlqeitktislkalrktawesdlatl 1199   
+                    ly qaydav +lclsa+a  qyel d   +fi+  +wnd y+gl  getl+l l++me+ay+ +  r  ++ +t+slk l     ++ +  l
+  CP011104 1078576 ALYYQAYDAVVALCLSAQACWQYELgDYATAFIQTGTWNDHYRGLQVGETLQLNLHQMEAAYLARHERRLNVIRTVSLKNLLG---DDGFNKL 1078665
+                   *************************566778************************************************9975...6778889 PP
+
+     align    1200 kqhslitfnlqesdfakdypnlanrriksvsvslpmligpyedicaqlslgvntrmvkadiqtmeklvkeg..inadspylarsihpnqqisl 1290   
+                   k    + f l e  f +dyp    r+ik+vsv+lp ligpy+++ a l+    + ++ adi+ +++l       + d+ ++   +   qq+ l
+  CP011104 1078666 KTEGKVDFTLGEKLFDNDYPGHYLRQIKTVSVTLPTLIGPYQNVKATLTQTSSSTLLAADINGVKRLNDTTgkKEGDATHIVTNLRASQQVVL 1078758
+                   99****************************************************************98653125689**************** PP
+
+     align    1291 stgindsgmftlnfdderflpfegagvesswtfgftnnsqn................ldsltdvilhvrytvkigssafgkavqkll 1361   
+                   s+gind+g f l ++der+l feg+g  s wt+ f    ++                l  + dv+++v+yt+  g ++f + v+k l
+  CP011104 1078759 SSGINDAGSFELRLEDERYLSFEGTGAVSKWTLNFPRSVDEhiddktlkademqaalLANMDDVLVQVHYTACDGGASFANQVKKTL 1078845
+                   *********************************996543211111111111111122456779999999999999999999999876 PP
+
+
+
+Internal pipeline statistics summary:
+-------------------------------------
+Query model(s):                              1  (1362 nodes)
+Target sequences:                            1  (1715699 residues searched)
+Passed MSV filter:                         1  (1); expected 0.0 (0.02)
+Passed bias filter:                        1  (1); expected 0.0 (0.02)
+Passed Vit filter:                         1  (1); expected 0.0 (0.001)
+Passed Fwd filter:                         1  (1); expected 0.0 (1e-05)
+Initial search space (Z):                  1  [actual number of targets]
+Domain search space  (domZ):               1  [number of targets reported over threshold]
+# CPU time: 15.22u 0.24s 00:00:15.46 Elapsed: 00:00:15.71
+# Mc/sec: 148.74
+//
+[ok]
