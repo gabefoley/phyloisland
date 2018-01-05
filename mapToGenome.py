@@ -172,7 +172,10 @@ def getShotgunGenome(query_string):
             file_from_zip.close()
             new_records = SeqIO.parse(querypath, "gb")
 
-            for record in new_records:
+            # for record in new_records:
+            #     print(record.id)
+            #     print (record.seq)
+
 
 
             # with gzip.open("tmp/tempfilenew.gz", 'rb') as f:

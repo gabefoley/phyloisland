@@ -17,12 +17,16 @@ class SequenceRecords(db.Model):
     species = db.Column(db.String(255))
     description = db.Column(db.Text)
     sequence = db.Column(db.Text)
+    a1_ref = db.Column(db.Boolean)
+    a2_ref = db.Column(db.Boolean)
 
-    def __init__(self, name="", species="", description="", sequence=""):
+    def __init__(self, name="", species="", description="", sequence="", a1_ref=0, a2_ref=0):
         self.name = name
         self.species = species
         self.description = description
         self.sequence = sequence
+        self.a1_ref = a1_ref
+        self.a2_ref = a2_ref
 
 
 class GenomeRecords(db.Model):
@@ -33,27 +37,36 @@ class GenomeRecords(db.Model):
     strain = db.Column(db.String(255))
     description = db.Column(db.Text)
     a1 = db.Column(db.Text)
+    a1_length = db.Column(db.Integer)
     a1_loc = db.Column(db.Text)
     a2 = db.Column(db.Text)
+    a2_length = db.Column(db.Integer)
     a2_loc = db.Column(db.Text)
 
     overlap = db.Column(db.String(255))
     distance = db.Column(db.VARCHAR(255))
     sequence = db.Column(db.Text)
+    a1_ref = db.Column(db.Boolean)
+    a2_ref = db.Column(db.Boolean)
 
-    def __init__(self, name="", species="", strain="", description="", a1="", a1_loc="", a2="", a2_loc="", overlap="",
-                 distance="", sequence=""):
+    def __init__(self, name="", species="", strain="", description="", a1="", a1_length="", a1_loc="", a2="", a2_length="", a2_loc="", overlap="",
+                 distance="", sequence="", a1_ref=0, a2_ref=0):
         self.name = name
         self.species = species
         self.strain = strain
         self.description = description
         self.a1 = a1
+        self.a1_length = a1_length
         self.a1_loc = a1_loc
         self.a2 = a2
+        self.a2_length = a2_length
         self.a2_loc = a2_loc
         self.overlap = overlap
         self.distance = distance
         self.sequence = sequence
+        self.a1_ref = a1_ref
+        self.a2_ref = a2_ref
+
 
 class BlobMixin(object):
     mimetype = db.Column(db.Unicode(length=255), nullable=False)
@@ -73,9 +86,13 @@ class Profile(db.Model, BlobMixin):
 
     uid = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Unicode(length=255), nullable=False, unique=True)
+    a1_profile_ref = db.Column(db.Boolean)
+    a2_profile_ref = db.Column(db.Boolean)
 
-    def __init__(self, name = "", blobMix = ""):
+    def __init__(self, name = "", blobMix = "", a1_ref=0, a2_ref=0):
         self.name = name
+        self.a1_ref = a1_ref
+        self.a2_ref = a2_ref
         self.blobMix = blobMix
 
     def set_blobMix(self, blobMix):
@@ -84,6 +101,7 @@ class Profile(db.Model, BlobMixin):
         self.filename = blobMix.filename
         self.profile = blobMix.profile
         self.size = blobMix.size
+
 
 
     def __unicode__(self):

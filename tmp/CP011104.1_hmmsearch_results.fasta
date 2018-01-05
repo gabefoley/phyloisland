@@ -4,8 +4,8 @@
 # Freely distributed under the GNU General Public License (GPLv3).
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # query HMM file:                  refs/testprofile.hmm
-# target sequence database:        files/cleanedblast.fasta
-# output directed to file:         files/output.txt
+# target sequence database:        tmp/CP011104.1_translated_genome.fasta
+# output directed to file:         tmp/CP011104.1_hmmsearch_results.fasta
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 Query:       align  [M=1362]
@@ -255,7 +255,7 @@ Passed Vit filter:                         1  (1); expected 0.0 (0.001)
 Passed Fwd filter:                         1  (1); expected 0.0 (1e-05)
 Initial search space (Z):                  1  [actual number of targets]
 Domain search space  (domZ):               1  [number of targets reported over threshold]
-# CPU time: 15.22u 0.24s 00:00:15.46 Elapsed: 00:00:15.71
-# Mc/sec: 148.74
+# CPU time: 15.27u 0.20s 00:00:15.47 Elapsed: 00:00:15.55
+# Mc/sec: 150.28
 //
 [ok]

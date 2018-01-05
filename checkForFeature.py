@@ -72,57 +72,35 @@ def get_feature_location_with_profile(ids, reference, recordName, recordLocation
     :return:
     """
 
-    dbpath = "files/temp_blastfiles.fasta"
-    cleaned_path = "files/cleanedblast.fasta"
-
     query = models.GenomeRecords.query.filter(models.GenomeRecords.uid.in_(ids))
     for record in query.all():
         seq_record = servers.bio_db.lookup(primary_id=record.name)
-        # print ('here is seq record')
-        # print (seq_record)
-        # print(help(seq_record.seq.translate()))
-        # print (sew)
-        # print(seq_record.seq)
-        # record = servers.db.lookup(accession=record.name)
 
-        # BLAST.makeBlastDB(seq_record, dbpath)
+        # Create a path to write the translated genomic sequence to
+        cleaned_path = "tmp/" + seq_record.id + "_translated_genome.fasta"
+        hmmsearch_results = "tmp/" + seq_record.id + "_hmmsearch_results.fasta"
 
-        # pops = seq_record.seq.replace("b'", "").replace("'", "")
+        # Get the nucleotide sequence of the genome
         nuc_seq = Bio.Seq.Seq(str(seq_record.seq).replace("b'", "").replace("'", ""))
 
+        # Translate the nucleotide genome sequence to a protein sequence
         with open(cleaned_path, 'w') as handle:
             handle.write(">" + seq_record.name + " " + seq_record.description + "\n" + str(nuc_seq.translate(stop_symbol="M")))
 
-            # handle.write(">" + seq_record.name + " " + seq_record.description + "\n" + str(seq_record.seq).replace("b'", "").replace("'", "").translate())
-            # Bio.SeqIO.write(seq_record, handle, 'fasta')
+        print ("Writing the %s sequence with the species %s to %s \n" % (seq_record.id, seq_record.annotations.get('organism'), cleaned_path))
 
-        #Temporary measure to remove byte characters from BlastDB
-
-
-        # while not os.path.exists(dbpath):
-        #     time.sleep(1)
-        #
-        # if os.path.isfile(dbpath):
-        #     textData = None
-        #     with open(dbpath, "r") as handle:
-        #         textData = handle.read()
-        #     textData.replace("b'", "")
-        #     textData.replace("'", "")
-        #
-        #     with open(dbpath, 'w') as handle:
-        #         handle.write(cleaned_path)
-        #
         while not os.path.exists(cleaned_path):
             time.sleep(1)
 
         if os.path.isfile(cleaned_path):
-            print (reference)
-            print (cleaned_path)
-            result = subprocess.call(["hmmsearch", '--domtblout', 'files/output.txt', reference, cleaned_path], stdout=subprocess.PIPE)
-            print ('yepr')
-            print (result)
 
-        # utilities.removeFile(cleaned_path)
+            stdoutdata = subprocess.getoutput("hmmsearch -o %s %s %s" % (hmmsearch_results, reference, cleaned_path))
+            print ("The results from the HMM search have been written to %s" % hmmsearch_results)
+            # result = subprocess.call(["hmmsearch", 'files/output.txt', reference, cleaned_path], stdout=subprocess.PIPE)
+            # for x in result:
+            #     print (x)
+
+        # utilities.removeFile(reference, cleaned_path)
 
 
 def checkFeatureAlreadyAnnotated():
