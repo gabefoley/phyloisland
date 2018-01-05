@@ -3,13 +3,10 @@ from flask import flash
 from flask_admin import Admin, BaseView, expose
 from flask_admin.contrib.sqla import ModelView
 import os
-from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, FileField
-from wtforms.validators import DataRequired
 import phyloisland
 from flask_admin.actions import action
 import gettext
-from Bio import SeqIO, AlignIO, pairwise2
+from Bio import SeqIO, AlignIO
 from Bio.Align.Applications import MuscleCommandline
 from Bio.Seq import Seq
 from Bio.Alphabet import generic_protein
@@ -20,18 +17,14 @@ from flask import request
 from flask_admin.contrib.sqla import filters
 from flask_admin.contrib.sqla.filters import BaseSQLAFilter
 from flask_admin import AdminIndexView
-import re
 import os.path as op
-
-
+import mapToGenome
+import checkForFeature
+import models, servers
 import io
-from gettext import gettext
-from flask import Flask, send_file
+from flask import send_file
 from markupsafe import Markup
-from werkzeug.datastructures import FileStorage
-from wtforms import ValidationError, fields
-from wtforms.validators import required
-from wtforms.widgets import HTMLString, html_params, FileInput
+import servers
 
 
 try:
@@ -40,44 +33,13 @@ except ImportError:
     from wtforms.utils import unset_value
 
 
-from servers import *
-
-
-
-# Setup temporary best guesses for what the A1 and A2 region should look like
-yenA1 = "MDKYNNYSNVIKNKSSISPLLAAAAKIEPEITVLSSASKSNRSQYSQSLADTLLGLGYRSIFDIAKVSRQRFIKRHDESLLGNGAVIFDKAVSMANQVLQKYRKNRL" \
-        "EKSNSPLVPQTSSSTDASSESQTNKLPEYNQLFPEPWDNFCRPGAIEALDSPASYLLDLYKFIQSVELDGSNQARKLETRRADIPKLSLDNDALYKEVTALSIVNDV" \
-        "LSGSAREYIDQSGQADKAVNQILGDTHFPFTLPYSLPTQQINKGLGASNIELGTVIQRVDPQFSWNTTQEKYNQVLLAYTQLSSEQIALLSLPDVFTQNFLTQTELS" \
-        "AGYLSASTTEILAEKDLSRHGYIVKAADNIKGPTQLVEHSDASYDVIELTCTNQAKETITVKLRGENIITYQRTKARMVPFDNSSPFSRQLKLTFVAEDNPSLGNLD" \
-        "KGPYFANMDIYAAEWVRENVSSETMVSRPFLTMTYRIAIAKAGASLEELQPEADAFFINNFGLSAEDSSQLVKLVAFGDQTGSKAEEIESLLSCGENLPIVSPNVIF" \
-        "ANPIFGSYFNDEPFPAPYHFGGVYINAHQRNAMTIIRAEGGREIQSLSNFRLERLNRFIRLQRWLDLPSHQLDLLLTSVMQADADNSQQEITEPVLKSLGLFRHLNL" \
-        "QYKITPEIFSSWLYQLTPFAVSGEIAFFDRIFNREQLFDQPFILDGGSFTYLDAKGSDAKSVKQLCAGLNISAVTFQFIAPLVQSALGLEAGTLVRSFEVVSSLYRL" \
-        "VSIPQTFGLSTEDGLILMNILTDEMGYLAKQPAFDDKQTQDKDFLSIILKMEALSAWLTKNNLTPASLALLLGVTRLAVVPTNNMVTFFKGIANGLSENVCLTTDDF" \
-        "QRQELEGADWWTLLSTNQVIDDMGLVLDIHPVWGKSDEEMLMEKIQSIGVSNDNNTLSIIVQILIQAKNAQENLLSQTISAEYGVERSVVPLQLRWLGSNVYSVLNQ" \
-        "VLNNTPTDISSIVPKLSELTYSLLIYTQLINSLKLNKEFIFLRLTQPNWLGLTQPKLSTQLSLPEIYLITCYQDWVVNANKNEDSIHEYLEFANIKKTEAEKTLVDN" \
-        "SEKCAELLAEILAWDAGEILKAASLLGLNPPQATNVFEIDWIRRLQTLSEKTMISTEYLWQMGDLTENSEFSLKEGVGEAVMAALKAQGDSDNV"
-
-yenA2 = "MSNSIEAKLQEDLRDALVDYYLGQIVPNSKDFINLRSTIKNVDDLYDHLLLDTQVSAKVITSRLSLVTQSVQQYINRIALNLEPGLSINQQEATDWEEFANRYGYWA" \
-        "ANQQLRMFPEIYVDPTLRLTKTEFFFQLESALNQGKLTDDVAQKAVLGYLNNFEEVSNLEIIAGYQDGIDIENDKTYFVARTRMQPYRYFWRSLDASQRNSNSQELY" \
-        "PTAWSEWKAISVPLENVANGIVRPIMMDNRLYISWFEVAEEKDTDENGNIIVSGRYRTKIRLAHLGFDGIWSSGTTLREEVLAYQMEEMIAVVDRMEDEPRLALVAF" \
-        "KEMSENWDVVFSYICDSMLIESSNLPTTTHPPKPEDGDKGLSDLDDYGANLVWFYLHETANGGKAEYKQLILYPVIINRDWPIELDKTHQEGFGTVDDFTLNSNYTG" \
-        "DELSLYLQSSSTYKYDFSKSKNIIYGIWKEDANNNRCWLNYKLLTPEDYDPQINTTLVMCDKGDVNIITGFSLPNGGVDAGGKIKVTLRVGKKLRDKFQIKQFSQTQ" \
-        "YLQFPEASSADVWYIGKQIRLNTLFAKELIGKASRSLDLVLSWETQNSRLEEAILGGAAELIDLDGANGIYFWELFFHMPFMVSWRFNVEQRYEDANRWIKYLFNPF" \
-        "ECDDEPALLLGKPAYWNSRPLVDEPFTGYSLTQPSDPDAIAASDPIHYRKAVFNFLTKNIIDQGDMEYRKLQPSARTLARLSYSTASSLLGRRPDVQLTSFWQPLTL" \
-        "EDASYKTDSEIRAIEMQSQPLTFEPVVHDQTMSAVDNDIFMYPMNNELRGLWDRIENRIYNLRHNLTLDGKEINMDLYDSSISPRGLMKQRYQRVVTARNASKMNFK" \
-        "VPNYRFEPMLNRSKSGVETLIQFGSTLLSLLERKDSLSFDAYQMIQSGDLYRFSIDLQQQDIDINKASLEALQVSKQSAQDRYDHFKELYDENISSTEQKVIELQSQ" \
-        "AANALLMAQGMRTAAAALDVIPNIYGLAVGGSHWGAPLNAAAEIIMIKYQADSSKSESLSVSESYRRRRQEWELQYKQAEWEVNSVEQQINLQNMQIKAANKRLEQV" \
-        "EAQQQQAMALLAYFSERFTNESLYTWLISQLSSLYLQAYDAVLSLCLSAEASLLYELNLGEQSFVGGGGWNDLYQGLMAGETLKLALMRMERVYVEQNSRRQEITKT" \
-        "ISLKALLGESWPAELNKLKQKTPINFNLEEQIFVEDYQELYQRRIKSVSVSLPMLVGPYEDVCAQLTQTSSSYSTQADLKTVENMLTKRTFADTPHLVRSIQPNQQI" \
-        "SLSTGVNDSGLFMLNFDDERFLPFEGSGVDSSWRLQFTNLKQNLDSLNDVILHVKYTAAIGSSTFSQGVRKILANINNDE"
-
 # Create directory for file fields to use
 file_path = op.join(op.dirname(__file__), 'filesdir')
 try:
     os.mkdir(file_path)
 except OSError:
     pass
-BASE_ROUTE = '/' + base_route
+BASE_ROUTE = '/' + servers.base_route
 
 def local(route: str) -> str:
     if BASE_ROUTE == '/':
@@ -85,130 +47,470 @@ def local(route: str) -> str:
     else:
         return join(BASE_ROUTE, route[1:])
 
-# def local_url_for(*args, **kwargs) -> str:
-#     new_url = local(url_for(*args, **kwargs))
-#     if new_url.count(BASE_ROUTE[1:]) == 1:
-#         fixed_url = new_url
-#         return new_url
-#     else:
-#         fixed_url = '/'.join(new_url.split('/')[2:])
-#     assert fixed_url.count(BASE_ROUTE[1:]) == 1, fixed_url
-#     return fixed_url
-#
-# def local_redirect(*args, **kwargs) -> Any:
-#     return redirect(local_url_for(*args, **kwargs))
+
+a1_reference = SeqRecord(Seq("MDKYNNYSNVIKNKSSISPLLAAAAKIEPEITVLSSASKSNRSQYSQSLADTLLGLGYRSIFDIAKVSRQRFIKRHDESLLGNGAVIFDKAVSMANQVLQKYRKNRLEKSNSPLVPQTSSSTDASSESQTNKLPEYNQLFPEPWDNFCRPGAIEALDSPASYLLDLYKFIQSVELDGSNQARKLETRRADIPKLSLDNDALYKEVTALSIVNDVLSGSAREYIDQSGQADKAVNQILGDTHFPFTLPYSLPTQQINKGLGASNIELGTVIQRVDPQFSWNTTQEKYNQVLLAYTQLSSEQIALLSLPDVFTQNFLTQTELSAGYLSASTTEILAEKDLSRHGYIVKAADNIKGPTQLVEHSDASYDVIELTCTNQAKETITVKLRGENIITYQRTKARMVPFDNSSPFSRQLKLTFVAEDNPSLGNLDKGPYFANMDIYAAEWVRENVSSETMVSRPFLTMTYRIAIAKAGASLEELQPEADAFFINNFGLSAEDSSQLVKLVAFGDQTGSKAEEIESLLSCGENLPIVSPNVIFANPIFGSYFNDEPFPAPYHFGGVYINAHQRNAMTIIRAEGGREIQSLSNFRLERLNRFIRLQRWLDLPSHQLDLLLTSVMQADADNSQQEITEPVLKSLGLFRHLNLQYKITPEIFSSWLYQLTPFAVSGEIAFFDRIFNREQLFDQPFILDGGSFTYLDAKGSDAKSVKQLCAGLNISAVTFQFIAPLVQSALGLEAGTLVRSFEVVSSLYRLVSIPQTFGLSTEDGLILMNILTDEMGYLAKQPAFDDKQTQDKDFLSIILKMEALSAWLTKNNLTPASLALLLGVTRLAVVPTNNMVTFFKGIANGLSENVCLTTDDFQRQELEGADWWTLLSTNQVIDDMGLVLDIHPVWGKSDEEMLMEKIQSIGVSNDNNTLSIIVQILIQAKNAQENLLSQTISAEYGVERSVVPLQLRWLGSNVYSVLNQVLNNTPTDISSIVPKLSELTYSLLIYTQLINSLKLNKEFIFLRLTQPNWLGLTQPKLSTQLSLPEIYLITCYQDWVVNANKNEDSIHEYLEFANIKKTEAEKTLVDNSEKCAELLAEILAWDAGEILKAASLLGLNPPQATNVFEIDWIRRLQTLSEKTMISTEYLWQMGDLTENSEFSLKEGVGEAVMAALKAQGDSDNV", generic_protein), id="Yersinia entomophaga A1")
+
+a2_reference = SeqRecord(Seq("MSNSIEAKLQEDLRDALVDYYLGQIVPNSKDFTNLRSTIKNVDDLYDHLLLDTQVSAKVITSRLSLVTQSVQQYINRIALNLEPGLSINQQEATDWEEFANRYGYWAANQQLRMFPEIYVDPTLRLTKTEFFFQLESALNQGKLTDDVAQKAVLGYLNNFEEVSNLEIIAGYQDGIDIENDKTYFVARTRMQPYRYFWRSLDASQRNANSQELYPTAWSEWKAISVPLENVANGIVRPIMMDNRLYISWFEVAEEKETDSDGNIIVSGRYRTKIRLAHLGFDGVWSSGTTLREEVLADQMEEMIAVVDRMEDEPRLALVAFKEMSESWDVVFSYICDSMLIESSNLPTTTHPPKPGDGDKGLSDLDDYGANLVWFYLHETANGGKAEYKQLILYPVIINRDWPIELDKTHQGDFGTVDDFTLNSNYTGDELSLYLQSSSTYKYDFSKSKNIIYGIWKEDANNNRCWLNYKLLTPEDYEPQINATLVMCDKGDVNIITGFSLPNGGVDAGGKIKVTLRVGKKLRDKFQIKQFSQTQYLQFPEASSADVWYIGKQIRLNTLFAKELIGKASRSLDLVLSWETQNSRLEEAILGGAAELIDLDGANGIYFWELFFHMPFMVSWRFNVEQRYEDANRWVKYLFNPFECEDEPALLLGKPPYWNSRPLVDEPFKGYSLTQPSDPDAIAASDPIHYRKAVFNFLTKNIIDQGDMEYRKLQPSARTLARLSYSTASSLLGRRPDVQLTSFWQPLTLEDASYKTDSEIRAIEMQSQPLTFEPVVHDQTMSAVDNDIFMYPMNNELRGLWDRIENRIYNLRHNLTLDGKEINMDLYDSSISPRGLMKQRYQRVVTARNASKMNFKVPNYRFEPMLNRSKSGVETLIQFGSTLLSLLERKDSLSFDAYQMIQSGDLYRFSIDLQQQDIDINKASLEALQVSKQSAQDRYDHFKELYDENISSTEQKVIELQSQAANSLLMAQGMRTAAAALDVIPNIYGLAVGGSHWGAPLNAAAEIIMIKYQADSSKSESLSVSESYRRRRQEWELQYKQAEWEVNSVEQQINLQNMQIKAANKRLEQVEAQQQQAMALLDYFSERFTNESLYTWLISQLSSLYLQAYDAVLSLCLSAEASLLYELNLGEQSFVGGGGWNDLYQGLMAGETLKLALMRMERVYVEQNSRRQEITKTISLKALLGESWPAELNKLKQKTPINFNLEEQIFVEDYQELYQRRIKSVSVSLPMLVGPYEDVCAQLTQTSSSYSTRADLKTVENMLTKRTFADTPHLVRSIQPNQQISLSTGVNDSGLFMLNFDDERFLPFEGSGVDSSWRLQFTNLKQNLDSLNDVILHVKYTAAIGSSTFSQGVRKILANINNDE", generic_protein), id="Yersinia entomophaga A2")
 
 
 
-
-class BlobMixin(object):
-    mimetype = db.Column(db.Unicode(length=255), nullable=False)
-    filename = db.Column(db.Unicode(length=255), nullable=False)
-    profile = db.Column(db.BLOB, nullable=False)
-    size = db.Column(db.Integer, nullable=False)
-
-    def __init__(self, mimetype, filename, profile, size):
-        self.mimetype = mimetype
-        self.filename = filename
-        self.profile = profile
-        self.size = size
+a1_profile_path = "tmp/A1_profile.hmm"
+a2_profile_path = "tmp/A2_profile.hmm"
 
 
-class Profile(db.Model, BlobMixin):
-    __tablename__ = 'profile_blob'
 
-    uid = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.Unicode(length=255), nullable=False, unique=True)
-
-    def __init__(self, name = "", blobMix = ""):
-        self.name = name
-        self.blobMix = blobMix
-
-    def set_blobMix(self, blobMix):
-        self.blobMix = blobMix
-        self.mimetype = blobMix.mimetype
-        self.filename = blobMix.filename
-        self.profile = blobMix.profile
-        self.size = blobMix.size
+@servers.application.route("/" + servers.base_route + "/<int:id>", methods=['GET'])
+def download_blob(id):
+    """
+    Route for downloading profiles from the Profile view
+    :param id: Profile to download
+    :return:
+    """
+    _profile = models.Profile.query.get_or_404(id)
+    return send_file(
+        io.BytesIO(_profile.profile),
+        attachment_filename=_profile.filename,
+        mimetype=_profile.mimetype
+    )
 
 
-    def __unicode__(self):
-        return u"name : {name}; filename : {filename})".format(name=self.name, filename=self.filename)
+class FilterInAListMaybe(BaseSQLAFilter):
 
 
-class BlobUploadField(fields.StringField):
+    def apply(self, query, value, alias="None"):
 
-    widget = FileInput()
+        species_list = []
+        id_list = []
 
-    def __init__(self, label=None, allowed_extensions=None, size_field=None, filename_field=None, mimetype_field=None, **kwargs):
+        for record in servers.bio_db.values():
+            species = (" ".join(record.annotations.get('organism').split()[0:2]))
+            if species in species_list:
+                continue
+            else:
+                species_list.append(species)
+                id_list.append(record.id)
+        return query.filter(self.get_column(alias).in_(id_list))
 
-        self.allowed_extensions = allowed_extensions
-        self.size_field = size_field
-        self.filename_field = filename_field
-        self.mimetype_field = mimetype_field
-        validators = [required()]
+    def operation(self):
+        return 'Yes'
 
-        super(BlobUploadField, self).__init__(label, validators, **kwargs)
 
-    def is_file_allowed(self, filename):
+class SequenceRecordsView(ModelView):
+    create_modal = True
+    edit_modal = True
+    can_create = False
+    can_view_details = True
+
+    def _seqdescription_formatter(view, context, model, name):
+        # Format your string here e.g show first 20 characters
+        # can return any valid HTML e.g. a link to another view to show the detail or a popup window
+
+
+        if model.sequence:
+            return model.sequence[:15] + "..."
+        else:
+            return model.sequence
+    column_formatters = {
+        'sequence': _seqdescription_formatter,
+    }
+
+    @action('set_A1_reference', 'Set this sequence as the A1 reference')
+    def action_set_A1_reference(self, ids):
+        if len(ids) > 1:
+            flash('Only select a single record')
+        else:
+            query = models.SequenceRecords.query.filter(models.SequenceRecords.uid.in_(ids))
+            for record in query.all():
+
+                # Check for a previous reference sequence
+                old_genome_reference = models.GenomeRecords.query.filter_by(a1_ref=1).first()
+                old_seq_reference = models.SequenceRecords.query.filter_by(a1_ref=1).first()
+
+                if (old_genome_reference):
+                    # Remove the previous reference sequence
+                    setattr(old_genome_reference, "a1_ref", 0)
+                    servers.db.session.add(old_genome_reference)
+
+                if (old_seq_reference):
+                    # Remove the previous reference sequence
+                    setattr(old_seq_reference, "a1_ref", 0)
+                    servers.db.session.add(old_seq_reference)
+
+                # Set the new reference sequence
+                setattr(record, "a1_ref", 1)
+
+                # Commit the changed record
+                servers.db.session.add(record)
+                servers.db.session.commit()
+
+                # global a1_reference
+                # a1_reference = SeqRecord(Seq(record.sequence, generic_protein), id=str(record.name) + "_reference")
+                flash ("The A1 region from %s has been set as the reference A1 sequence" % record.name)
+
+
+    @action('set_A2_reference', 'Set this sequence as the A2 reference')
+    def action_set_A2_reference(self, ids):
+        if len(ids) > 1:
+            flash('Only select a single record')
+        else:
+            query = models.SequenceRecords.query.filter(models.SequenceRecords.uid.in_(ids))
+            for record in query.all():
+
+                # Check for a previous reference sequence
+                old_genome_reference = models.GenomeRecords.query.filter_by(a2_ref=1).first()
+                old_seq_reference = models.SequenceRecords.query.filter_by(a2_ref=1).first()
+
+                if (old_genome_reference):
+                    # Remove the previous reference sequence
+                    setattr(old_genome_reference, "a2_ref", 0)
+                    servers.db.session.add(old_genome_reference)
+
+                if (old_seq_reference):
+                    # Remove the previous reference sequence
+                    setattr(old_seq_reference, "a2_ref", 0)
+                    servers.db.session.add(old_seq_reference)
+
+                # Set the new reference sequence
+                setattr(record, "a2_ref", 1)
+
+                # Commit the changed record
+                servers.db.session.add(record)
+                servers.db.session.commit()
+
+                flash ("The A2 region from %s has been set as the reference A2 sequence" % record.name)
+
+
+
+    @action('generate_profile', 'Generate a profile from these sequences')
+    def action_generate_profile(self, ids):
+        try:
+            query = models.SequenceRecords.query.filter(models.SequenceRecords.uid.in_(ids))
+            align_list = []
+            for record in query.all():
+                align_record = SeqRecord(Seq(record.sequence, generic_protein), id=str(record.name) + "_" + "seq")
+                align_list.append(align_record)
+
+            createProfile(align_list)
+
+
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+            flash(gettext(ex))
+
+
+class GenomeRecordsView(ModelView):
+    column_list = ('name', 'species', 'strain', 'description', 'a1_ref', 'a2_ref', 'a1', 'a1_length', 'a1_loc', 'a2', 'a2_length', 'a2_loc', 'overlap', 'distance', 'sequence')
+    column_searchable_list = ['name', 'species', 'a1', 'a2', 'overlap']
+    create_modal = True
+    edit_modal = True
+    can_create = False
+    can_view_details = True
+
+    def _a1description_formatter(view, context, model, name):
+        # Format your string here e.g show first 20 characters
+        # can return any valid HTML e.g. a link to another view to show the detail or a popup window
+
+        if model.a1:
+            return model.a1[:15] + "..."
+        else:
+            return model.a1
+    def _a2description_formatter(view, context, model, name):
+        # Format your string here e.g show first 20 characters
+        # can return any valid HTML e.g. a link to another view to show the detail or a popup window
+
+        if model.a2:
+            return model.a2[:15] + "..."
+        else:
+            return model.a2
+
+
+    def _seqdescription_formatter(view, context, model, name):
+        # Format your string here e.g show first 20 characters
+        # can return any valid HTML e.g. a link to another view to show the detail or a popup window
+
+
+        if model.sequence:
+            return model.sequence[:15] + "..."
+        else:
+            return model.sequence
+    column_formatters = {
+        'a1': _a1description_formatter,
+        'a2': _a2description_formatter,
+        'sequence': _seqdescription_formatter,
+    }
+
+
+    column_filters = ('name',
+                      'species',
+                      'strain',
+                      'description',
+                      'a1',
+                      'a2',
+                      filters.FilterLike(models.GenomeRecords.overlap, 'Overlap',
+                                         options=(('True', 'True'), ('False', 'False'))),
+                      'sequence',
+                      FilterInAListMaybe(
+                          models.GenomeRecords.name, 'Get unique species'),
+                      filters.IntGreaterFilter(models.GenomeRecords.distance, 'Distance greater than'),
+                      filters.IntSmallerFilter(models.GenomeRecords.distance, 'Distance smaller than')
+
+                      )
+
+    def after_model_delete(self, model):
         """
-            Check if file extension is allowed.
-
-            :param filename:
-                File name to check
+        Function to delete the record from the BioSQL database as well
+        :param model: Record to delete
+        :return:
         """
-        if not self.allowed_extensions:
-            return True
-
-        return ('.' in filename and
-                filename.rsplit('.', 1)[1].lower() in
-                map(lambda x: x.lower(), self.allowed_extensions))
-
-    def _is_uploaded_file(self, data):
-        return (data and isinstance(data, FileStorage) and data.filename)
-
-    def pre_validate(self, form):
-        super(BlobUploadField, self).pre_validate(form)
-        if self._is_uploaded_file(self.data) and not self.is_file_allowed(self.data.filename):
-            raise ValidationError(gettext('Invalid file extension'))
-
-    def process_formdata(self, valuelist):
-        if valuelist:
-            data = valuelist[0]
-            self.data = data
-
-    def populate_obj(self, obj, name):
-
-        print ('name is ', name)
-
-        if self._is_uploaded_file(self.data):
-
-            _profile = self.data.read()
-
-            print ('got here')
-            print (_profile)
-
-            setattr(obj, name, _profile)
+        del servers.bio_db[model.uid]
+        servers.bio_server.commit()
 
 
-            # setattr(obj, self.profile, _blob)
+
+    @action('item5_getoverlap', 'Get Overlap')
+    def item5_getoverlap(self, ids):
+        try:
+            query = models.GenomeRecords.query.filter(models.GenomeRecords.uid.in_(ids))
+            for record in query.all():
+                if record.a1 == "" or record.a2 == "":
+                    pass
+                else:
+                    distance = str(phyloisland.getDistance(record.a1_loc, record.a2_loc))
+                    print (distance)
+                    if len(distance) > 1:
+                        record.overlap = "False"
+                        record.distance = distance
+                    else:
+                        record.overlap = "True"
+                        record.distance = ""
+
+                    servers.db.session.add(record)
+                    servers.db.session.commit()
+
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+
+            flash(gettext('Failed to get overlap %(error)s', error=str(ex)), 'error')
+
+    @action('item6_A1_reference', 'Set this A1 region as the reference region')
+    def item6_set_a1_reference(self, ids):
+        if len(ids) > 1:
+            flash('Only select a single record')
+        else:
+            query = models.GenomeRecords.query.filter(models.GenomeRecords.uid.in_(ids))
+            for record in query.all():
+                if (record.a1):
+
+                    # Check for a previous reference sequence
+                    old_genome_reference = models.GenomeRecords.query.filter_by(a1_ref=1).first()
+                    old_seq_reference = models.SequenceRecords.query.filter_by(a1_ref=1).first()
 
 
-            if self.size_field:
-                setattr(obj, self.size_field, len(_profile))
+                    if (old_genome_reference):
+                        # Remove the previous reference sequence
+                        setattr(old_genome_reference, "a1_ref", 0)
+                        servers.db.session.add(old_genome_reference)
 
-            if self.filename_field:
-                setattr(obj, self.filename_field, self.data.filename)
+                    if (old_seq_reference):
+                        # Remove the previous reference sequence
+                        setattr(old_seq_reference, "a1_ref", 0)
+                        servers.db.session.add(old_seq_reference)
 
-            if self.mimetype_field:
-                setattr(obj, self.mimetype_field, self.data.content_type)
+                    # Set the new reference sequence
+                    setattr(record, "a1_ref", 1)
+
+                    # Commit the changed record
+                    servers.db.session.add(record)
+                    servers.db.session.commit()
+                    flash ("The A1 region from %s has been set as the reference A1 sequence" % record.name)
+                else:
+                    flash ("That record doesn't have an A1 region associated with it")
+
+
+    @action('item7_set_A2_reference', 'Set this A2 region as the reference region')
+    def item7_set_a2_reference(self, ids):
+        if len(ids) > 1:
+            flash('Only select a single record')
+        else:
+            query = models.GenomeRecords.query.filter(models.GenomeRecords.uid.in_(ids))
+            for record in query.all():
+                if (record.a2):
+
+                    # Check for a previous reference sequence
+                    old_genome_reference = models.GenomeRecords.query.filter_by(a2_ref=1).first()
+                    old_seq_reference = models.SequenceRecords.query.filter_by(a2_ref=1).first()
+
+                    if (old_genome_reference):
+                        # Remove the previous reference sequence
+                        setattr(old_genome_reference, "a2_ref", 0)
+                        servers.db.session.add(old_genome_reference)
+
+                    if (old_seq_reference):
+                        # Remove the previous reference sequence
+                        setattr(old_seq_reference, "a2_ref", 0)
+                        servers.db.session.add(old_seq_reference)
+
+                    # Set the new reference sequence
+                    setattr(record, "a2_ref", 1)
+
+                    # Commit the changed record
+                    servers.db.session.add(record)
+                    servers.db.session.commit()
+                    flash ("The A2 region from %s has been set as the reference A2 sequence" % record.name)
+                else:
+                    flash ("That record doesn't have an A2 region associated with it")
+
+    @action('item_a1_profile_align_a1', 'Check for A1 region with a profile')
+    def item_a1_profile_align_a1(self, ids):
+        try:
+
+            # Check if a reference profile for A1 exists
+            a1_profile_reference = models.Profile.query.filter_by(a1_profile_ref=1).first()
+
+            print ('looking for alibrandi / a1')
+            print (a1_profile_reference)
+
+            if (a1_profile_reference):
+                print ("Using the A1 profile named %s to check for A1 regions" % (a1_profile_reference.name))
+                checkForFeature.get_feature_location_with_profile(ids, a1_profile_path, "a1", "a1_loc")
+            else:
+                flash("Please set a profile as the A1 reference profile first", "error")
+
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+
+            flash(gettext('Something went wrong when checking for A1 region -  %(error)s', error=str(ex)), 'error')
+
+
+    @action('item_a2_profile_align_a2', 'Check for A2 region with a profile')
+    def item_a2_profile_align_a2(self, ids):
+        try:
+
+            # Check if a reference profile for A1 exists
+            a2_profile_reference = models.Profile.query.filter_by(a2_profile_ref=1).first()
+
+            if (a2_profile_reference):
+                print ("Using the A2 profile named %s to check for A2 regions" % (a2_profile_reference.name))
+                checkForFeature.get_feature_location_with_profile(ids, a2_profile_path, "a2", "a2_loc")
+            else:
+                flash("Please set a profile as the A2 reference profile first", "error")
+
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+
+            flash(gettext('Something went wrong when checking for A1 region -  %(error)s', error=str(ex)), 'error')
+
+    @action('item3_check_a1', 'Check for A1 region')
+    def item3_check_a1(self, ids):
+        try:
+
+            checkForFeature.getFeatureLocation(ids, a1_reference, "a1", "a1_loc", "a1_length")
+
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+
+            flash(gettext('Something went wrong when checking for A1 region -  %(error)s', error=str(ex)), 'error')
+
+    @action('item4_check_a2', 'Check for A2 region')
+    def item4_check_a2(self, ids):
+        try:
+
+            checkForFeature.getFeatureLocation(ids, a2_reference, "a2", "a2_loc", "a2_length")
+
+
+
+
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+
+            flash(gettext('Something went wrong when checking for A2 region -  %(error)s', error=str(ex)), 'error')
+
+
+
+    @action('item1_delete_a1', 'Delete A1 region')
+    def item1_delete_a1(self, ids):
+        try:
+
+            checkForFeature.deleteFeature(ids, "a1", "a1_loc", "a1_length")
+
+
+
+
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+
+            flash(gettext('Failed to delete region. %(error)s', error=str(ex)), 'error')
+
+
+    @action('item2_delete_a2', 'Delete A2 region')
+    def item2_delete_a2(self, ids):
+        try:
+
+            checkForFeature.deleteFeature(ids, "a2", "a2_loc", "a2_length")
+
+
+
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+
+            flash(gettext('Failed to delete region. %(error)s', error=str(ex)), 'error')
+
+    @action('item8_generate_profile_a2', 'Generate profile based on A1')
+    def item8_generate_profile_a1(self, ids):
+        try:
+            query = models.GenomeRecords.query.filter(models.GenomeRecords.uid.in_(ids))
+            align_list = []
+            for record in query.all():
+                if record.a1 == "":
+                    pass
+                else:
+                    align_record = SeqRecord(Seq(record.a1, generic_protein), id=str(record.name) + "_" + "A1")
+                    align_list.append(align_record)
+
+            createProfile(align_list)
+
+
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+            flash(gettext('Failed to generate profile based on A1. %(error)s', error=str(ex)), 'error')
+
+    @action('item9_generate_profile_a2', 'Generate profile based on A2')
+    def item9_generate_profile_a2(self, ids):
+        try:
+            query = models.GenomeRecords.query.filter(models.GenomeRecords.uid.in_(ids))
+            align_list = []
+            for record in query.all():
+                if record.a2 == "":
+                    pass
+                else:
+                    align_record = SeqRecord(Seq(record.a2, generic_protein), id=str(record.name) + "_" + "A2")
+                    align_list.append(align_record)
+
+            createProfile(align_list)
+
+
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+            flash(gettext('Failed to generate profile based on A2. %(error)s', error=str(ex)), 'error')
 
 
 class ProfileView(ModelView):
-    column_list = ('name', 'size', 'filename', 'mimetype', 'download')
+    """
+    View of the Profile database for storing HMM Profiles """
+    column_list = ('name', 'a1_profile_ref', 'a2_profile_ref', 'download')
     form_columns = ('name', 'profile')
 
-    form_extra_fields = {'profile': BlobUploadField(
+    form_extra_fields = {'profile': models.BlobUploadField(
         label='File',
         allowed_extensions=['pdf', 'doc', 'docx', 'xls', 'xlsx', 'png', 'jpg', 'jpeg', 'gif', 'hmm', 'fa', 'fasta'],
         size_field='size',
@@ -224,513 +526,231 @@ class ProfileView(ModelView):
         'download': _download_formatter,
     }
 
-# download route
-<<<<<<< HEAD
-@application.route("/phyloisland_stable/<int:id>", methods=['GET'])
-=======
-@application.route("/" + base_route + "/<int:id>", methods=['GET'])
->>>>>>> acbb05dec173221b51a8b90e105c1ed92f8e11c3
-def download_blob(id):
-    print ('HERE IS ID', id)
-    _profile = Profile.query.get_or_404(id)
-    print (_profile.filename)
-    print (_profile.mimetype)
-    #print(_profile.profile)
-    return send_file(
-        io.BytesIO(_profile.profile),
-        attachment_filename=_profile.filename,
-        mimetype=_profile.mimetype
-    )
-
-# Create models
-class SequenceRecords(db.Model):
-    __tablename__ = 'seqrecord'
-    uid = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.Text)
-    species = db.Column(db.String(255))
-    strain = db.Column(db.String(255))
-    description = db.Column(db.Text)
-    a1 = db.Column(db.Text)
-    a1_loc = db.Column(db.Text)
-    a2 = db.Column(db.Text)
-    a2_loc = db.Column(db.Text)
-
-    overlap = db.Column(db.String(255))
-    distance = db.Column(db.VARCHAR(255))
-    sequence = db.Column(db.Text)
-
-    def __init__(self, name="", species="", strain="", description="", a1="", a1_loc="", a2="", a2_loc="", overlap="",
-                 distance="", sequence=""):
-        self.name = name
-        self.species = species
-        self.strain = strain
-        self.description = description
-        self.a1 = a1
-        self.a1_loc = a1_loc
-        self.a2 = a2
-        self.a2_loc = a2_loc
-        self.overlap = overlap
-        self.distance = distance
-        self.sequence = sequence
-
-
-# class Profiles(db.Model):
-#     __tablename__ = 'profile'
-#     uid = db.Column(db.Integer, primary_key=True)
-#     name = db.Column(db.Text)
-#     profile = db.Column(db.Text)
-#
-#     def __init__(self, name="", profile=""):
-#         self.name = name
-#         self.profile = profile
-
-
-class FilterInAListMaybe(BaseSQLAFilter):
-
-    def apply(self, query, value, alias=None):
-        listup = ['JGVH01000004.1', 'FMWJ01000001.1', 'CPYD01000004.1', 'DQ400808.1']
-        return query.filter(self.get_column(alias).in_(listup))
-
-    def operation(self):
-        return 'Yes'
-
-
-
-
-class FilterGetUnique(BaseSQLAFilter):
-    list = ['JGVH01000004.1', 'FMWJ01000001.1', 'CPYD01000004.1', 'DQ400808.1' ]
-
-    # def __init__(self, column, name, options=None, data_type=None):
-    #     super(filters.FilterInList, self).__init__(column, name, options, data_type='select2-tags')
-    #
-    # def clean(self, value):
-    #     return [v.strip() for v in value.split(',') if v.strip()]
-
-    def apply(self, query, value, alias=None):
-        return query.filter(self.get_column(query).in_(list))
-
-    def operation(self):
-        return 'in list'
-
-
-class SequenceRecordsView(ModelView):
-    column_searchable_list = ['name', 'species', 'a1', 'a2', 'overlap']
-    create_modal = True
-    edit_modal = True
-    can_create = False
-    can_view_details = True
-
-    def _a1description_formatter(view, context, model, name):
-        # Format your string here e.g show first 20 characters
-        # can return any valid HTML e.g. a link to another view to show the detail or a popup window
-
-        return model.a1[:15] + "..."
-
-    def _a2description_formatter(view, context, model, name):
-        # Format your string here e.g show first 20 characters
-        # can return any valid HTML e.g. a link to another view to show the detail or a popup window
-
-        return model.a2[:15] + "..."
-
-    def _seqdescription_formatter(view, context, model, name):
-        # Format your string here e.g show first 20 characters
-        # can return any valid HTML e.g. a link to another view to show the detail or a popup window
-
-
-        return model.sequence[:15] + "..."
-    column_formatters = {
-        'a1': _a1description_formatter,
-        'a2': _a2description_formatter,
-        'sequence': _seqdescription_formatter,
-    }
-
-    column_filters = ('name',
-                      'species',
-                      'strain',
-                      'description',
-                      'a1',
-                      'a2',
-                      filters.FilterLike(SequenceRecords.overlap, 'Overlap',
-                                         options=(('True', 'True'), ('False', 'False'))),
-                      'sequence',
-                      FilterInAListMaybe(
-                          SequenceRecords.name, 'Get unique species'))
-
-    # Delete the record from the BioSQL database as well
-    def after_model_delete(self, model):
-        print ("model gone")
-        print (model.uid)
-        print (model.name)
-        del bio_db[model.uid]
-        bio_server.commit()
-
-
-
-
-
-    @action('do_something', 'Do Something')
-    def do_something(self, ids):
-        for id in ids:
-            del bio_db[str(id)]
-        bio_server.commit()
-
-
-
-    @action('c_getoverlap', 'Get Overlap')
-    def action_getoverlap(self, ids):
-        try:
-            query = SequenceRecords.query.filter(SequenceRecords.uid.in_(ids))
+    @action('item1_set_A1_reference', 'Set this profile as the A1 reference profile')
+    def item1_set_a1_reference(self, ids):
+        if len(ids) > 1:
+            flash('Only select a single record')
+        else:
+            query = models.Profile.query.filter(models.Profile.uid.in_(ids))
             for record in query.all():
-                if record.a1 == "Not tested" or record.a2 == "Not tested":
-                    pass
-                else:
-                    distance = str(phyloisland.getDistance(record.a1_loc, record.a2_loc))
-                    if len(distance) > 1:
-                        record.overlap = "False"
-                        record.distance = distance
-                    else:
-                        record.overlap = "True"
-                        record.distance = ""
 
-                    db.session.add(record)
-                    db.session.commit()
+                # Check for a previous reference profile
+                old_profile_reference = models.Profile.query.filter_by(a1_profile_ref=1).first()
 
-        except Exception as ex:
-            if not self.handle_view_exception(ex):
-                raise
+                if (old_profile_reference):
+                    # Remove the previous reference profile
+                    setattr(old_profile_reference, "a1_profile_ref", 0)
+                    servers.db.session.add(old_profile_reference)
 
-            flash(gettext('Failed to approve users. %(error)s', error=str(ex)), 'error')
 
-    @action('a_check_a1', 'Check for A1 region')
-    def action_check_a1(self, ids):
-        try:
-            best_align = 0
-            best_location = None
-            best_seq = None
-            query = SequenceRecords.query.filter(SequenceRecords.uid.in_(ids))
+                # Set the new reference profile
+                setattr(record, "a1_profile_ref", 1)
+
+                # Commit the changed record
+                servers.db.session.add(record)
+                servers.db.session.commit()
+
+                # Write the new profile to the tmp folder ready to be used
+
+
+
+
+                with open(a1_profile_path, 'w') as profile_path:
+                    print (record)
+                    # print (record.profile)
+                    profile_path.write(record.profile.decode('utf-8'))
+
+                # global a1_profile_reference
+                #
+                # a1_profile_reference["tmp/A1_profile.hmm"] = record.name
+                flash ("The profile named %s has been set as the reference A1 profile" % record.name)
+
+    @action('item2_set_A1_reference', 'Set this profile as the A2 reference profile')
+    def item2_set_a1_reference(self, ids):
+        if len(ids) > 1:
+            flash('Only select a single record')
+        else:
+            query = models.Profile.query.filter(models.Profile.uid.in_(ids))
             for record in query.all():
-                print(record.name)
-                seq_record = bio_db.lookup(primary_id=record.name)
+                for record in query.all():
 
-                print (seq_record.description)
-                print (seq_record)
+                    # Check for a previous reference profile
+                    old_profile_reference = models.Profile.query.filter_by(a2_profile_ref=1).first()
 
-                for feature in seq_record.features:
-                    print (feature)
-                    if 'translation' in feature.qualifiers:
+                    if (old_profile_reference):
+                        # Remove the previous reference profile
+                        setattr(old_profile_reference, "a2_profile_ref", 0)
+                        servers.db.session.add(old_profile_reference)
 
-                        alignment = pairwise2.align.globalms(yenA1, feature.qualifiers['translation'][0],
-                                                             2, -1, -1, -.5, score_only=True)
-                        if alignment > best_align:
-                            best_align = alignment
-                            best_seq = feature.qualifiers['translation'][0]
-                            best_location = feature.location
+                    # Set the new reference profile
+                    setattr(record, "a2_profile_ref", 1)
 
+                    # Commit the changed record
+                    servers.db.session.add(record)
+                    servers.db.session.commit()
 
-                if (best_seq):
-                    print ("best align is ", best_align)
-                    flash("Found an A1 region in %s" % record.name)
-                    location = re.search(r"\d*:\d*", str(best_location))
+                    # Write the new profile to the tmp folder ready to be used
+                    with open(a2_profile_path, 'w') as profile_path:
+                        print(record)
+                        print(record.profile)
+                        profile_path.write(record.profile.decode('utf-8'))
 
-                    setattr(record, "a1", best_seq)
-                    print ('location is')
-                    print (location)
-                    setattr(record, "a1_loc", location[0])
-                    db.session.add(record)
-                    db.session.commit()
-
-                alignment = pairwise2.align.globalms(yenA1, best_seq,
-                                                         2, -1, -1, -.5)
-                # print(alignment)
-
-        except Exception as ex:
-            if not self.handle_view_exception(ex):
-                raise
-
-            flash(gettext('Failed to approve users. %(error)s', error=str(ex)), 'error')
-
-    @action('b_check_a2', 'Check for A2 region')
-    def action_check_a2(self, ids):
-        try:
-            best_align = 0
-            best_location = None
-            best_seq = None
-            query = SequenceRecords.query.filter(SequenceRecords.uid.in_(ids))
-            for record in query.all():
-                print(record.name)
-                seq_record = bio_db.lookup(primary_id=record.name)
-
-                for feature in seq_record.features:
-                    if 'translation' in feature.qualifiers:
-                        alignment = pairwise2.align.globalms(yenA2, feature.qualifiers['translation'][0],
-                                                             2, -1, -1, -.5, score_only=True)
-                        if alignment > best_align:
-                            best_align = alignment
-                            best_seq = feature.qualifiers['translation'][0]
-                            best_location = feature.location
-
-
-            if (best_seq):
-                print("best align is ", best_align)
-                flash("Found an A2 region in %s" % record.name)
-                location = re.search(r"\d*:\d*", str(best_location))
-                setattr(record, "a2", best_seq)
-                setattr(record, "a2_loc", location[0])
-                db.session.add(record)
-                db.session.commit()
-
-            alignment = pairwise2.align.globalms(yenA2, best_seq,
-                                                     2, -1, -1, -.5)
-            print (alignment)
-
-
-        except Exception as ex:
-            if not self.handle_view_exception(ex):
-                raise
-
-            flash(gettext('Failed to approve users. %(error)s', error=str(ex)), 'error')
-
-    @action('blast_a2', 'BLAST A2 region')
-    def action_blast_a2(self, ids):
-        try:
-            query = SequenceRecords.query.filter(SequenceRecords.uid.in_(ids))
-            for record in query.all():
-                print (record)
-
-
-        except Exception as ex:
-
-
-                flash(gettext('Failed to approve users. %(error)s', error=str(ex)), 'error')
-
-    @action('d_buildprofile_a2', 'Build profile based on A2')
-    def action_build_profile_a2(self, ids):
-        try:
-            query = SequenceRecords.query.filter(SequenceRecords.uid.in_(ids))
-            align_list = []
-            for record in query.all():
-                if record.a2 == "Not tested":
-                    pass
-                else:
-                    align_record = SeqRecord(Seq(record.a2, generic_protein), id=str(record.name) + "_" + "A2")
-                    align_list.append(align_record)
-
-                    # Write sequences to FASTA
-
-            SeqIO.write(align_list, "align.fasta", "fasta")
-            muscle_cline = MuscleCommandline(input="align.fasta")
-
-            print (type(muscle_cline))
-            # result = subprocess.run(str(muscle_cline), stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True) )
-            child = subprocess.Popen(str(muscle_cline), stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                                     universal_newlines=True, shell=(sys.platform != "win32"))
-            child.wait()
-
-
-            alignment = AlignIO.read(child.stdout, "fasta")
-            AlignIO.write(alignment, "align.aln", "fasta")
-            result = subprocess.call(["hmmbuild", "profile3.hmm", "align.aln"], stdout=subprocess.PIPE)
-            file = open('profile3.hmm', 'rb')
-            # file_storage = FileStorage(file)
-            #
-            #
-            #
-            # # print ('file storage', file_storage)
-            # # file_content = file.read()
-            #
-            # print ('******************')
-            # # print (file_storage)
-            # print ('PROFILE')
-            # print (file.read())
-            # print (type(file.read()))
-            #
-            # a = np.fromfile(file, dtype=np.uint32)
-            # print ("AAAA")
-            # print (a)
-            # fileContent = file.read().decode()
-            # fileContent = str(file.read())
-            # print ("FILE CONTENT")
-            # print (fileContent)
-            # print (type(fileContent))
-
-
-            saveProfile(file)
+                    flash("The profile named %s has been set as the reference A2 profile" % record.name)
 
 
 
-
-
-            # file_contents = file.stream.read().decode("utf-8")
-
-        except Exception as ex:
-            if not self.handle_view_exception(ex):
-                raise
-
-            flash(gettext(ex))
-
-
-# class ProfileView(ModelView):
-#
-#     create_modal = True
-#     edit_modal = True
-#     can_create = False
-#     can_view_details = True
-#
-#     @action('download_profile', 'Download profile')
-#     def download_profile(self, ids):
-#         for id in ids:
-#             print (id)
-#         print()
-#         print (request.url)
-#         url = request.url[:-7]
-#         print (url)
-#         wget.download(url, id)
-#
-#         testfile = urllib.request.urlretrieve(url, id)
-#         print (testfile)
-#         # testfile.retrieve(file_path + id)
-#
-
-
-# Form for uploading files
-class UploadForm(FlaskForm):
-    name = StringField('What ID should we give this feature?', validators=[DataRequired("Not completed")])
-    file = FileField('Upload the FASTA file', validators=[DataRequired("Not completed")])
-
-    upload_submit = SubmitField("Upload files")
-
-
-
-# View for uploading files
 class UploadView(BaseView):
+    """
+    View for uploading files
+    """
 
     @expose("/", methods =('GET', 'POST'))
     def upload(self):
-        form = UploadForm()
+        form = models.UploadForm()
 
-        if request.method == 'POST':
-            # Get the file and ID to name these sequences
-            region = form.name.data
-            filename = allfiles.save(request.files['file'])
+        if request.method == 'POST' and form.validate():
+
+
+            # Get the sequences
+            filename = servers.allfiles.save(request.files['file'])
+
             # Create the initial seqRecords
             phyloisland.seqDict = {}
             phyloisland.unmappable = []
 
-            print ('got here')
+            seq_records = SeqIO.parse("static/uploads/" + filename, "fasta")
+
+            for record in seq_records:
+                seq_name = record.id
+                seq_description = record.description.split(">")[0]
+                seq_species = seq_description.split("[")[1].split("]")[0]
+                seq_sequence = str(record.seq)
+
+                seq_entry = models.SequenceRecords(seq_name, seq_species, seq_description, seq_sequence, 0, 0)
+
+                # Check if the sequence record already exists
+                seq_check = models.SequenceRecords.query.filter_by(name=seq_name).first()
+                if seq_check == None:
+                    print ('Adding sequence with ID - %s from species - %s to the sequence database' % (seq_name, seq_species) + "\n")
+                    servers.db.session.add(seq_entry)
+                    servers.db.session.commit()
+                else:
+                    print ('Sequence with ID - %s from species - %s already exists in the sequence database' % (seq_name, seq_species) + "\n")
 
 
-            genomeResults = phyloisland.getFullGenome("static/uploads/" + filename, region)
 
-            flash(gettext("Couldn't find").join([v for v in genomeResults]), 'error')
 
-            # phyloisland.defaultValue("static/uploads/" + filename, region)
+            # Map the sequence to its genome
+            genomeResults = mapToGenome.getFullGenome("static/uploads/" + filename)
 
-            records = phyloisland.seqDict
+            for genome in genomeResults:
+                print ('Could not find')
+                print (genome)
+
+                flash("Couldn't find " + str(genome))
+
+            records = mapToGenome.seqDict
 
             for record in records:
+
 
                 current = records[record]
                 name = current.id
 
-                species = current.annotations.get('organism')
-                strain = current.annotations.get('organism')
-                sequence = "AAA"
 
-                print (name)
+
+                species = " ".join(current.annotations.get('organism').split()[0:2])
+                strain = current.annotations['source']
+                sequence = str(current.seq)
                 print (current)
-
-                # species = current.annotations['species']
-                # print ("YO THE SPECIES IS ", species)
-                # strain = current.annotations['source']
-                # sequence = str(current.seq)
+                print (species)
 
                 description = current.description
-                a1 = current.annotations["A1"] if "A1" in current.annotations.keys() else "Not tested"
-                a1_loc = current.annotations["A1_location"] if "A1_location" in current.annotations.keys() else "Not tested"
-                a2 = current.annotations["A2"] if "A2" in current.annotations.keys() else "Not tested"
-                a2_loc = current.annotations["A2_location"] if "A2_location" in current.annotations.keys() else "Not tested"
-                overlap = current.annotations["Overlap"] if "Overlap" in current.annotations.keys() else "Not tested"
-                distance = "Not tested"
+                a1 = current.annotations["A1"] if "A1" in current.annotations.keys() else ""
+                a1_length = None
+                a1_loc = current.annotations["A1_location"] if "A1_location" in current.annotations.keys() else ""
+                a2 = current.annotations["A2"] if "A2" in current.annotations.keys() else ""
+                a2_length = None
+                a2_loc = current.annotations["A2_location"] if "A2_location" in current.annotations.keys() else ""
+                overlap = current.annotations["Overlap"] if "Overlap" in current.annotations.keys() else ""
+                distance = ""
 
-                entry = SequenceRecords(name, species, strain, description, a1, a1_loc, a2, a2_loc, overlap, distance, sequence)
-                check = SequenceRecords.query.filter_by(name=name).first()
+                entry = models.GenomeRecords(name, species, strain, description, a1, a1_length, a1_loc, a2, a2_length, a2_loc, overlap, distance, sequence, 0, 0)
+                check = models.GenomeRecords.query.filter_by(name=name).first()
 
+                # Check to see if the genome record already exists
                 if check:
-                    if region in current.annotations.keys():
-                        print("YEAH BABY")
-                    else:
-                        print("NAH BOY")
-                    setattr(check, region.lower(), current.annotations[region] if region in current.annotations.keys() else "Not tested")
-                    setattr(check, region.lower() + "_loc", current.annotations[region + "_location"] if region + "_location" in current.annotations.keys() else "Not tested")
-                    db.session.add(check)
+                    print ("The genome record - %s from species - %s already exists in the database" % (name, species))
+
+                    continue
+                #     # if region in current.annotations.keys():
+                #     #     continue
+                #     # else:
+                #     #     setattr(check, region.lower(), current.annotations[region] if region in current.annotations.keys() else "")
+                #     #     setattr(check, region.lower() + "_loc", current.annotations[region + "_location"] if region + "_location" in current.annotations.keys() else "")
+                #     #     servers.db.session.add(check)
 
                 else:
+                    print ("Adding the genome record - %s from species - %s to the genome database" % (name, species))
+
                     seq_list = []
-                    db.session.add(entry)
+                    servers.db.session.add(entry)
                     seq_list.append(current)
-                    bio_db.load(seq_list)
-                    bio_server.commit()
-                db.session.commit()
+                    servers.bio_db.load(seq_list)
+                    servers.bio_server.commit()
+                    servers.db.session.commit()
+
+
 
             return self.render("upload_admin.html", form=form, records=records)
         return self.render("upload_admin.html", form=form)
 
 class MyHomeView(AdminIndexView):
-<<<<<<< HEAD
-	@expose('/phyloisland_stable')
-=======
-	@expose(base_route)
->>>>>>> acbb05dec173221b51a8b90e105c1ed92f8e11c3
+	@expose(servers.base_route)
 	def index(self):
 		return self.render('admin/index.html')
 
+def createProfile(align_list):
+    SeqIO.write(align_list, "align.fasta", "fasta")
+    muscle_cline = MuscleCommandline(input="align.fasta")
+    # result = subprocess.run(str(muscle_cline), stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True) )
+    child = subprocess.Popen(str(muscle_cline), stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                             universal_newlines=True, shell=(sys.platform != "win32"))
+    child.wait()
 
-# @application.route(local('/'))
-# def index():
-#     return '<a href="/admin/">Click me to get to Phylo Island please!</a>'
+    alignment = AlignIO.read(child.stdout, "fasta")
+    AlignIO.write(alignment, "align.aln", "fasta")
+    result = subprocess.call(["hmmbuild", "profile3.hmm", "align.aln"], stdout=subprocess.PIPE)
+    file = open('profile3.hmm', 'rb')
+
+    saveProfile(file)
+
 
 
 def saveProfile(profile):
-    # print ('profile info')
-    # print (type(profile))
-    # profile.seek(0, 2)
-    # file_length = profile.tell()
-
-    # print(profile)
-    # print (type(profile))
+    """
+    Save a profile into the database
+    :param profile: Profile to save
+    :return:
+    """
 
     name = phyloisland.randstring(5)
-    blobMix = BlobMixin("application/octet-stream", name, profile.read(), '566666')
-    profileEntry = Profile(name)
+    blobMix = models.BlobMixin("application/octet-stream", name, profile.read(), '566666')
+    profileEntry = models.Profile(name)
     profileEntry.set_blobMix(blobMix)
-
-    # print ('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
-    # print ('Profile entry info')
-    # print (profileEntry)
-    # print (profileEntry.name)
-    # print (profileEntry.blobMix)
-    # print (profileEntry.size)
-    # print (profileEntry.profile.read())
-
-    # FileForm.save_file("", file_path + "/testname", profile) # Save profile to Files directory
-
-    # print (profileEntry)
-    # profileEntry = Profiles('Testname', profile)
-    db.session.add(profileEntry)
-    db.session.commit()
+    servers.db.session.add(profileEntry)
+    servers.db.session.commit()
 
 
+# Setup the main flask-admin application
+admin = Admin(servers.application, index_view=AdminIndexView(name= servers.base_name, url="/" + servers.base_route), template_mode="bootstrap3")
 
-<<<<<<< HEAD
-# admin = Admin(application,name="Phylo Island", template_mode="bootstrap3")
-admin = Admin(application, index_view=AdminIndexView(name='Stable', url="/phyloisland_stable"), template_mode="bootstrap3")
-#admin = Admin(application, index_view=MyHomeView())
-=======
-admin = Admin(application, index_view=AdminIndexView(name= base_name, url="/" + base_route), template_mode="bootstrap3")
->>>>>>> acbb05dec173221b51a8b90e105c1ed92f8e11c3
+# Add the views to the flask-admin application
 admin.add_view(UploadView(name='Upload', endpoint='upload_admin'))
-admin.add_view(SequenceRecordsView(SequenceRecords, db.session, endpoint="seq_view"))  # working version
-admin.add_view(ProfileView(model=Profile, session=db.session, name='Profiles'))
+admin.add_view(SequenceRecordsView(models.SequenceRecords, servers.db.session, endpoint="seq_view"))  # working version
+
+admin.add_view(GenomeRecordsView(models.GenomeRecords, servers.db.session, endpoint="genome_view"))  # working version
+admin.add_view(ProfileView(model=models.Profile, session=servers.db.session, name='Profiles'))
 
 if __name__ == '__main__':
-    application.run(debug=True, port=7777)
+    servers.application.run(debug=True, port=7777)
