@@ -83,6 +83,7 @@ bio_server_name = "phyloisland"
 with
 ```
 bio_server_name = "newdatabase"
+```
 3. Follow the install steps but change "phyloisland" to something else, for example - "newdatabase"
 
 Additionaly, so that you can make changes to these files without them being read by git, enter the following in the command line so that git will skip over them. Do this before making changes to the files.
