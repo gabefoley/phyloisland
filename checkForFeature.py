@@ -9,7 +9,7 @@ import subprocess
 import Bio
 from Bio import SeqIO
 
-def getFeatureLocation(ids, reference, recordName, recordLocation):
+def getFeatureLocation(ids, reference, record_name, record_location, record_length):
 
     print (reference)
 
@@ -44,8 +44,9 @@ def getFeatureLocation(ids, reference, recordName, recordLocation):
                 if ("sequence" in blast_info and "location" in blast_info):
 
                     # Update the record with the new location
-                    setattr(record, recordName, blast_info["sequence"].replace("-", ""))
-                    setattr(record, recordLocation, blast_info["location"])
+                    setattr(record, record_name, blast_info["sequence"].replace("-", ""))
+                    setattr(record, record_location, blast_info["location"])
+                    setattr(record, record_length, len(blast_info["sequence"].replace("-", "")))
 
                     # Commit the changed record
                     servers.db.session.add(record)
@@ -54,7 +55,7 @@ def getFeatureLocation(ids, reference, recordName, recordLocation):
 
 
                 else:
-                    flash("Couldn't find an %s region in %s" % (recordName, record.name))
+                    flash("Couldn't find an %s region in %s" % (record_name, record.name))
             # Remove created files
             utilities.removeFile(dbpath, querypath)
 
@@ -115,7 +116,7 @@ def addToDatabase():
 
 
 
-def deleteFeature(ids, recordName, recordLocation):
+def deleteFeature(ids, record_name, record_location, record_length):
     """
     Delete a certain feature in database
     :param ids: List of ids to delete features from
@@ -125,9 +126,12 @@ def deleteFeature(ids, recordName, recordLocation):
     """
     query = models.GenomeRecords.query.filter(models.GenomeRecords.uid.in_(ids))
     for record in query.all():
-        setattr(record, recordName, "")
-        setattr(record, recordLocation, "")
-        setattr(record, "Overlap", "")
+        setattr(record, record_name, "")
+        setattr(record, record_location, "")
+        setattr(record, record_length, None)
+        setattr(record, "overlap", "")
+        setattr(record, "distance", "")
+
 
         # Update the database
         servers.db.session.add(record)

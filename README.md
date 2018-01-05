@@ -17,6 +17,7 @@ Phylo Island is a front-facing database that allows for curation and annotation 
 3. Create the database schema as described in install/biosqldb-mysql.sql
 4. Install the python modules as described in requirements.txt
 5. Run the phyloinit.py file to create the database
+6. Run routes.py to start the application
 
 ### Detailed steps for UNIX
 
@@ -48,12 +49,50 @@ pip install -r requirements.txt
 python phyloinit.py
 ```
 
+6. Run the routes.py file to start the Flask application
+```
+python routes.py
+```
+
+7. Open a browser and navigate to http://127.0.0.1:7777/phyloisland_experimental
 
 ## Usage
 
 1. Upload FASTA files through the Upload tab
 2. Annotate the genomes through Sequence Records tab
 3. Any profiles built using the "Build profile" option are written to the Profiles tab
+
+## Creating multiple databases
+
+You might want to create multiple databases to try out different configurations without removing all of your data.
+
+The following steps show how to change to a new database named "newdatabase"
+
+1. Replace the following line in phyloinit.py
+```
+server = BioSeqDatabase.open_database(driver="MySQLdb", user="pi", passwd="", host="localhost", db="phyloisland")
+```
+with
+```
+server = BioSeqDatabase.open_database(driver="MySQLdb", user="pi", passwd="", host="localhost", db="newdatabase")
+```
+2. Replace the following line in servers.py
+```
+bio_server_name = "phyloisland"
+```
+with
+```
+bio_server_name = "newdatabase"
+3. Follow the install steps but change "phyloisland" to something else, for example - "newdatabase"
+
+Additionaly, so that you can make changes to these files without them being read by git, enter the following in the command line so that git will skip over them. Do this before making changes to the files.
+
+```
+git update-index --skip-worktree phyloinit.py
+git update-index --skip-worktree servers.py
+
+```
+
 
 ## Contributing
 

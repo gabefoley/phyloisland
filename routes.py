@@ -89,8 +89,6 @@ class FilterInAListMaybe(BaseSQLAFilter):
             else:
                 species_list.append(species)
                 id_list.append(record.id)
-        print (id_list)
-
         return query.filter(self.get_column(alias).in_(id_list))
 
     def operation(self):
@@ -410,7 +408,7 @@ class GenomeRecordsView(ModelView):
     def item3_check_a1(self, ids):
         try:
 
-            checkForFeature.getFeatureLocation(ids, a1_reference, "a1", "a1_loc")
+            checkForFeature.getFeatureLocation(ids, a1_reference, "a1", "a1_loc", "a1_length")
 
         except Exception as ex:
             if not self.handle_view_exception(ex):
@@ -422,7 +420,7 @@ class GenomeRecordsView(ModelView):
     def item4_check_a2(self, ids):
         try:
 
-            checkForFeature.getFeatureLocation(ids, a2_reference, "a2", "a2_loc")
+            checkForFeature.getFeatureLocation(ids, a2_reference, "a2", "a2_loc", "a2_length")
 
 
 
@@ -439,7 +437,7 @@ class GenomeRecordsView(ModelView):
     def item1_delete_a1(self, ids):
         try:
 
-            checkForFeature.deleteFeature(ids, "a1", "a1_loc")
+            checkForFeature.deleteFeature(ids, "a1", "a1_loc", "a1_length")
 
 
 
@@ -455,7 +453,7 @@ class GenomeRecordsView(ModelView):
     def item2_delete_a2(self, ids):
         try:
 
-            checkForFeature.deleteFeature(ids, "a2", "a2_loc")
+            checkForFeature.deleteFeature(ids, "a2", "a2_loc", "a2_length")
 
 
 
