@@ -400,10 +400,13 @@ class UploadView(BaseView):
     def upload(self):
         form = models.UploadForm()
 
-        if request.method == 'POST':
+        if request.method == 'POST' and form.validate():
+
 
             # Get the sequences
             filename = servers.allfiles.save(request.files['file'])
+
+            print (filename)
 
             # Create the initial seqRecords
             phyloisland.seqDict = {}
@@ -411,13 +414,7 @@ class UploadView(BaseView):
 
             seq_records = SeqIO.parse("static/uploads/" + filename, "fasta")
 
-            print (seq_records)
-
             for record in seq_records:
-                print (record)
-                print (record.annotations)
-
-
                 seq_name = record.id
                 seq_description = record.description.split(">")[0]
                 seq_species = seq_description.split("[")[1].split("]")[0]
@@ -426,23 +423,24 @@ class UploadView(BaseView):
                 seq_entry = models.SequenceRecords(seq_name, seq_species, seq_description, seq_sequence)
 
                 # Check if the sequence record already exists
-                seq_check = models.GenomeRecords.query.filter_by(name=seq_name).first()
-                if not seq_check:
+                seq_check = models.SequenceRecords.query.filter_by(name=seq_name).first()
+                if seq_check == None:
+                    print ('Adding sequence with ID - %s from species - %s to the sequence database' % (seq_name, seq_species) + "\n")
                     servers.db.session.add(seq_entry)
                     servers.db.session.commit()
+                else:
+                    print ('Sequence with ID - %s from species - %s already exists in the sequence database' % (seq_name, seq_species) + "\n")
 
 
-                print (seq_name)
-                print (seq_description)
-                print (seq_species)
 
+
+            # Map the sequence to its genome
             genomeResults = mapToGenome.getFullGenome("static/uploads/" + filename)
 
-            print (genomeResults)
-
             for genome in genomeResults:
-                # print (genome)
-                # print (type(genome))
+                print ('Could not find')
+                print (genome)
+
                 flash("Couldn't find " + str(genome))
                 # flash(gettext("Couldn't find").join(str(genome)), 'error')
 
@@ -471,18 +469,13 @@ class UploadView(BaseView):
                 overlap = current.annotations["Overlap"] if "Overlap" in current.annotations.keys() else ""
                 distance = ""
 
-                print ('and the record id is ')
-                print (name)
-                print ('and the seq name is ')
-                print (seq_name)
-
-
                 entry = models.GenomeRecords(name, species, strain, description, a1, a1_loc, a2, a2_loc, overlap, distance, sequence)
                 check = models.GenomeRecords.query.filter_by(name=name).first()
-                print ('lets check')
-                print (check)
+
                 # Check to see if the genome record already exists
                 if check:
+                    print ("The genome record - %s from species - %s already exists in the database" % (name, species))
+
                     continue
                 #     # if region in current.annotations.keys():
                 #     #     continue
@@ -492,6 +485,8 @@ class UploadView(BaseView):
                 #     #     servers.db.session.add(check)
 
                 else:
+                    print ("Adding the genome record - %s from species - %s to the genome database" % (name, species))
+
                     seq_list = []
                     servers.db.session.add(entry)
                     seq_list.append(current)

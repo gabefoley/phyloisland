@@ -260,7 +260,6 @@ def getCoords(record, set_id):
 
 
 def getDistance(overlap_1, overlap_2):
-    print (overlap_1)
     loc_1_start, loc_1_end = [int(x) for x in overlap_1.split(":")]
     loc_2_start, loc_2_end = [int(x) for x in overlap_2.split(":")]
 

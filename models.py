@@ -4,7 +4,7 @@ from wtforms import ValidationError, fields
 from wtforms.validators import required
 from wtforms.widgets import HTMLString, html_params, FileInput
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, FileField
+from wtforms import StringField, SubmitField, FileField, validators
 from wtforms.validators import DataRequired
 from gettext import gettext
 
@@ -159,7 +159,7 @@ class BlobUploadField(fields.StringField):
 
 # Form for uploading files
 class UploadForm(FlaskForm):
-    file = FileField('Upload the FASTA file', validators=[DataRequired("Not completed")])
+    file = FileField('Upload the FASTA file', [validators.DataRequired()])
 
     upload_submit = SubmitField("Upload files")
 

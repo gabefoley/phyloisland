@@ -9,6 +9,7 @@ from urllib.request import urlopen
 import gzip
 import os
 import time
+from flask import flash
 
 
 seqDict = {}
@@ -49,35 +50,26 @@ def getFullGenome(region_file):
 
     # queryString += " AND genome[title] AND project[title]"
 
-    print ('query string with filters is')
-    print (query_string_with_filters)
+    print ('Searching NCBI with the following query')
+    print (query_string_with_filters + "\n")
 
     # Get a list of the genome IDs
     genome_handle = Entrez.esearch(db="nucleotide", term= query_string_with_filters, rettype="gb", idtype='acc')
     record = Entrez.read(genome_handle)
-    print (record)
-    print (record['IdList'])
 
     for recordID in record['IdList']:
         genome_ids.add(recordID)
 
     genome_query_string = utilities.makeQueryString(genome_ids, link="+OR+")
-    #
-    # print (queryString)
-    #
-    # genome_handle = Entrez.efetch(db="nuccore", term= queryString, rettype="acc")
-    #
-    # print (genome_handle)
-
-
-
-    print ('this is the query string now')
-    print (genome_query_string)
 
     if (genome_query_string == ""):
-        print ("Searching for shotgun sequences")
+        print ("We didn't identify any genome records. Attempting to search for shotgun sequenced genomes \n")
         getShotgunGenome(query_string)
 
+
+    else:
+        print ("These are the genome records we identified")
+        print (" ".join(genome for genome in genome_ids) + "\n")
 
     genome_records = Entrez.efetch(db="nuccore", id=genome_query_string, rettype="gb")
 
@@ -88,25 +80,23 @@ def getFullGenome(region_file):
 
     for record in records:
 
-        print (record.annotations.get('organism'))
         found_species.append(record.annotations.get('organism'))
-        print (record.seq.alphabet)
-        print (record.seq[0:1000])
-        if any(nucleotide in 'A G C T' for nucleotide in record.seq[0:10000]):
+
+        # Check if the genome is just "N" characters. Slice from the middle to account for genomes that begin or
+        # end with "N" characters
+        if any(nucleotide in 'A G C T' for nucleotide in record.seq[int(len(record.seq)/2):int(len(record.seq)/2 + 1000)]):
 
             if record.description in seqDict:
 
                 # Prefer RefSeq sequences
                 if 'RefSeq' not in record.annotations.get('keywords'):
                     continue
-                    # seqDict[record.description] = record
 
             else:
                 seqDict[record.description] = record
 
         # Join all the found species together so we can quickly search to see if we didn't find something
         combined_species = '\t'.join(found_species)
-
 
         # If we didn't find a species add it to the unmappable species list
         for species in species_names:
@@ -117,17 +107,17 @@ def getFullGenome(region_file):
 
 
 def getShotgunGenome(query_string):
-    print (query_string)
     query_string_with_filters = query_string + " AND genome[title] AND project[title] NOT contig[title]  NOT segment[title] NOT plasmid[title]"
     idDict = {}
     genome_ids = set()
     querypath = "tmp/tempfile"
 
+    print ('Searching NCBI with the following query')
+    print (query_string_with_filters + "\n")
+
     # Get a list of the genome IDs
     genome_handle = Entrez.esearch(db="nucleotide", term= query_string_with_filters, rettype="gb", idtype='acc')
     record = Entrez.read(genome_handle)
-    print (record)
-    print (record['IdList'])
 
     for recordID in record['IdList']:
         genome_ids.add(recordID)
@@ -142,7 +132,6 @@ def getShotgunGenome(query_string):
         unmappable_species = []
 
     for record in records:
-        # print (record)
         comment = record.annotations.get('comment')
 
         comment.split()
@@ -184,9 +173,6 @@ def getShotgunGenome(query_string):
             new_records = SeqIO.parse(querypath, "gb")
 
             for record in new_records:
-                print(record.id)
-                print (record.seq)
-
 
 
             # with gzip.open("tmp/tempfilenew.gz", 'rb') as f:

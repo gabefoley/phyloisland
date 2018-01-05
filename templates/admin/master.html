@@ -1,5 +1,11 @@
 {% extends admin_base_template %}
 
+<div class="flashes">
+  {% for message in get_flashed_messages() %}
+    {{ message }}
+  {% endfor %}
+</div>
+
 
 {%  block brand %}
 
