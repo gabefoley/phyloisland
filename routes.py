@@ -24,8 +24,7 @@ import models, servers
 import io
 from flask import send_file
 from markupsafe import Markup
-import servers
-
+import utilities
 
 try:
     from wtforms.fields.core import _unset_value as unset_value
@@ -52,11 +51,25 @@ a1_reference = SeqRecord(Seq("MDKYNNYSNVIKNKSSISPLLAAAAKIEPEITVLSSASKSNRSQYSQSLA
 
 a2_reference = SeqRecord(Seq("MSNSIEAKLQEDLRDALVDYYLGQIVPNSKDFTNLRSTIKNVDDLYDHLLLDTQVSAKVITSRLSLVTQSVQQYINRIALNLEPGLSINQQEATDWEEFANRYGYWAANQQLRMFPEIYVDPTLRLTKTEFFFQLESALNQGKLTDDVAQKAVLGYLNNFEEVSNLEIIAGYQDGIDIENDKTYFVARTRMQPYRYFWRSLDASQRNANSQELYPTAWSEWKAISVPLENVANGIVRPIMMDNRLYISWFEVAEEKETDSDGNIIVSGRYRTKIRLAHLGFDGVWSSGTTLREEVLADQMEEMIAVVDRMEDEPRLALVAFKEMSESWDVVFSYICDSMLIESSNLPTTTHPPKPGDGDKGLSDLDDYGANLVWFYLHETANGGKAEYKQLILYPVIINRDWPIELDKTHQGDFGTVDDFTLNSNYTGDELSLYLQSSSTYKYDFSKSKNIIYGIWKEDANNNRCWLNYKLLTPEDYEPQINATLVMCDKGDVNIITGFSLPNGGVDAGGKIKVTLRVGKKLRDKFQIKQFSQTQYLQFPEASSADVWYIGKQIRLNTLFAKELIGKASRSLDLVLSWETQNSRLEEAILGGAAELIDLDGANGIYFWELFFHMPFMVSWRFNVEQRYEDANRWVKYLFNPFECEDEPALLLGKPPYWNSRPLVDEPFKGYSLTQPSDPDAIAASDPIHYRKAVFNFLTKNIIDQGDMEYRKLQPSARTLARLSYSTASSLLGRRPDVQLTSFWQPLTLEDASYKTDSEIRAIEMQSQPLTFEPVVHDQTMSAVDNDIFMYPMNNELRGLWDRIENRIYNLRHNLTLDGKEINMDLYDSSISPRGLMKQRYQRVVTARNASKMNFKVPNYRFEPMLNRSKSGVETLIQFGSTLLSLLERKDSLSFDAYQMIQSGDLYRFSIDLQQQDIDINKASLEALQVSKQSAQDRYDHFKELYDENISSTEQKVIELQSQAANSLLMAQGMRTAAAALDVIPNIYGLAVGGSHWGAPLNAAAEIIMIKYQADSSKSESLSVSESYRRRRQEWELQYKQAEWEVNSVEQQINLQNMQIKAANKRLEQVEAQQQQAMALLDYFSERFTNESLYTWLISQLSSLYLQAYDAVLSLCLSAEASLLYELNLGEQSFVGGGGWNDLYQGLMAGETLKLALMRMERVYVEQNSRRQEITKTISLKALLGESWPAELNKLKQKTPINFNLEEQIFVEDYQELYQRRIKSVSVSLPMLVGPYEDVCAQLTQTSSSYSTRADLKTVENMLTKRTFADTPHLVRSIQPNQQISLSTGVNDSGLFMLNFDDERFLPFEGSGVDSSWRLQFTNLKQNLDSLNDVILHVKYTAAIGSSTFSQGVRKILANINNDE", generic_protein), id="Yersinia entomophaga A2")
 
-
-
 a1_profile_path = "tmp/A1_profile.hmm"
 a2_profile_path = "tmp/A2_profile.hmm"
 
+
+
+def setA1ReferenceProfile():
+    query = models.Profile.query.filter_by(a1_profile_ref=1).first()
+    # print (query.name)
+    if query:
+        with open(a1_profile_path, 'w') as profile_path:
+
+            profile_path.write(query.profile.decode('utf-8'))
+
+
+def setA2ReferenceProfile():
+    query = models.Profile.query.filter_by(a2_profile_ref=1).first()
+    if query:
+        with open(a2_profile_path, 'w') as profile_path:
+            profile_path.write(query.profile.decode('utf-8'))
 
 
 @servers.application.route("/" + servers.base_route + "/<int:id>", methods=['GET'])
@@ -74,8 +87,7 @@ def download_blob(id):
     )
 
 
-class FilterInAListMaybe(BaseSQLAFilter):
-
+class GetUniqueSpecies(BaseSQLAFilter):
 
     def apply(self, query, value, alias="None"):
 
@@ -89,10 +101,33 @@ class FilterInAListMaybe(BaseSQLAFilter):
             else:
                 species_list.append(species)
                 id_list.append(record.id)
+        print (species_list)
+        print (id_list)
         return query.filter(self.get_column(alias).in_(id_list))
 
     def operation(self):
         return 'Yes'
+
+class GetUniqueSpeciesSequenceRecord(BaseSQLAFilter):
+
+            def apply(self, query, value, alias="None"):
+
+                species_list = []
+                id_list = []
+
+                for record in servers.bio_db.values():
+                    species = (" ".join(record.annotations.get('organism').split()[0:2]))
+                    if species in species_list:
+                        continue
+                    else:
+                        species_list.append(species)
+                        id_list.append(record.id)
+                print(species_list)
+                print(id_list)
+                return query.filter(self.get_column(alias).in_(id_list))
+
+            def operation(self):
+                return 'Yes'
 
 
 class SequenceRecordsView(ModelView):
@@ -100,6 +135,13 @@ class SequenceRecordsView(ModelView):
     edit_modal = True
     can_create = False
     can_view_details = True
+
+    @expose('/')
+    def index(self):
+        # Here are the contents of your "contact" route function
+        return self.render('sequence_records.html', model=models.SequenceRecords, session=servers.db.session,)
+
+
 
     def _seqdescription_formatter(view, context, model, name):
         # Format your string here e.g show first 20 characters
@@ -114,6 +156,12 @@ class SequenceRecordsView(ModelView):
         'sequence': _seqdescription_formatter,
     }
 
+    # column_filters = (
+    #     'sequence',
+    #     GetUniqueSpeciesSequenceRecord(
+    #         models.SequenceRecords.species, 'Get unique species')
+    # )
+
     @action('set_A1_reference', 'Set this sequence as the A1 reference')
     def action_set_A1_reference(self, ids):
         if len(ids) > 1:
@@ -126,12 +174,12 @@ class SequenceRecordsView(ModelView):
                 old_genome_reference = models.GenomeRecords.query.filter_by(a1_ref=1).first()
                 old_seq_reference = models.SequenceRecords.query.filter_by(a1_ref=1).first()
 
-                if (old_genome_reference):
+                if old_genome_reference:
                     # Remove the previous reference sequence
                     setattr(old_genome_reference, "a1_ref", 0)
                     servers.db.session.add(old_genome_reference)
 
-                if (old_seq_reference):
+                if old_seq_reference:
                     # Remove the previous reference sequence
                     setattr(old_seq_reference, "a1_ref", 0)
                     servers.db.session.add(old_seq_reference)
@@ -160,12 +208,12 @@ class SequenceRecordsView(ModelView):
                 old_genome_reference = models.GenomeRecords.query.filter_by(a2_ref=1).first()
                 old_seq_reference = models.SequenceRecords.query.filter_by(a2_ref=1).first()
 
-                if (old_genome_reference):
+                if old_genome_reference:
                     # Remove the previous reference sequence
                     setattr(old_genome_reference, "a2_ref", 0)
                     servers.db.session.add(old_genome_reference)
 
-                if (old_seq_reference):
+                if old_seq_reference:
                     # Remove the previous reference sequence
                     setattr(old_seq_reference, "a2_ref", 0)
                     servers.db.session.add(old_seq_reference)
@@ -177,9 +225,7 @@ class SequenceRecordsView(ModelView):
                 servers.db.session.add(record)
                 servers.db.session.commit()
 
-                flash ("The A2 region from %s has been set as the reference A2 sequence" % record.name)
-
-
+                flash("The A2 region from %s has been set as the reference A2 sequence" % record.name)
 
     @action('generate_profile', 'Generate a profile from these sequences')
     def action_generate_profile(self, ids):
@@ -215,6 +261,7 @@ class GenomeRecordsView(ModelView):
             return model.a1[:15] + "..."
         else:
             return model.a1
+
     def _a2description_formatter(view, context, model, name):
         # Format your string here e.g show first 20 characters
         # can return any valid HTML e.g. a link to another view to show the detail or a popup window
@@ -223,7 +270,6 @@ class GenomeRecordsView(ModelView):
             return model.a2[:15] + "..."
         else:
             return model.a2
-
 
     def _seqdescription_formatter(view, context, model, name):
         # Format your string here e.g show first 20 characters
@@ -240,7 +286,6 @@ class GenomeRecordsView(ModelView):
         'sequence': _seqdescription_formatter,
     }
 
-
     column_filters = ('name',
                       'species',
                       'strain',
@@ -250,7 +295,7 @@ class GenomeRecordsView(ModelView):
                       filters.FilterLike(models.GenomeRecords.overlap, 'Overlap',
                                          options=(('True', 'True'), ('False', 'False'))),
                       'sequence',
-                      FilterInAListMaybe(
+                      GetUniqueSpecies(
                           models.GenomeRecords.name, 'Get unique species'),
                       filters.IntGreaterFilter(models.GenomeRecords.distance, 'Distance greater than'),
                       filters.IntSmallerFilter(models.GenomeRecords.distance, 'Distance smaller than')
@@ -266,10 +311,8 @@ class GenomeRecordsView(ModelView):
         del servers.bio_db[model.uid]
         servers.bio_server.commit()
 
-
-
-    @action('item5_getoverlap', 'Get Overlap')
-    def item5_getoverlap(self, ids):
+    @action('item5_get_overlap', 'Get Overlap')
+    def item5_get_overlap(self, ids):
         try:
             query = models.GenomeRecords.query.filter(models.GenomeRecords.uid.in_(ids))
             for record in query.all():
@@ -277,7 +320,7 @@ class GenomeRecordsView(ModelView):
                     pass
                 else:
                     distance = str(phyloisland.getDistance(record.a1_loc, record.a2_loc))
-                    print (distance)
+                    print(distance)
                     if len(distance) > 1:
                         record.overlap = "False"
                         record.distance = distance
@@ -328,7 +371,6 @@ class GenomeRecordsView(ModelView):
                 else:
                     flash ("That record doesn't have an A1 region associated with it")
 
-
     @action('item7_set_A2_reference', 'Set this A2 region as the reference region')
     def item7_set_a2_reference(self, ids):
         if len(ids) > 1:
@@ -336,18 +378,18 @@ class GenomeRecordsView(ModelView):
         else:
             query = models.GenomeRecords.query.filter(models.GenomeRecords.uid.in_(ids))
             for record in query.all():
-                if (record.a2):
+                if record.a2:
 
                     # Check for a previous reference sequence
                     old_genome_reference = models.GenomeRecords.query.filter_by(a2_ref=1).first()
                     old_seq_reference = models.SequenceRecords.query.filter_by(a2_ref=1).first()
 
-                    if (old_genome_reference):
+                    if old_genome_reference:
                         # Remove the previous reference sequence
                         setattr(old_genome_reference, "a2_ref", 0)
                         servers.db.session.add(old_genome_reference)
 
-                    if (old_seq_reference):
+                    if old_seq_reference:
                         # Remove the previous reference sequence
                         setattr(old_seq_reference, "a2_ref", 0)
                         servers.db.session.add(old_seq_reference)
@@ -368,9 +410,6 @@ class GenomeRecordsView(ModelView):
 
             # Check if a reference profile for A1 exists
             a1_profile_reference = models.Profile.query.filter_by(a1_profile_ref=1).first()
-
-            print ('looking for alibrandi / a1')
-            print (a1_profile_reference)
 
             if (a1_profile_reference):
                 print ("Using the A1 profile named %s to check for A1 regions" % (a1_profile_reference.name))
@@ -422,25 +461,17 @@ class GenomeRecordsView(ModelView):
 
             checkForFeature.getFeatureLocation(ids, a2_reference, "a2", "a2_loc", "a2_length")
 
-
-
-
         except Exception as ex:
             if not self.handle_view_exception(ex):
                 raise
 
             flash(gettext('Something went wrong when checking for A2 region -  %(error)s', error=str(ex)), 'error')
 
-
-
     @action('item1_delete_a1', 'Delete A1 region')
     def item1_delete_a1(self, ids):
         try:
 
             checkForFeature.deleteFeature(ids, "a1", "a1_loc", "a1_length")
-
-
-
 
         except Exception as ex:
             if not self.handle_view_exception(ex):
@@ -454,8 +485,6 @@ class GenomeRecordsView(ModelView):
         try:
 
             checkForFeature.deleteFeature(ids, "a2", "a2_loc", "a2_length")
-
-
 
         except Exception as ex:
             if not self.handle_view_exception(ex):
@@ -552,11 +581,7 @@ class ProfileView(ModelView):
 
                 # Write the new profile to the tmp folder ready to be used
 
-
-
-
                 with open(a1_profile_path, 'w') as profile_path:
-                    print (record)
                     # print (record.profile)
                     profile_path.write(record.profile.decode('utf-8'))
 
@@ -577,7 +602,7 @@ class ProfileView(ModelView):
                     # Check for a previous reference profile
                     old_profile_reference = models.Profile.query.filter_by(a2_profile_ref=1).first()
 
-                    if (old_profile_reference):
+                    if old_profile_reference:
                         # Remove the previous reference profile
                         setattr(old_profile_reference, "a2_profile_ref", 0)
                         servers.db.session.add(old_profile_reference)
@@ -610,105 +635,132 @@ class UploadView(BaseView):
 
         if request.method == 'POST' and form.validate():
 
-
-            # Get the sequences
+            # Get the information from the upload form
             filename = servers.allfiles.save(request.files['file'])
+            type = form.type.data
+            add_seq = form.add_sequence.data
 
-            # Create the initial seqRecords
-            phyloisland.seqDict = {}
-            phyloisland.unmappable = []
+            # # Create the initial seqRecords
+            # phyloisland.seqDict = {}
+            # phyloisland.unmappable = []
 
-            seq_records = SeqIO.parse("static/uploads/" + filename, "fasta")
-
-            for record in seq_records:
-                seq_name = record.id
-                seq_description = record.description.split(">")[0]
-                seq_species = seq_description.split("[")[1].split("]")[0]
-                seq_sequence = str(record.seq)
-
-                seq_entry = models.SequenceRecords(seq_name, seq_species, seq_description, seq_sequence, 0, 0)
-
-                # Check if the sequence record already exists
-                seq_check = models.SequenceRecords.query.filter_by(name=seq_name).first()
-                if seq_check == None:
-                    print ('Adding sequence with ID - %s from species - %s to the sequence database' % (seq_name, seq_species) + "\n")
-                    servers.db.session.add(seq_entry)
-                    servers.db.session.commit()
-                else:
-                    print ('Sequence with ID - %s from species - %s already exists in the sequence database' % (seq_name, seq_species) + "\n")
+            if (type == "protein" or type == "nucleotide"):
+                seq_records = SeqIO.to_dict(SeqIO.parse("static/uploads/" + filename, "fasta"))
 
 
-
-
-            # Map the sequence to its genome
-            genomeResults = mapToGenome.getFullGenome("static/uploads/" + filename)
-
-            for genome in genomeResults:
-                print ('Could not find')
-                print (genome)
-
-                flash("Couldn't find " + str(genome))
-
-            records = mapToGenome.seqDict
-
-            for record in records:
-
-
-                current = records[record]
-                name = current.id
-
-
-
-                species = " ".join(current.annotations.get('organism').split()[0:2])
-                strain = current.annotations['source']
-                sequence = str(current.seq)
-                print (current)
-                print (species)
-
-                description = current.description
-                a1 = current.annotations["A1"] if "A1" in current.annotations.keys() else ""
-                a1_length = None
-                a1_loc = current.annotations["A1_location"] if "A1_location" in current.annotations.keys() else ""
-                a2 = current.annotations["A2"] if "A2" in current.annotations.keys() else ""
-                a2_length = None
-                a2_loc = current.annotations["A2_location"] if "A2_location" in current.annotations.keys() else ""
-                overlap = current.annotations["Overlap"] if "Overlap" in current.annotations.keys() else ""
-                distance = ""
-
-                entry = models.GenomeRecords(name, species, strain, description, a1, a1_length, a1_loc, a2, a2_length, a2_loc, overlap, distance, sequence, 0, 0)
-                check = models.GenomeRecords.query.filter_by(name=name).first()
-
-                # Check to see if the genome record already exists
-                if check:
-                    print ("The genome record - %s from species - %s already exists in the database" % (name, species))
-
-                    continue
-                #     # if region in current.annotations.keys():
-                #     #     continue
-                #     # else:
-                #     #     setattr(check, region.lower(), current.annotations[region] if region in current.annotations.keys() else "")
-                #     #     setattr(check, region.lower() + "_loc", current.annotations[region + "_location"] if region + "_location" in current.annotations.keys() else "")
-                #     #     servers.db.session.add(check)
+                if not seq_records:
+                    print("Couldn't find any sequences in the uploaded file.")
+                    flash("Couldn't find any sequences in the uploaded file.")
 
                 else:
-                    print ("Adding the genome record - %s from species - %s to the genome database" % (name, species))
+                    if (add_seq):
+                        addSequence(seq_records)
 
-                    seq_list = []
-                    servers.db.session.add(entry)
-                    seq_list.append(current)
-                    servers.bio_db.load(seq_list)
-                    servers.bio_server.commit()
-                    servers.db.session.commit()
+                    species_names = mapToGenome.getSpeciesNames(seq_records, type)
+                    genome_ids = mapToGenome.getGenomeIDs(species_names)
+                    genome_query_string = utilities.makeQueryString(genome_ids, link="+OR+")
 
+                    if (genome_query_string == ""):
+                        print("We didn't identify any genome records. Attempting to search for shotgun sequenced genomes \n")
+                        genome_results = mapToGenome.getShotgunGenome(species_names)
+                    else:
+                        genome_results = mapToGenome.getFullGenome(genome_ids)
+                    if genome_results != None:
+                        addGenome(genome_results)
 
+            elif (type == "species"):
+                species_names = readLinesFromFile("static/uploads/" + filename)
+                genome_ids = mapToGenome.getGenomeIDs(species_names)
+                genome_results = mapToGenome.getFullGenome(genome_ids)
+                if genome_results != None:
+                    addGenome(genome_results)
+            elif (type == "genome"):
+                genome_ids = readLinesFromFile("static/uploads/" + filename)
+                genome_results = mapToGenome.getFullGenome(genome_ids)
+                if genome_results != None:
+                    addGenome(genome_results)
+            # # Map the sequence to its genome
+            # genomeResults = mapToGenome.getFullGenome("static/uploads/" + filename)
 
-            return self.render("upload_admin.html", form=form, records=records)
+            # return self.render("upload_admin.html", form=form, records=records)
+
         return self.render("upload_admin.html", form=form)
 
+
+
 class MyHomeView(AdminIndexView):
-	@expose(servers.base_route)
-	def index(self):
-		return self.render('admin/index.html')
+    @expose(servers.base_route)
+    def index(self):
+        return self.render('admin/index.html')
+
+
+def addGenome(genome_results):
+
+    for record in genome_results:
+
+        current = genome_results[record]
+        name = current.id
+
+        species = " ".join(current.annotations.get('organism').split()[0:2])
+        strain = current.annotations['source']
+        sequence = str(current.seq)
+
+        description = current.description
+        a1 = current.annotations["A1"] if "A1" in current.annotations.keys() else ""
+        a1_length = None
+        a1_loc = current.annotations["A1_location"] if "A1_location" in current.annotations.keys() else ""
+        a2 = current.annotations["A2"] if "A2" in current.annotations.keys() else ""
+        a2_length = None
+        a2_loc = current.annotations["A2_location"] if "A2_location" in current.annotations.keys() else ""
+        overlap = current.annotations["Overlap"] if "Overlap" in current.annotations.keys() else ""
+        distance = ""
+
+        entry = models.GenomeRecords(name, species, strain, description, a1, a1_length, a1_loc, a2, a2_length, a2_loc,
+                                     overlap, distance, sequence, 0, 0)
+        check = models.GenomeRecords.query.filter_by(name=name).first()
+
+        # Check to see if the genome record already exists
+        if check:
+            print("The genome record - %s from species - %s already exists in the database" % (name, species))
+
+            continue
+        # # if region in current.annotations.keys():
+        #     #     continue
+        #     # else:
+        #     #     setattr(check, region.lower(), current.annotations[region] if region in current.annotations.keys() else "")
+        #     #     setattr(check, region.lower() + "_loc", current.annotations[region + "_location"] if region + "_location" in current.annotations.keys() else "")
+        #     #     servers.db.session.add(check)
+
+        else:
+            print("Adding the genome record - %s from species - %s to the genome database" % (name, species))
+
+            seq_list = []
+            servers.db.session.add(entry)
+            seq_list.append(current)
+            servers.bio_db.load(seq_list)
+            servers.bio_server.commit()
+            servers.db.session.commit()
+
+
+def addSequence(seq_records):
+    for record in seq_records.values():
+        seq_name = record.id
+        seq_description = record.description.split(">")[0]
+        seq_species = seq_description.split("[")[1].split("]")[0]
+        seq_sequence = str(record.seq)
+
+        seq_entry = models.SequenceRecords(seq_name, seq_species, seq_description, seq_sequence, 0, 0)
+
+        # Check if the sequence record already exists
+        seq_check = models.SequenceRecords.query.filter_by(name=seq_name).first()
+        if seq_check == None:
+            print('Adding sequence with ID - %s from species - %s to the sequence database' % (
+            seq_name, seq_species) + "\n")
+            servers.db.session.add(seq_entry)
+            servers.db.session.commit()
+        else:
+            print('Sequence with ID - %s from species - %s already exists in the sequence database' % (
+            seq_name, seq_species) + "\n")
 
 def createProfile(align_list):
     SeqIO.write(align_list, "align.fasta", "fasta")
@@ -731,7 +783,6 @@ def saveProfile(profile):
     """
     Save a profile into the database
     :param profile: Profile to save
-    :return:
     """
 
     name = phyloisland.randstring(5)
@@ -741,16 +792,35 @@ def saveProfile(profile):
     servers.db.session.add(profileEntry)
     servers.db.session.commit()
 
+def readLinesFromFile(filepath):
+    """
+    Takes a file and reads each individual line into a set
+    :param filepath: Path of the file
+    :return: Set containing lines from the file
+    """
+
+    content = set()
+
+    with open(filepath, 'r') as query_file:
+        for line in query_file:
+            content.add(line.strip())
+    return content
 
 # Setup the main flask-admin application
 admin = Admin(servers.application, index_view=AdminIndexView(name= servers.base_name, url="/" + servers.base_route), template_mode="bootstrap3")
 
 # Add the views to the flask-admin application
 admin.add_view(UploadView(name='Upload', endpoint='upload_admin'))
-admin.add_view(SequenceRecordsView(models.SequenceRecords, servers.db.session, endpoint="seq_view"))  # working version
-
-admin.add_view(GenomeRecordsView(models.GenomeRecords, servers.db.session, endpoint="genome_view"))  # working version
+admin.add_view(SequenceRecordsView(model=models.SequenceRecords, session=servers.db.session, endpoint="sequence_records"))
+admin.add_view(GenomeRecordsView(model=models.GenomeRecords, session=servers.db.session, endpoint="genome_view"))
 admin.add_view(ProfileView(model=models.Profile, session=servers.db.session, name='Profiles'))
 
+# Create A1 and A2 reference profiles on the disk
+setA1ReferenceProfile()
+setA2ReferenceProfile()
+
+
+
 if __name__ == '__main__':
-    servers.application.run(debug=True, port=7777)
+    servers.application.run(debug=True, port=7777, use_reloader=False)
+

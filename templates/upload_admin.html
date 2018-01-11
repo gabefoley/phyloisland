@@ -21,7 +21,7 @@
 
 
 
-
+            <br>
             {{ form.file.label }}
             {{ form.file() }}
 
@@ -31,17 +31,24 @@
                 {% endfor %}
               {% endif %}
 
+            <br>
+            {{ form.type.label }}
+            <br>
+                {{ form.type() }}
+
+                <br>
+                <br>
+            {{form.add_sequence.label }}
+            {{ form.add_sequence }}
+
+
+
 
             <br>
             <br>
             {{ form.upload_submit(class="btn-primary") }}
             </div>
  </form>
-
-    </div>
-
-
-</div>
 
 
 {% endblock %}

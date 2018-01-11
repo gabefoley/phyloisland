@@ -4,7 +4,7 @@ from wtforms import ValidationError, fields
 from wtforms.validators import required
 from wtforms.widgets import HTMLString, html_params, FileInput
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, FileField, validators
+from wtforms import StringField, SubmitField, FileField, SelectField, BooleanField, validators
 from wtforms.validators import DataRequired
 from gettext import gettext
 
@@ -151,14 +151,12 @@ class BlobUploadField(fields.StringField):
 
     def populate_obj(self, obj, name):
 
-        print ('name is ', name)
 
         if self._is_uploaded_file(self.data):
 
             _profile = self.data.read()
 
-            print ('got here')
-            print (_profile)
+
 
             setattr(obj, name, _profile)
 
@@ -177,8 +175,11 @@ class BlobUploadField(fields.StringField):
 
 # Form for uploading files
 class UploadForm(FlaskForm):
-    file = FileField('Upload the FASTA file', [validators.DataRequired()])
+    file = FileField('Upload the file that contains the information we will map to the genome records.', [validators.DataRequired()])
+    type = SelectField('What type of file is this?', [validators.DataRequired()], choices = [("protein", "FASTA (amino acids)"), ("nucleotide", "FASTA (nucleotides)"), ("species", "Species list"), ("genome", "Genome ID list")])
+    add_sequence = BooleanField("Add sequences to sequence database?", default="checked")
 
-    upload_submit = SubmitField("Upload files")
+
+    upload_submit = SubmitField("Upload file")
 
 

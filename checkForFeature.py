@@ -8,45 +8,50 @@ from flask import flash
 import subprocess
 import Bio
 from Bio import SeqIO
+import phyloisland
 
-def getFeatureLocation(ids, reference, record_name, record_location, record_length):
+def getFeatureLocation(ids, reference, query_name, query_location, query_length):
 
-    print (reference)
 
-    dbpath = "files/temp_blastfiles.fasta"
-    querypath = "files/psi.xml"
-    reference_path = "files/blast_reference"
 
-    SeqIO.write(reference, reference_path, "fasta")
 
     query = models.GenomeRecords.query.filter(models.GenomeRecords.uid.in_(ids))
     for record in query.all():
+        print("Looking for an %s region in %s" % (query_name, record.name))
+        dbpath = "tmp/temp_blastfiles" + str(record.name) + ".fasta"
+        reference_path = "tmp/blast_reference"
+        output_path = "tmp/" + str(record.name) + query_name + phyloisland.randstring(5) + "_blast_results.xml"
+
+        # Write out the reference sequnece
+        SeqIO.write(reference, reference_path, "fasta")
+
         seq_record = servers.bio_db.lookup(primary_id=record.name)
+
+        # Make a BLAST database of the genome to search
         BLAST.makeBlastDB(seq_record, dbpath)
 
         while not os.path.exists(dbpath):
             time.sleep(1)
 
         if os.path.isfile(dbpath):
-            BLAST.tBlastN(dbpath, reference_path, 0.00005)
 
-            while not os.path.exists(querypath):
+            # Perform the BLAST search
+            BLAST.tBlastN(dbpath, reference_path, output_path, 0.00005)
+
+            while not os.path.exists(output_path):
                 time.sleep(1)
 
-            if os.path.isfile(querypath):
-                # with open(querypath, "w") as handle:
-                #     handle.replace("b'", "")
-                #     handle.replace("'","")
+            if os.path.isfile(output_path):
+                print("Results of BLAST search have been written to %s" % output_path)
 
-
-                blast_info = BLAST.getBlastInfo(open(querypath))
+                blast_info = BLAST.getBlastInfo(open(output_path))
 
                 if ("sequence" in blast_info and "location" in blast_info):
 
                     # Update the record with the new location
-                    setattr(record, record_name, blast_info["sequence"].replace("-", ""))
-                    setattr(record, record_location, blast_info["location"])
-                    setattr(record, record_length, len(blast_info["sequence"].replace("-", "")))
+                    setattr(record, query_name, blast_info["sequence"].replace("-", ""))
+                    setattr(record, query_location, blast_info["location"])
+                    setattr(record, query_length, len(blast_info["sequence"].replace("-", "")))
 
                     # Commit the changed record
                     servers.db.session.add(record)
@@ -55,9 +60,10 @@ def getFeatureLocation(ids, reference, record_name, record_location, record_leng
 
 
                 else:
-                    flash("Couldn't find an %s region in %s" % (record_name, record.name))
+                    flash("Couldn't find an %s region in %s" % (query_name, record.name))
+
             # Remove created files
-            utilities.removeFile(dbpath, querypath)
+            utilities.removeFile(dbpath, dbpath + ".nhr", dbpath + ".nin", dbpath + ".nsq",  reference_path)
 
         else:
             raise ValueError("%s isn't a file!" % "files/temp_blastfiles.fasta")
@@ -78,8 +84,9 @@ def get_feature_location_with_profile(ids, reference, recordName, recordLocation
         seq_record = servers.bio_db.lookup(primary_id=record.name)
 
         # Create a path to write the translated genomic sequence to
-        cleaned_path = "tmp/" + seq_record.id + "_translated_genome.fasta"
-        hmmsearch_results = "tmp/" + seq_record.id + "_hmmsearch_results.fasta"
+        random_id = phyloisland.randstring(5)
+        cleaned_path = "tmp/" + seq_record.id + random_id + "_translated_genome.fasta"
+        hmmsearch_results = "tmp/" + seq_record.id + random_id +  "_hmmsearch_results.fasta"
 
         # Get the nucleotide sequence of the genome
         nuc_seq = Bio.Seq.Seq(str(seq_record.seq).replace("b'", "").replace("'", ""))
@@ -96,6 +103,8 @@ def get_feature_location_with_profile(ids, reference, recordName, recordLocation
         if os.path.isfile(cleaned_path):
 
             stdoutdata = subprocess.getoutput("hmmsearch -o %s %s %s" % (hmmsearch_results, reference, cleaned_path))
+            # result = subprocess.call(["hmmsearch -o %s %s %s" % (hmmsearch_results, reference, cleaned_path)])
+
             print ("The results from the HMM search have been written to %s" % hmmsearch_results)
             # result = subprocess.call(["hmmsearch", 'files/output.txt', reference, cleaned_path], stdout=subprocess.PIPE)
             # for x in result:

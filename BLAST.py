@@ -23,12 +23,12 @@ def makeBlastDB(records, dbpath):
     stdout, stderr = DB_process.communicate()
     return stdout
 
-def psiBlast(dbFile, queryFile, evalNum):
-    psi_cline = NcbipsiblastCommandline('psiblast', db = dbFile , query = queryFile , evalue = evalNum , out =  "files/psi.xml", outfmt = 5, out_pssm = "_pssm")
+def psiBlast(dbFile, queryFile, outfile, evalNum):
+    psi_cline = NcbipsiblastCommandline('psiblast', db = dbFile , query = queryFile , evalue = evalNum , out =  outfile, outfmt = 5, out_pssm = "_pssm")
     p = subprocess.Popen(str(psi_cline),stdout=subprocess.PIPE, stderr=subprocess.PIPE,shell=(sys.platform!="win32"))
 
-def tBlastN(dbFile, queryFile, evalNum):
-    tN_cline = NcbitblastnCommandline(db = dbFile , query = queryFile , evalue = evalNum , out =  "files/psi.xml", outfmt = 5)
+def tBlastN(dbFile, queryFile, outfile, evalNum):
+    tN_cline = NcbitblastnCommandline(db = dbFile , query = queryFile , evalue = evalNum , out = outfile, outfmt = 5)
     p = subprocess.Popen(str(tN_cline),stdout=subprocess.PIPE, stderr=subprocess.PIPE,shell=(sys.platform!="win32"))
 
 

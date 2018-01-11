@@ -1,5 +1,5 @@
 import os
-
+import glob
 def makeQueryString(iter, info = "", link = "", final = ""):
     """
     Take a list of items and concatanate them together
