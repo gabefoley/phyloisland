@@ -18,14 +18,15 @@ def getFeatureLocation(ids, reference, query_name, query_location, query_length)
     query = models.GenomeRecords.query.filter(models.GenomeRecords.uid.in_(ids))
     for record in query.all():
         print("Looking for an %s region in %s" % (query_name, record.name))
-        dbpath = "tmp/temp_blastfiles" + str(record.name) + ".fasta"
+        dbpath = "tmp/temp_blastfiles" + str(record.name).replace(" (", "_").replace(" ", "_").replace(")", "_") + ".fasta"
         reference_path = "tmp/blast_reference"
-        output_path = "tmp/" + str(record.name) + query_name + phyloisland.randstring(5) + "_blast_results.xml"
+        output_path = "tmp/" + str(record.name).replace(" (", "_").replace(" ", "_").replace(")", "_") + query_name + phyloisland.randstring(5) + "_blast_results.xml"
 
         # Write out the reference sequnece
         SeqIO.write(reference, reference_path, "fasta")
 
         seq_record = servers.bio_db.lookup(primary_id=record.name)
+
 
         # Make a BLAST database of the genome to search
         BLAST.makeBlastDB(seq_record, dbpath)
@@ -63,7 +64,7 @@ def getFeatureLocation(ids, reference, query_name, query_location, query_length)
                     flash("Couldn't find an %s region in %s" % (query_name, record.name))
 
             # Remove created files
-            utilities.removeFile(dbpath, dbpath + ".nhr", dbpath + ".nin", dbpath + ".nsq",  reference_path)
+            # utilities.removeFile(dbpath, dbpath + ".nhr", dbpath + ".nin", dbpath + ".nsq",  reference_path)
 
         else:
             raise ValueError("%s isn't a file!" % "files/temp_blastfiles.fasta")

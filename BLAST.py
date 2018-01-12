@@ -28,6 +28,7 @@ def psiBlast(dbFile, queryFile, outfile, evalNum):
     p = subprocess.Popen(str(psi_cline),stdout=subprocess.PIPE, stderr=subprocess.PIPE,shell=(sys.platform!="win32"))
 
 def tBlastN(dbFile, queryFile, outfile, evalNum):
+
     tN_cline = NcbitblastnCommandline(db = dbFile , query = queryFile , evalue = evalNum , out = outfile, outfmt = 5)
     p = subprocess.Popen(str(tN_cline),stdout=subprocess.PIPE, stderr=subprocess.PIPE,shell=(sys.platform!="win32"))
 

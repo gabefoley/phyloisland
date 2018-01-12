@@ -136,11 +136,11 @@ class SequenceRecordsView(ModelView):
     can_create = False
     can_view_details = True
 
-    @expose('/')
-    def index(self):
-        # Here are the contents of your "contact" route function
-        return self.render('sequence_records.html', model=models.SequenceRecords, session=servers.db.session,)
-
+    # @expose('/')
+    # def index(self):
+    #     # Here are the contents of your "contact" route function
+    #     return self.render('sequence_records.html', model=models.SequenceRecords, session=servers.db.session,)
+    #
 
 
     def _seqdescription_formatter(view, context, model, name):

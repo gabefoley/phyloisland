@@ -24,6 +24,7 @@ def getSpeciesNames(seq_records, type):
         query_string = utilities.makeQueryString(record_ids, link="+OR+")
 
     # Get the organism names
+    print (query_string)
     protein_handle = Entrez.efetch(db=type, id=query_string, rettype="gb")
     protein_records = SeqIO.parse(protein_handle, "gb")
 
@@ -203,7 +204,7 @@ def getShotgunGenome(species_names):
         for record in new_records:
             shotgun_genome += str(record.seq)
 
-        shotgun_seq = SeqRecord(Seq(shotgun_genome), id=genome_id + " (Shotgun Sequence)", annotations={"organism":species, "source": strain})
+        shotgun_seq = SeqRecord(Seq(shotgun_genome), id=genome_id + " Shotgun Sequence", annotations={"organism":species, "source": strain})
         seqDict[shotgun_seq.id] = shotgun_seq
 
     return seqDict
