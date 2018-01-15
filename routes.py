@@ -665,14 +665,23 @@ class UploadView(BaseView):
                         genome_results = mapToGenome.getShotgunGenome(species_names)
                     else:
                         genome_results = mapToGenome.getFullGenome(genome_ids)
-                    if genome_results != None:
+
+
+                    if genome_results:
                         addGenome(genome_results)
+                    else:
+                        print ("All of the genome records we identifed were all N characters. Attempting to search for shotgun sequenced genomes \n")
+                        genome_results = mapToGenome.getShotgunGenome(species_names)
+
+                    if genome_results:
+                        addGenome(genome_results)
+
 
             elif (type == "species"):
                 species_names = readLinesFromFile("static/uploads/" + filename)
                 genome_ids = mapToGenome.getGenomeIDs(species_names)
                 genome_results = mapToGenome.getFullGenome(genome_ids)
-                if genome_results != None:
+                if genome_results:
                     addGenome(genome_results)
             elif (type == "genome"):
                 genome_ids = readLinesFromFile("static/uploads/" + filename)
@@ -822,5 +831,5 @@ setA2ReferenceProfile()
 
 
 if __name__ == '__main__':
-    servers.application.run(debug=True, port=7777, use_reloader=False)
+    servers.application.run(debug=True, port=7776, use_reloader=False)
 

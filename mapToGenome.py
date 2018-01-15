@@ -24,7 +24,6 @@ def getSpeciesNames(seq_records, type):
         query_string = utilities.makeQueryString(record_ids, link="+OR+")
 
     # Get the organism names
-    print (query_string)
     protein_handle = Entrez.efetch(db=type, id=query_string, rettype="gb")
     protein_records = SeqIO.parse(protein_handle, "gb")
 
@@ -117,7 +116,7 @@ def getFullGenome(genome_ids):
                 print("This genome record was omitted because another RefSeq genome for the species exists - %s" % (genome_id))
                 flash("This genome record was omitted because another RefSeq genome for the species exists - %s" % (genome_id))
 
-
+        print (seqDict)
         return seqDict
 
     except HTTPError as ex:
@@ -161,7 +160,8 @@ def getShotgunGenome(species_names):
         idString = re.search('accession (.*)\.', comment)
 
         genome_id = idString.group(1)
-        versionString = re.search('project \((.*)\)', comment)
+
+        versionString = re.search('project[\w\W]\((.*)\)', comment)
         version = versionString.group(1)
 
 
@@ -206,6 +206,9 @@ def getShotgunGenome(species_names):
 
         shotgun_seq = SeqRecord(Seq(shotgun_genome), id=genome_id + " Shotgun Sequence", annotations={"organism":species, "source": strain})
         seqDict[shotgun_seq.id] = shotgun_seq
+
+    print ('done')
+    print (seqDict)
 
     return seqDict
 
