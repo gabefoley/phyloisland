@@ -3,5 +3,6 @@
 *.pyc
 .idea/
 static/uploads/
+tmp/
 /servers.py
 /phyloinit.py
