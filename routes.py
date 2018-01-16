@@ -25,6 +25,7 @@ import io
 from flask import send_file
 from markupsafe import Markup
 import utilities
+import time
 
 try:
     from wtforms.fields.core import _unset_value as unset_value
@@ -563,6 +564,7 @@ class ProfileView(ModelView):
             query = models.Profile.query.filter(models.Profile.uid.in_(ids))
             for record in query.all():
 
+
                 # Check for a previous reference profile
                 old_profile_reference = models.Profile.query.filter_by(a1_profile_ref=1).first()
 
@@ -582,7 +584,6 @@ class ProfileView(ModelView):
                 # Write the new profile to the tmp folder ready to be used
 
                 with open(a1_profile_path, 'w') as profile_path:
-                    # print (record.profile)
                     profile_path.write(record.profile.decode('utf-8'))
 
                 # global a1_profile_reference
@@ -616,8 +617,6 @@ class ProfileView(ModelView):
 
                     # Write the new profile to the tmp folder ready to be used
                     with open(a2_profile_path, 'w') as profile_path:
-                        print(record)
-                        print(record.profile)
                         profile_path.write(record.profile.decode('utf-8'))
 
                     flash("The profile named %s has been set as the reference A2 profile" % record.name)
@@ -781,10 +780,24 @@ def createProfile(align_list):
 
     alignment = AlignIO.read(child.stdout, "fasta")
     AlignIO.write(alignment, "align.aln", "fasta")
-    result = subprocess.call(["hmmbuild", "profile3.hmm", "align.aln"], stdout=subprocess.PIPE)
-    file = open('profile3.hmm', 'rb')
+    hmm_path = "tmp/profile3.hmm"
+    outfile = open(hmm_path, "w")
+    result = subprocess.call(["hmmbuild", hmm_path, "align.aln"], stdout=subprocess.PIPE)
 
-    saveProfile(file)
+
+    print ("waiting for .......")
+
+    while not os.path.exists(hmm_path):
+        time.sleep(1)
+
+    if os.path.isfile(hmm_path):
+
+        file = open(hmm_path, 'rb')
+
+
+        saveProfile(file)
+        utilities.removeFile(hmm_path, "align.fasta", "align.aln")
+
 
 
 

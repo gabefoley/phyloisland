@@ -86,32 +86,48 @@ def get_feature_location_with_profile(ids, reference, recordName, recordLocation
 
         # Create a path to write the translated genomic sequence to
         random_id = phyloisland.randstring(5)
-        cleaned_path = "tmp/" + seq_record.id + random_id + "_translated_genome.fasta"
-        hmmsearch_results = "tmp/" + seq_record.id + random_id +  "_hmmsearch_results.fasta"
+
+
+
 
         # Get the nucleotide sequence of the genome
         nuc_seq = Bio.Seq.Seq(str(seq_record.seq).replace("b'", "").replace("'", ""))
 
-        # Translate the nucleotide genome sequence to a protein sequence
-        with open(cleaned_path, 'w') as handle:
-            handle.write(">" + seq_record.name + " " + seq_record.description + "\n" + str(nuc_seq.translate(stop_symbol="M")))
+        # Check three forward reading frames
+        for forward in [True, False]:
+            for i in list(range(0, 3)):
 
-        print ("Writing the %s sequence with the species %s to %s \n" % (seq_record.id, seq_record.annotations.get('organism'), cleaned_path))
+                print (forward)
+                print (i)
 
-        while not os.path.exists(cleaned_path):
-            time.sleep(1)
+                strand = "_forward_" +str(i) if forward else "_backward_" + str(i)
+                sequence = nuc_seq[i:] if forward else nuc_seq.reverse_complement()[i:]
 
-        if os.path.isfile(cleaned_path):
+                cleaned_path = "tmp/" + seq_record.id + random_id + strand + "_translated_genome.fasta"
+                hmmsearch_results = "tmp/" + seq_record.id + random_id + strand + "_hmmsearch_results.fasta"
 
-            stdoutdata = subprocess.getoutput("hmmsearch -o %s %s %s" % (hmmsearch_results, reference, cleaned_path))
-            # result = subprocess.call(["hmmsearch -o %s %s %s" % (hmmsearch_results, reference, cleaned_path)])
 
-            print ("The results from the HMM search have been written to %s" % hmmsearch_results)
-            # result = subprocess.call(["hmmsearch", 'files/output.txt', reference, cleaned_path], stdout=subprocess.PIPE)
-            # for x in result:
-            #     print (x)
+                # Translate the nucleotide genome sequence to a protein sequence
+                with open(cleaned_path, 'w') as handle:
+                    handle.write(">" + seq_record.name + " " + seq_record.description + "\n" + str(sequence.translate(stop_symbol="M")))
 
-        # utilities.removeFile(reference, cleaned_path)
+                print ("Writing the %s sequence with the species %s to %s \n" % (seq_record.id, seq_record.annotations.get('organism'), cleaned_path))
+
+                while not os.path.exists(cleaned_path):
+                    time.sleep(1)
+
+                if os.path.isfile(cleaned_path):
+
+
+                    stdoutdata = subprocess.getoutput("hmmsearch -o %s %s %s" % (hmmsearch_results, reference, cleaned_path))
+                    # result = subprocess.call(["hmmsearch -o %s %s %s" % (hmmsearch_results, reference, cleaned_path)])
+
+                    print ("The results from the HMM search have been written to %s \n" % hmmsearch_results)
+                    # result = subprocess.call(["hmmsearch", 'files/output.txt', reference, cleaned_path], stdout=subprocess.PIPE)
+                    # for x in result:
+                    #     print (x)
+
+                # utilities.removeFile(reference, cleaned_path)
 
 
 def checkFeatureAlreadyAnnotated():
