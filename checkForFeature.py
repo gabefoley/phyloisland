@@ -97,9 +97,6 @@ def get_feature_location_with_profile(ids, reference, recordName, recordLocation
         for forward in [True, False]:
             for i in list(range(0, 3)):
 
-                print (forward)
-                print (i)
-
                 strand = "_forward_" +str(i) if forward else "_backward_" + str(i)
                 sequence = nuc_seq[i:] if forward else nuc_seq.reverse_complement()[i:]
 
@@ -111,7 +108,7 @@ def get_feature_location_with_profile(ids, reference, recordName, recordLocation
                 with open(cleaned_path, 'w') as handle:
                     handle.write(">" + seq_record.name + " " + seq_record.description + "\n" + str(sequence.translate(stop_symbol="M")))
 
-                print ("Writing the %s sequence with the species %s to %s \n" % (seq_record.id, seq_record.annotations.get('organism'), cleaned_path))
+                print ("Writing the %s sequence with the species %s to %s" % (seq_record.id, seq_record.annotations.get('organism'), cleaned_path))
 
                 while not os.path.exists(cleaned_path):
                     time.sleep(1)
