@@ -103,6 +103,9 @@ def get_feature_location_with_profile(ids, reference, recordName, recordLocation
                 cleaned_path = "tmp/" + seq_record.id + random_id + strand + "_translated_genome.fasta"
                 hmmsearch_results = "tmp/" + seq_record.id + random_id + strand + "_hmmsearch_results.fasta"
 
+                cleaned_path = cleaned_path.replace(" ", "_")
+                hmmsearch_results = hmmsearch_results.replace(" ", "_")
+
 
                 # Translate the nucleotide genome sequence to a protein sequence
                 with open(cleaned_path, 'w') as handle:
@@ -117,6 +120,8 @@ def get_feature_location_with_profile(ids, reference, recordName, recordLocation
 
 
                     stdoutdata = subprocess.getoutput("hmmsearch -o %s %s %s" % (hmmsearch_results, reference, cleaned_path))
+
+                    print (stdoutdata)
                     # result = subprocess.call(["hmmsearch -o %s %s %s" % (hmmsearch_results, reference, cleaned_path)])
 
                     print ("The results from the HMM search have been written to %s \n" % hmmsearch_results)
