@@ -49,6 +49,7 @@ class GenomeRecords(db.Model):
     a1_ref = db.Column(db.Boolean)
     a2_ref = db.Column(db.Boolean)
 
+
     def __init__(self, name="", species="", strain="", description="", a1="", a1_length="", a1_loc="", a2="", a2_length="", a2_loc="", overlap="",
                  distance="", sequence="", a1_ref=0, a2_ref=0):
         self.name = name
