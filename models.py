@@ -19,14 +19,25 @@ class SequenceRecords(db.Model):
     sequence = db.Column(db.Text)
     a1_ref = db.Column(db.Boolean)
     a2_ref = db.Column(db.Boolean)
+    region1_ref = db.Column(db.Boolean)
+    region2_ref = db.Column(db.Boolean)
+    region3_ref = db.Column(db.Boolean)
+    region4_ref = db.Column(db.Boolean)
 
-    def __init__(self, name="", species="", description="", sequence="", a1_ref=0, a2_ref=0):
+
+    def __init__(self, name="", species="", description="", sequence="", a1_ref=0, a2_ref=0, region1_ref=0,
+                 region2_ref=0, region3_ref=0, region4_ref=0,):
         self.name = name
         self.species = species
         self.description = description
         self.sequence = sequence
         self.a1_ref = a1_ref
         self.a2_ref = a2_ref
+        self.region1_ref = region1_ref
+        self.region2_ref = region2_ref
+        self.region3_ref = region3_ref
+        self.region4_ref = region4_ref
+
 
 
 class GenomeRecords(db.Model):
@@ -42,16 +53,34 @@ class GenomeRecords(db.Model):
     a2 = db.Column(db.Text)
     a2_length = db.Column(db.Integer)
     a2_loc = db.Column(db.Text)
-
     overlap = db.Column(db.String(255))
     distance = db.Column(db.VARCHAR(255))
     sequence = db.Column(db.Text)
     a1_ref = db.Column(db.Boolean)
     a2_ref = db.Column(db.Boolean)
+    region1 = db.Column(db.Text)
+    region1_length = db.Column(db.Integer)
+    region1_loc = db.Column(db.Text)
+    region2 = db.Column(db.Text)
+    region2_length = db.Column(db.Integer)
+    region2_loc = db.Column(db.Text)
+    region3 = db.Column(db.Text)
+    region3_length = db.Column(db.Integer)
+    region3_loc = db.Column(db.Text)
+    region4 = db.Column(db.Text)
+    region4_length = db.Column(db.Integer)
+    region4_loc = db.Column(db.Text)
+    region1_ref = db.Column(db.Boolean)
+    region2_ref = db.Column(db.Boolean)
+    region3_ref = db.Column(db.Boolean)
+    region4_ref = db.Column(db.Boolean)
 
 
-    def __init__(self, name="", species="", strain="", description="", a1="", a1_length="", a1_loc="", a2="", a2_length="", a2_loc="", overlap="",
-                 distance="", sequence="", a1_ref=0, a2_ref=0):
+    def __init__(self, name="", species="", strain="", description="", a1="", a1_length="", a1_loc="",
+                 a2="", a2_length="", a2_loc="", overlap="", distance="", sequence="", a1_ref=0, a2_ref=0,
+                 region1="", region1_length=None, region1_loc="",region2="", region2_length=None, region2_loc="",
+                 region3="", region3_length=None, region3_loc="", region4="", region4_length=None, region4_loc="",
+                 region1_ref="", region2_ref="", region3_ref="", region4_ref="" ):
         self.name = name
         self.species = species
         self.strain = strain
@@ -67,6 +96,22 @@ class GenomeRecords(db.Model):
         self.sequence = sequence
         self.a1_ref = a1_ref
         self.a2_ref = a2_ref
+        self.region1 = region1
+        self.region1_length = region1_length
+        self.region1_loc = region1_loc
+        self.region2 = region2
+        self.region2_length = region2_length
+        self.region2_loc = region2_loc
+        self.region3 = region3
+        self.region3_length = region3_length
+        self.region3_loc = region3_loc
+        self.region4 = region4
+        self.region4_length = region4_length
+        self.region4_loc = region4_loc
+        self.region1_ref = region1_ref
+        self.region2_ref = region2_ref
+        self.region3_ref = region3_ref
+        self.region4_ref = region4_ref
 
 
 class BlobMixin(object):
@@ -89,11 +134,22 @@ class Profile(db.Model, BlobMixin):
     name = db.Column(db.Unicode(length=255), nullable=False, unique=True)
     a1_profile_ref = db.Column(db.Boolean)
     a2_profile_ref = db.Column(db.Boolean)
+    region1_profile_ref = db.Column(db.Boolean)
+    region2_profile_ref = db.Column(db.Boolean)
+    region3_profile_ref = db.Column(db.Boolean)
+    region4_profile_ref = db.Column(db.Boolean)
 
-    def __init__(self, name = "", blobMix = "", a1_ref=0, a2_ref=0):
+
+    def __init__(self, name = "", blobMix = "", a1_profile_ref=0, a2_profile_ref=0, region1_profile_ref = 0,
+                 region2_profile_ref = 0, region3_profile_ref = 0, region4_profile_ref = 0,):
         self.name = name
-        self.a1_ref = a1_ref
-        self.a2_ref = a2_ref
+        self.a1_profile_ref = a1_profile_ref
+        self.a2_profile_ref = a2_profile_ref
+        self.region1_profile_ref = region1_profile_ref
+        self.region2_profile_ref = region2_profile_ref
+        self.region3_profile_ref = region3_profile_ref
+        self.region4_profile_ref = region4_profile_ref
+
         self.blobMix = blobMix
 
     def set_blobMix(self, blobMix):

@@ -52,25 +52,22 @@ a1_reference = SeqRecord(Seq("MDKYNNYSNVIKNKSSISPLLAAAAKIEPEITVLSSASKSNRSQYSQSLA
 
 a2_reference = SeqRecord(Seq("MSNSIEAKLQEDLRDALVDYYLGQIVPNSKDFTNLRSTIKNVDDLYDHLLLDTQVSAKVITSRLSLVTQSVQQYINRIALNLEPGLSINQQEATDWEEFANRYGYWAANQQLRMFPEIYVDPTLRLTKTEFFFQLESALNQGKLTDDVAQKAVLGYLNNFEEVSNLEIIAGYQDGIDIENDKTYFVARTRMQPYRYFWRSLDASQRNANSQELYPTAWSEWKAISVPLENVANGIVRPIMMDNRLYISWFEVAEEKETDSDGNIIVSGRYRTKIRLAHLGFDGVWSSGTTLREEVLADQMEEMIAVVDRMEDEPRLALVAFKEMSESWDVVFSYICDSMLIESSNLPTTTHPPKPGDGDKGLSDLDDYGANLVWFYLHETANGGKAEYKQLILYPVIINRDWPIELDKTHQGDFGTVDDFTLNSNYTGDELSLYLQSSSTYKYDFSKSKNIIYGIWKEDANNNRCWLNYKLLTPEDYEPQINATLVMCDKGDVNIITGFSLPNGGVDAGGKIKVTLRVGKKLRDKFQIKQFSQTQYLQFPEASSADVWYIGKQIRLNTLFAKELIGKASRSLDLVLSWETQNSRLEEAILGGAAELIDLDGANGIYFWELFFHMPFMVSWRFNVEQRYEDANRWVKYLFNPFECEDEPALLLGKPPYWNSRPLVDEPFKGYSLTQPSDPDAIAASDPIHYRKAVFNFLTKNIIDQGDMEYRKLQPSARTLARLSYSTASSLLGRRPDVQLTSFWQPLTLEDASYKTDSEIRAIEMQSQPLTFEPVVHDQTMSAVDNDIFMYPMNNELRGLWDRIENRIYNLRHNLTLDGKEINMDLYDSSISPRGLMKQRYQRVVTARNASKMNFKVPNYRFEPMLNRSKSGVETLIQFGSTLLSLLERKDSLSFDAYQMIQSGDLYRFSIDLQQQDIDINKASLEALQVSKQSAQDRYDHFKELYDENISSTEQKVIELQSQAANSLLMAQGMRTAAAALDVIPNIYGLAVGGSHWGAPLNAAAEIIMIKYQADSSKSESLSVSESYRRRRQEWELQYKQAEWEVNSVEQQINLQNMQIKAANKRLEQVEAQQQQAMALLDYFSERFTNESLYTWLISQLSSLYLQAYDAVLSLCLSAEASLLYELNLGEQSFVGGGGWNDLYQGLMAGETLKLALMRMERVYVEQNSRRQEITKTISLKALLGESWPAELNKLKQKTPINFNLEEQIFVEDYQELYQRRIKSVSVSLPMLVGPYEDVCAQLTQTSSSYSTRADLKTVENMLTKRTFADTPHLVRSIQPNQQISLSTGVNDSGLFMLNFDDERFLPFEGSGVDSSWRLQFTNLKQNLDSLNDVILHVKYTAAIGSSTFSQGVRKILANINNDE", generic_protein), id="Yersinia entomophaga A2")
 
-a1_profile_path = "tmp/A1_profile.hmm"
-a2_profile_path = "tmp/A2_profile.hmm"
+# a1_profile_path = "tmp/A1_profile.hmm"
+# a2_profile_path = "tmp/A2_profile.hmm"
+# region1_profile_path = "tmp/region1_profile.hmm"
+# region2_profile_path = "tmp/region2_profile.hmm"
+# region3_profile_path = "tmp/region3_profile.hmm"
+# region4_profile_path = "tmp/region4_profile.hmm"
 
 
-
-def setA1ReferenceProfile():
-    query = models.Profile.query.filter_by(a1_profile_ref=1).first()
-    # print (query.name)
+def setReferenceProfile(region):
+    # filter = globals()[region + '_profile_ref=1']()
+    query = eval('models.Profile.query.filter_by(' + region + '_profile_ref=1).first()')
     if query:
-        with open(a1_profile_path, 'w') as profile_path:
+        with open("tmp/" + region + "_profile.hmm", 'w') as profile_path:
 
             profile_path.write(query.profile.decode('utf-8'))
 
-
-def setA2ReferenceProfile():
-    query = models.Profile.query.filter_by(a2_profile_ref=1).first()
-    if query:
-        with open(a2_profile_path, 'w') as profile_path:
-            profile_path.write(query.profile.decode('utf-8'))
 
 
 @servers.application.route("/" + servers.base_route + "/<int:id>", methods=['GET'])
@@ -163,70 +160,38 @@ class SequenceRecordsView(ModelView):
     #         models.SequenceRecords.species, 'Get unique species')
     # )
 
+
+
     @action('set_A1_reference', 'Set this sequence as the A1 reference')
     def action_set_A1_reference(self, ids):
-        if len(ids) > 1:
-            flash('Only select a single record')
-        else:
-            query = models.SequenceRecords.query.filter(models.SequenceRecords.uid.in_(ids))
-            for record in query.all():
 
-                # Check for a previous reference sequence
-                old_genome_reference = models.GenomeRecords.query.filter_by(a1_ref=1).first()
-                old_seq_reference = models.SequenceRecords.query.filter_by(a1_ref=1).first()
-
-                if old_genome_reference:
-                    # Remove the previous reference sequence
-                    setattr(old_genome_reference, "a1_ref", 0)
-                    servers.db.session.add(old_genome_reference)
-
-                if old_seq_reference:
-                    # Remove the previous reference sequence
-                    setattr(old_seq_reference, "a1_ref", 0)
-                    servers.db.session.add(old_seq_reference)
-
-                # Set the new reference sequence
-                setattr(record, "a1_ref", 1)
-
-                # Commit the changed record
-                servers.db.session.add(record)
-                servers.db.session.commit()
-
-                # global a1_reference
-                # a1_reference = SeqRecord(Seq(record.sequence, generic_protein), id=str(record.name) + "_reference")
-                flash ("The A1 region from %s has been set as the reference A1 sequence" % record.name)
-
+        setSequenceAsReference(ids, "a1")
 
     @action('set_A2_reference', 'Set this sequence as the A2 reference')
     def action_set_A2_reference(self, ids):
-        if len(ids) > 1:
-            flash('Only select a single record')
-        else:
-            query = models.SequenceRecords.query.filter(models.SequenceRecords.uid.in_(ids))
-            for record in query.all():
 
-                # Check for a previous reference sequence
-                old_genome_reference = models.GenomeRecords.query.filter_by(a2_ref=1).first()
-                old_seq_reference = models.SequenceRecords.query.filter_by(a2_ref=1).first()
+        setSequenceAsReference(ids, "a2")
 
-                if old_genome_reference:
-                    # Remove the previous reference sequence
-                    setattr(old_genome_reference, "a2_ref", 0)
-                    servers.db.session.add(old_genome_reference)
+    @action('set_region1_reference', 'Set this sequence as the region 1 reference')
+    def action_set_region1_reference(self, ids):
 
-                if old_seq_reference:
-                    # Remove the previous reference sequence
-                    setattr(old_seq_reference, "a2_ref", 0)
-                    servers.db.session.add(old_seq_reference)
+        setSequenceAsReference(ids, "region1")
 
-                # Set the new reference sequence
-                setattr(record, "a2_ref", 1)
+    @action('set_region2_reference', 'Set this sequence as the region 2 reference')
+    def action_set_region2_reference(self, ids):
 
-                # Commit the changed record
-                servers.db.session.add(record)
-                servers.db.session.commit()
+        setSequenceAsReference(ids, "region2")
 
-                flash("The A2 region from %s has been set as the reference A2 sequence" % record.name)
+    @action('set_region3_reference', 'Set this sequence as the region 3 reference')
+    def action_set_region3_reference(self, ids):
+
+        setSequenceAsReference(ids, "region3")
+
+    @action('set_region4_reference', 'Set this sequence as the region 4 reference')
+    def action_set_region4_reference(self, ids):
+
+        setSequenceAsReference(ids, "region4")
+
 
     @action('generate_profile', 'Generate a profile from these sequences')
     def action_generate_profile(self, ids):
@@ -247,7 +212,11 @@ class SequenceRecordsView(ModelView):
 
 
 class GenomeRecordsView(ModelView):
-    column_list = ('name', 'species', 'strain', 'description', 'a1_ref', 'a2_ref', 'a1', 'a1_length', 'a1_loc', 'a2', 'a2_length', 'a2_loc', 'overlap', 'distance', 'sequence')
+    column_list = ('name', 'species', 'strain', 'description', 'a1_ref', 'a2_ref', 'sequence', 'a1', 'a1_length', 'a1_loc', 'a2',
+                   'a2_length', 'a2_loc', 'overlap', 'distance', 'region1_ref', 'region2_ref',
+                   'region3_ref', 'region4_ref', 'region1', 'region1_length', 'region1_loc', 'region2',
+                   'region2_length', 'region2_loc', 'region3', 'region3_length', 'region3_loc', 'region4',
+                   'region4_length', 'region4_loc')
     column_searchable_list = ['name', 'species', 'a1', 'a2', 'overlap']
     create_modal = True
     edit_modal = True
@@ -272,6 +241,40 @@ class GenomeRecordsView(ModelView):
         else:
             return model.a2
 
+    def _region1description_formatter(view, context, model, name):
+        # Format your string here e.g show first 20 characters
+        # can return any valid HTML e.g. a link to another view to show the detail or a popup window
+
+        if model.region1:
+            return model.region1[:15] + "..."
+        else:
+            return model.region1
+    def _region2description_formatter(view, context, model, name):
+        # Format your string here e.g show first 20 characters
+        # can return any valid HTML e.g. a link to another view to show the detail or a popup window
+
+        if model.region2:
+            return model.region2[:15] + "..."
+        else:
+            return model.region2
+
+    def _region3description_formatter(view, context, model, name):
+        # Format your string here e.g show first 20 characters
+        # can return any valid HTML e.g. a link to another view to show the detail or a popup window
+
+        if model.region3:
+            return model.region3[:15] + "..."
+        else:
+            return model.region3
+    def _region4description_formatter(view, context, model, name):
+        # Format your string here e.g show first 20 characters
+        # can return any valid HTML e.g. a link to another view to show the detail or a popup window
+
+        if model.region1:
+            return model.region4[:15] + "..."
+        else:
+            return model.region4
+
     def _seqdescription_formatter(view, context, model, name):
         # Format your string here e.g show first 20 characters
         # can return any valid HTML e.g. a link to another view to show the detail or a popup window
@@ -284,6 +287,11 @@ class GenomeRecordsView(ModelView):
     column_formatters = {
         'a1': _a1description_formatter,
         'a2': _a2description_formatter,
+        'region1': _region1description_formatter,
+        'region2': _region2description_formatter,
+        'region3': _region3description_formatter,
+        'region4': _region4description_formatter,
+
         'sequence': _seqdescription_formatter,
     }
 
@@ -340,84 +348,42 @@ class GenomeRecordsView(ModelView):
 
     @action('item6_A1_reference', 'Set this A1 region as the reference region')
     def item6_set_a1_reference(self, ids):
-        if len(ids) > 1:
-            flash('Only select a single record')
-        else:
-            query = models.GenomeRecords.query.filter(models.GenomeRecords.uid.in_(ids))
-            for record in query.all():
-                if (record.a1):
 
-                    # Check for a previous reference sequence
-                    old_genome_reference = models.GenomeRecords.query.filter_by(a1_ref=1).first()
-                    old_seq_reference = models.SequenceRecords.query.filter_by(a1_ref=1).first()
+        setRegionAsReference(ids, 'a1')
 
-
-                    if (old_genome_reference):
-                        # Remove the previous reference sequence
-                        setattr(old_genome_reference, "a1_ref", 0)
-                        servers.db.session.add(old_genome_reference)
-
-                    if (old_seq_reference):
-                        # Remove the previous reference sequence
-                        setattr(old_seq_reference, "a1_ref", 0)
-                        servers.db.session.add(old_seq_reference)
-
-                    # Set the new reference sequence
-                    setattr(record, "a1_ref", 1)
-
-                    # Commit the changed record
-                    servers.db.session.add(record)
-                    servers.db.session.commit()
-                    flash ("The A1 region from %s has been set as the reference A1 sequence" % record.name)
-                else:
-                    flash ("That record doesn't have an A1 region associated with it")
 
     @action('item7_set_A2_reference', 'Set this A2 region as the reference region')
     def item7_set_a2_reference(self, ids):
-        if len(ids) > 1:
-            flash('Only select a single record')
-        else:
-            query = models.GenomeRecords.query.filter(models.GenomeRecords.uid.in_(ids))
-            for record in query.all():
-                if record.a2:
 
-                    # Check for a previous reference sequence
-                    old_genome_reference = models.GenomeRecords.query.filter_by(a2_ref=1).first()
-                    old_seq_reference = models.SequenceRecords.query.filter_by(a2_ref=1).first()
+        setRegionAsReference(ids, 'a2')
 
-                    if old_genome_reference:
-                        # Remove the previous reference sequence
-                        setattr(old_genome_reference, "a2_ref", 0)
-                        servers.db.session.add(old_genome_reference)
+    @action('item7_set_region1_reference', 'Set this region1 region as the reference region')
+    def item7_set_region1_reference(self, ids):
 
-                    if old_seq_reference:
-                        # Remove the previous reference sequence
-                        setattr(old_seq_reference, "a2_ref", 0)
-                        servers.db.session.add(old_seq_reference)
+        setRegionAsReference(ids, 'region1')
 
-                    # Set the new reference sequence
-                    setattr(record, "a2_ref", 1)
+    @action('item7_set_region2_reference', 'Set this region2 region as the reference region')
+    def item7_set_region2_reference(self, ids):
 
-                    # Commit the changed record
-                    servers.db.session.add(record)
-                    servers.db.session.commit()
-                    flash ("The A2 region from %s has been set as the reference A2 sequence" % record.name)
-                else:
-                    flash ("That record doesn't have an A2 region associated with it")
+        setRegionAsReference(ids, 'region2')
 
-    @action('item_a1_profile_align_a1', 'Check for A1 region with a profile')
+    @action('item7_set_region3_reference', 'Set this region3 region as the reference region')
+    def item7_set_region3_reference(self, ids):
+
+        setRegionAsReference(ids, 'region3')
+
+    @action('item7_set_region4_reference', 'Set this region4 region as the reference region')
+    def item7_set_region4_reference(self, ids):
+
+        setRegionAsReference(ids, 'region4')
+
+    @action('item8_a1_profile_align_a1', 'Check for A1 region with a profile')
     def item_a1_profile_align_a1(self, ids):
         try:
 
-            # Check if a reference profile for A1 exists
-            a1_profile_reference = models.Profile.query.filter_by(a1_profile_ref=1).first()
+            checkWithProfile(ids, 'a1')
 
-            if (a1_profile_reference):
-                print ("Using the A1 profile named %s to check for A1 regions" % (a1_profile_reference.name))
-                checkForFeature.get_feature_location_with_profile(ids, a1_profile_path, "a1", "a1_loc")
-            else:
-                flash("Please set a profile as the A1 reference profile first", "error")
-
+        # Does this exception raise correctly?
         except Exception as ex:
             if not self.handle_view_exception(ex):
                 raise
@@ -425,30 +391,67 @@ class GenomeRecordsView(ModelView):
             flash(gettext('Something went wrong when checking for A1 region -  %(error)s', error=str(ex)), 'error')
 
 
-    @action('item_a2_profile_align_a2', 'Check for A2 region with a profile')
+    @action('item8_a2_profile_align_a2', 'Check for A2 region with a profile')
     def item_a2_profile_align_a2(self, ids):
         try:
-
-            # Check if a reference profile for A1 exists
-            a2_profile_reference = models.Profile.query.filter_by(a2_profile_ref=1).first()
-
-            if (a2_profile_reference):
-                print ("Using the A2 profile named %s to check for A2 regions" % (a2_profile_reference.name))
-                checkForFeature.get_feature_location_with_profile(ids, a2_profile_path, "a2", "a2_loc")
-            else:
-                flash("Please set a profile as the A2 reference profile first", "error")
-
+            checkWithProfile(ids, 'a2')
+            # Does this exception raise correctly?
         except Exception as ex:
             if not self.handle_view_exception(ex):
                 raise
 
-            flash(gettext('Something went wrong when checking for A1 region -  %(error)s', error=str(ex)), 'error')
+            flash(gettext('Something went wrong when checking for A2 region -  %(error)s', error=str(ex)), 'error')
+
+    @action('item8_a2_profile_align_region1', 'Check for region 1 with a profile')
+    def item_a2_profile_align_region1(self, ids):
+        try:
+            checkWithProfile(ids, 'region1')
+            # Does this exception raise correctly?
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+
+            flash(gettext('Something went wrong when checking for region 1 -  %(error)s', error=str(ex)), 'error')
+
+    @action('item_a2_profile_align_region2', 'Check for region 2 with a profile')
+    def item_a2_profile_align_region2(self, ids):
+        try:
+            checkWithProfile(ids, 'region2')
+            # Does this exception raise correctly?
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+
+            flash(gettext('Something went wrong when checking for region 2 -  %(error)s', error=str(ex)), 'error')
+
+    @action('item_a2_profile_align_region3', 'Check for region 3 with a profile')
+    def item_a2_profile_align_region3(self, ids):
+        try:
+            checkWithProfile(ids, 'region3')
+            # Does this exception raise correctly?
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+
+            flash(gettext('Something went wrong when checking for region 3 -  %(error)s', error=str(ex)), 'error')
+
+    @action('item_a2_profile_align_region4', 'Check for region 4 with a profile')
+    def item_a2_profile_align_region4(self, ids):
+        try:
+            checkWithProfile(ids, 'region4')
+            # Does this exception raise correctly?
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+
+            flash(gettext('Something went wrong when checking for region 4 -  %(error)s', error=str(ex)), 'error')
 
     @action('item3_check_a1', 'Check for A1 region')
     def item3_check_a1(self, ids):
         try:
 
-            checkForFeature.getFeatureLocation(ids, a1_reference, "a1", "a1_loc", "a1_length")
+            checkForRegion(ids, 'a1')
+
 
         except Exception as ex:
             if not self.handle_view_exception(ex):
@@ -456,17 +459,70 @@ class GenomeRecordsView(ModelView):
 
             flash(gettext('Something went wrong when checking for A1 region -  %(error)s', error=str(ex)), 'error')
 
-    @action('item4_check_a2', 'Check for A2 region')
-    def item4_check_a2(self, ids):
+    @action('item3_check_a2', 'Check for A2 region')
+    def item3_check_a2(self, ids):
         try:
 
-            checkForFeature.getFeatureLocation(ids, a2_reference, "a2", "a2_loc", "a2_length")
+            checkForRegion(ids, 'a2')
+
 
         except Exception as ex:
             if not self.handle_view_exception(ex):
                 raise
 
             flash(gettext('Something went wrong when checking for A2 region -  %(error)s', error=str(ex)), 'error')
+
+    @action('item3_check_region1', 'Check for region1')
+    def item3_check_region1(self, ids):
+        try:
+
+            checkForRegion(ids, 'region1')
+
+
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+
+            flash(gettext('Something went wrong when checking for region 1 -  %(error)s', error=str(ex)), 'error')
+
+    @action('item3_check_region2', 'Check for region2')
+    def item3_check_region2(self, ids):
+        try:
+
+            checkForRegion(ids, 'region2')
+
+
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+
+            flash(gettext('Something went wrong when checking for region 2 -  %(error)s', error=str(ex)), 'error')
+
+    @action('item3_check_region3', 'Check for region3')
+    def item3_check_region3(self, ids):
+        try:
+
+            checkForRegion(ids, 'region3')
+
+
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+
+            flash(gettext('Something went wrong when checking for region 3 -  %(error)s', error=str(ex)), 'error')
+
+    @action('item3_check_region4', 'Check for region4')
+    def item3_check_region4(self, ids):
+        try:
+
+            checkForRegion(ids, 'region4')
+
+
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+
+            flash(gettext('Something went wrong when checking for region 4 -  %(error)s', error=str(ex)), 'error')
 
     @action('item1_delete_a1', 'Delete A1 region')
     def item1_delete_a1(self, ids):
@@ -493,51 +549,114 @@ class GenomeRecordsView(ModelView):
 
             flash(gettext('Failed to delete region. %(error)s', error=str(ex)), 'error')
 
-    @action('item8_generate_profile_a2', 'Generate profile based on A1')
-    def item8_generate_profile_a1(self, ids):
+    @action('item2_delete_region1', 'Delete region 1')
+    def item2_delete_region1(self, ids):
         try:
-            query = models.GenomeRecords.query.filter(models.GenomeRecords.uid.in_(ids))
-            align_list = []
-            for record in query.all():
-                if record.a1 == "":
-                    pass
-                else:
-                    align_record = SeqRecord(Seq(record.a1, generic_protein), id=str(record.name) + "_" + "A1")
-                    align_list.append(align_record)
 
-            createProfile(align_list)
+            checkForFeature.deleteFeature(ids, "region1", "region1_loc", "region1_length")
 
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+
+            flash(gettext('Failed to delete region. %(error)s', error=str(ex)), 'error')
+    @action('item2_delete_region2', 'Delete region 2')
+    def item2_delete_region2(self, ids):
+        try:
+
+            checkForFeature.deleteFeature(ids, "region2", "region2_loc", "region2_length")
+
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+
+            flash(gettext('Failed to delete region. %(error)s', error=str(ex)), 'error')
+
+    @action('item2_delete_region3', 'Delete region 3')
+    def item2_delete_region3(self, ids):
+        try:
+
+            checkForFeature.deleteFeature(ids, "region3", "region3_loc", "region3_length")
+
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+
+            flash(gettext('Failed to delete region. %(error)s', error=str(ex)), 'error')
+
+    @action('item2_delete_region4', 'Delete region 4')
+    def item2_delete_region4(self, ids):
+        try:
+
+            checkForFeature.deleteFeature(ids, "region4", "region4_loc", "region4_length")
+
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+
+            flash(gettext('Failed to delete region. %(error)s', error=str(ex)), 'error')
+
+    @action('itema9_generate_profile_a1', 'Generate profile based on A1')
+    def itema9_generate_profile_a1(self, ids):
+        try:
+            createProfileFromRegion(ids, 'a1')
 
         except Exception as ex:
             if not self.handle_view_exception(ex):
                 raise
             flash(gettext('Failed to generate profile based on A1. %(error)s', error=str(ex)), 'error')
 
-    @action('item9_generate_profile_a2', 'Generate profile based on A2')
-    def item9_generate_profile_a2(self, ids):
+    @action('itema9_generate_profile_a2', 'Generate profile based on A2')
+    def itema9_generate_profile_a2(self, ids):
         try:
-            query = models.GenomeRecords.query.filter(models.GenomeRecords.uid.in_(ids))
-            align_list = []
-            for record in query.all():
-                if record.a2 == "":
-                    pass
-                else:
-                    align_record = SeqRecord(Seq(record.a2, generic_protein), id=str(record.name) + "_" + "A2")
-                    align_list.append(align_record)
-
-            createProfile(align_list)
-
-
+            createProfileFromRegion(ids, 'a2')
         except Exception as ex:
             if not self.handle_view_exception(ex):
                 raise
             flash(gettext('Failed to generate profile based on A2. %(error)s', error=str(ex)), 'error')
 
+    @action('item9_generate_profile_region1', 'Generate profile based on region 1')
+    def itema9_generate_profile_region1(self, ids):
+        try:
+            createProfileFromRegion(ids, 'region1')
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+            flash(gettext('Failed to generate profile based on region 1. %(error)s', error=str(ex)), 'error')
+
+    @action('item9_generate_profile_region2', 'Generate profile based on region 2')
+    def itema9_generate_profile_region2(self, ids):
+        try:
+            createProfileFromRegion(ids, 'region2')
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+            flash(gettext('Failed to generate profile based on region 2. %(error)s', error=str(ex)), 'error')
+
+    @action('item9_generate_profile_region3', 'Generate profile based on region 3')
+    def itema9_generate_profile_region3(self, ids):
+        try:
+            createProfileFromRegion(ids, 'region3')
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+            flash(gettext('Failed to generate profile based on region 3. %(error)s', error=str(ex)), 'error')
+
+    @action('item9_generate_profile_region4', 'Generate profile based on region 4')
+    def itema9_generate_profile_region4(self, ids):
+        try:
+            createProfileFromRegion(ids, 'region4')
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+            flash(gettext('Failed to generate profile based on region 4. %(error)s', error=str(ex)), 'error')
+
 
 class ProfileView(ModelView):
     """
     View of the Profile database for storing HMM Profiles """
-    column_list = ('name', 'a1_profile_ref', 'a2_profile_ref', 'download')
+    column_list = ('name', 'a1_profile_ref', 'a2_profile_ref', 'region1_profile_ref', 'region2_profile_ref',
+                   'region3_profile_ref', 'region4_profile_ref', 'download')
     form_columns = ('name', 'profile')
 
     form_extra_fields = {'profile': models.BlobUploadField(
@@ -558,69 +677,29 @@ class ProfileView(ModelView):
 
     @action('item1_set_A1_reference', 'Set this profile as the A1 reference profile')
     def item1_set_a1_reference(self, ids):
-        if len(ids) > 1:
-            flash('Only select a single record')
-        else:
-            query = models.Profile.query.filter(models.Profile.uid.in_(ids))
-            for record in query.all():
+
+        setProfileAsReference(ids, "a1")
 
 
-                # Check for a previous reference profile
-                old_profile_reference = models.Profile.query.filter_by(a1_profile_ref=1).first()
+    @action('item2_set_A2_reference', 'Set this profile as the A2 reference profile')
+    def item1_set_a2_reference(self, ids):
+        setProfileAsReference(ids, "a2")
 
-                if (old_profile_reference):
-                    # Remove the previous reference profile
-                    setattr(old_profile_reference, "a1_profile_ref", 0)
-                    servers.db.session.add(old_profile_reference)
+    @action('item2_set_region1_reference', 'Set this profile as the region 1 reference profile')
+    def item1_set_region1_reference(self, ids):
+        setProfileAsReference(ids, "region1")
 
+    @action('item2_set_region2_reference', 'Set this profile as the region 2 reference profile')
+    def item1_set_region2_reference(self, ids):
+        setProfileAsReference(ids, "region2")
 
-                # Set the new reference profile
-                setattr(record, "a1_profile_ref", 1)
+    @action('item2_set_region3_reference', 'Set this profile as the region 3 reference profile')
+    def item1_set_region3_reference(self, ids):
+        setProfileAsReference(ids, "region3")
 
-                # Commit the changed record
-                servers.db.session.add(record)
-                servers.db.session.commit()
-
-                # Write the new profile to the tmp folder ready to be used
-
-                with open(a1_profile_path, 'w') as profile_path:
-                    profile_path.write(record.profile.decode('utf-8'))
-
-                # global a1_profile_reference
-                #
-                # a1_profile_reference["tmp/A1_profile.hmm"] = record.name
-                flash ("The profile named %s has been set as the reference A1 profile" % record.name)
-
-    @action('item2_set_A1_reference', 'Set this profile as the A2 reference profile')
-    def item2_set_a1_reference(self, ids):
-        if len(ids) > 1:
-            flash('Only select a single record')
-        else:
-            query = models.Profile.query.filter(models.Profile.uid.in_(ids))
-            for record in query.all():
-                for record in query.all():
-
-                    # Check for a previous reference profile
-                    old_profile_reference = models.Profile.query.filter_by(a2_profile_ref=1).first()
-
-                    if old_profile_reference:
-                        # Remove the previous reference profile
-                        setattr(old_profile_reference, "a2_profile_ref", 0)
-                        servers.db.session.add(old_profile_reference)
-
-                    # Set the new reference profile
-                    setattr(record, "a2_profile_ref", 1)
-
-                    # Commit the changed record
-                    servers.db.session.add(record)
-                    servers.db.session.commit()
-
-                    # Write the new profile to the tmp folder ready to be used
-                    with open(a2_profile_path, 'w') as profile_path:
-                        profile_path.write(record.profile.decode('utf-8'))
-
-                    flash("The profile named %s has been set as the reference A2 profile" % record.name)
-
+    @action('item2_set_region4_reference', 'Set this profile as the region 4 reference profile')
+    def item1_set_region4_reference(self, ids):
+        setProfileAsReference(ids, "region4")
 
 
 class UploadView(BaseView):
@@ -770,6 +849,135 @@ def addSequence(seq_records):
             print('Sequence with ID - %s from species - %s already exists in the sequence database' % (
             seq_name, seq_species) + "\n")
 
+def setRegionAsReference(ids, region):
+    if len(ids) > 1:
+        flash('Only select a single record')
+    else:
+        query = models.GenomeRecords.query.filter(models.GenomeRecords.uid.in_(ids))
+        for record in query.all():
+            if (eval('record.' + region)):
+
+                # Check for a previous reference sequence
+                old_genome_reference = eval("models.GenomeRecords.query.filter_by(" + region + "_ref=1).first()")
+                old_seq_reference = eval("models.SequenceRecords.query.filter_by(" + region + "_ref=1).first()")
+
+                if (old_genome_reference):
+                    # Remove the previous reference sequence
+                    setattr(old_genome_reference, region + "_ref", 0)
+                    servers.db.session.add(old_genome_reference)
+
+                if (old_seq_reference):
+                    # Remove the previous reference sequence
+                    setattr(old_seq_reference, region + "_ref", 0)
+                    servers.db.session.add(old_seq_reference)
+
+                # Set the new reference sequence
+                setattr(record, region + "_ref", 1)
+
+                # Commit the changed record
+                servers.db.session.add(record)
+                servers.db.session.commit()
+                flash("The %s region from %s has been set as the reference %s sequence" % (region, record.name, region))
+            else:
+                flash("That record doesn't have %s annotated onto it" % (region))
+
+
+def setSequenceAsReference(ids, region):
+    if len(ids) > 1:
+        flash('Only select a single record')
+    else:
+        query = models.SequenceRecords.query.filter(models.SequenceRecords.uid.in_(ids))
+        for record in query.all():
+
+            # Check for a previous reference sequence
+            old_genome_reference = eval("models.GenomeRecords.query.filter_by(" + region + "_ref=1).first()")
+            old_seq_reference = eval("models.SequenceRecords.query.filter_by(" + region + "_ref=1).first()")
+
+            if old_genome_reference:
+                # Remove the previous reference sequence
+                setattr(old_genome_reference, region + "_ref", 0)
+                servers.db.session.add(old_genome_reference)
+
+            if old_seq_reference:
+                # Remove the previous reference sequence
+                setattr(old_seq_reference, region + "_ref", 0)
+                servers.db.session.add(old_seq_reference)
+
+            # Set the new reference sequence
+            setattr(record, region + "_ref", 1)
+
+            # Commit the changed record
+            servers.db.session.add(record)
+            servers.db.session.commit()
+
+            # global a1_reference
+            region_name = region + "_reference"
+            # eval("region_name") = SeqRecord(Seq(record.sequence, generic_protein), id=str(record.name) + '_reference')
+            flash("The %s region from %s has been set as the reference %s sequence" % ( region, record.name, region))
+
+def setProfileAsReference(ids, region):
+    if len(ids) > 1:
+        flash('Only select a single record')
+    else:
+        query = models.Profile.query.filter(models.Profile.uid.in_(ids))
+        for record in query.all():
+
+            # Check for a previous reference profile
+            old_profile_reference = eval("models.Profile.query.filter_by(" + region + "_profile_ref=1).first()")
+
+            if (old_profile_reference):
+                # Remove the previous reference profile
+                setattr(old_profile_reference, region + "_profile_ref", 0)
+                servers.db.session.add(old_profile_reference)
+
+            # Set the new reference profile
+            setattr(record, region + "_profile_ref", 1)
+
+            # Commit the changed record
+            servers.db.session.add(record)
+            servers.db.session.commit()
+
+            # Write the new profile to the tmp folder ready to be used
+
+            with open("tmp/" + region + "_profile.hmm", 'w') as profile_path:
+                profile_path.write(record.profile.decode('utf-8'))
+
+            flash("The profile named %s has been set as the reference profile for %s" % (record.name, region))
+
+def checkForRegion(ids, region):
+    genome_reference = eval("models.GenomeRecords.query.filter_by(" + region + "_ref=1).first()")
+    sequence_reference = eval("models.SequenceRecords.query.filter_by(" + region + "_ref=1).first()")
+
+
+
+    if genome_reference:
+        reference = eval('SeqRecord(Seq(genome_reference.' + region + ', generic_protein), id=str(genome_reference.name) + "_" + "' + region + '")')
+        checkForFeature.getFeatureLocation(ids, reference, region, region + "_loc", region + "_length")
+
+
+    elif sequence_reference:
+        reference = eval('SeqRecord(Seq(sequence_reference.sequence, generic_protein), id=str(sequence_reference.name) + "_" + "' + region + '")')
+        checkForFeature.getFeatureLocation(ids, reference, region, region + "_loc", region + "_length")
+
+
+    else:
+        flash ("Please set a reference sequence for %s first" % (region))
+
+
+
+def checkWithProfile(ids, region):
+
+    # Check if a reference profile for A1 exists
+    profile_reference = eval("models.Profile.query.filter_by(" + region + "_profile_ref=1).first()")
+
+    if (profile_reference):
+        print("Using the %s profile named %s to check for %s regions" % (region, profile_reference.name, region))
+        eval('checkForFeature.get_feature_location_with_profile(ids, "tmp/' + region + '_profile.hmm", "' + region + '", "' + region + ' _loc")')
+    else:
+        flash("Please set a profile as the %s reference profile first" % (region), "error")
+
+
+
 def createProfile(align_list):
     SeqIO.write(align_list, "align.fasta", "fasta")
     muscle_cline = MuscleCommandline(input="align.fasta")
@@ -785,8 +993,6 @@ def createProfile(align_list):
     result = subprocess.call(["hmmbuild", hmm_path, "align.aln"], stdout=subprocess.PIPE)
 
 
-    print ("waiting for .......")
-
     while not os.path.exists(hmm_path):
         time.sleep(1)
 
@@ -798,7 +1004,20 @@ def createProfile(align_list):
         saveProfile(file)
         utilities.removeFile(hmm_path, "align.fasta", "align.aln")
 
+def createProfileFromRegion(ids, region):
+        query = models.GenomeRecords.query.filter(models.GenomeRecords.uid.in_(ids))
+        align_list = []
+        for record in query.all():
+            if eval('record.' + region  + '== ""'):
+                pass
+            else:
+                align_record = eval('SeqRecord(Seq(record.' + region + ', generic_protein), id=str(record.name) + "_" + "' + region +'")')
+                align_list.append(align_record)
 
+        if align_list:
+            createProfile(align_list)
+        else:
+            flash("None of the selected genomes has an annotated %s so we couldn't build a profile" % (region))
 
 
 def saveProfile(profile):
@@ -837,10 +1056,13 @@ admin.add_view(SequenceRecordsView(model=models.SequenceRecords, session=servers
 admin.add_view(GenomeRecordsView(model=models.GenomeRecords, session=servers.db.session, endpoint="genome_view"))
 admin.add_view(ProfileView(model=models.Profile, session=servers.db.session, name='Profiles'))
 
-# Create A1 and A2 reference profiles on the disk
-setA1ReferenceProfile()
-setA2ReferenceProfile()
+# # Create A1 and A2 reference profiles on the disk
+# setA1ReferenceProfile('a1')
+# setA2ReferenceProfile('a2')
 
+# Create A1 and A2 reference profiles on the disk
+for region in ["a1", "a2", "region1", "region2", "region3", "region4"]:
+    setReferenceProfile(region)
 
 
 if __name__ == '__main__':

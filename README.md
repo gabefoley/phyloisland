@@ -26,7 +26,7 @@ Phylo Island is a front-facing database that allows for curation and annotation 
 
 ```
 sudo mysql -p
-CREATE DATABASE phyloisland
+CREATE DATABASE phyloisland;
 CREATE USER 'pi'@'localhost' IDENTIFIED BY 'password';
 GRANT ALL on phyloisland.* to 'pi'@'localhost';
 ```

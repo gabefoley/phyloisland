@@ -22,6 +22,7 @@ def getFeatureLocation(ids, reference, query_name, query_location, query_length)
         reference_path = "tmp/blast_reference"
         output_path = "tmp/" + str(record.name).replace(" (", "_").replace(" ", "_").replace(")", "_") + query_name + phyloisland.randstring(5) + "_blast_results.xml"
 
+
         # Write out the reference sequnece
         SeqIO.write(reference, reference_path, "fasta")
 
@@ -43,9 +44,10 @@ def getFeatureLocation(ids, reference, query_name, query_location, query_length)
                 time.sleep(1)
 
             if os.path.isfile(output_path):
-                print("Results of BLAST search have been written to %s" % output_path)
+                print("Results of BLAST search have been written to %s \n" % output_path)
 
                 blast_info = BLAST.getBlastInfo(open(output_path))
+
 
                 if ("sequence" in blast_info and "location" in blast_info):
 
@@ -79,6 +81,7 @@ def get_feature_location_with_profile(ids, reference, recordName, recordLocation
     :param recordLocation: Which feature location field to update
     :return:
     """
+
 
     query = models.GenomeRecords.query.filter(models.GenomeRecords.uid.in_(ids))
     for record in query.all():
@@ -117,7 +120,6 @@ def get_feature_location_with_profile(ids, reference, recordName, recordLocation
                     time.sleep(1)
 
                 if os.path.isfile(cleaned_path):
-
 
                     stdoutdata = subprocess.getoutput("hmmsearch -o %s %s %s" % (hmmsearch_results, reference, cleaned_path))
 

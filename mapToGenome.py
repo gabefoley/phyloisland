@@ -150,7 +150,6 @@ def getShotgunGenome(species_names):
         records = SeqIO.parse(genome_records, "gb")
 
     if records:
-        q
         for record in records:
 
             species = " ".join(record.annotations.get('organism').split()[0:2])
@@ -215,6 +214,7 @@ def getShotgunGenome(species_names):
         return seqDict
 
     else:
+        print ("Couldn't read in any sequences ")
 
 
 
