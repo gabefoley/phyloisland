@@ -751,8 +751,8 @@ class UploadView(BaseView):
                         print ("All of the genome records we identifed were all N characters. Attempting to search for shotgun sequenced genomes \n")
                         genome_results = mapToGenome.getShotgunGenome(species_names)
 
-                    if genome_results:
-                        addGenome(genome_results)
+                        if genome_results:
+                            addGenome(genome_results)
 
 
             elif (type == "species"):
@@ -827,6 +827,7 @@ def addGenome(genome_results):
             servers.bio_db.load(seq_list)
             servers.bio_server.commit()
             servers.db.session.commit()
+
 
 
 def addSequence(seq_records):

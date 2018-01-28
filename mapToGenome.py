@@ -46,8 +46,9 @@ def getGenomeIDs(species_names):
     print (query_string_with_filters + "\n")
 
     # Get a list of the genome IDs
-    genome_handle = Entrez.esearch(db="nucleotide", term= query_string_with_filters, rettype="gb", idtype='acc')
+    genome_handle = Entrez.esearch(db="nucleotide", term= query_string_with_filters, rettype="gb", idtype='acc', retmax='10000')
     record = Entrez.read(genome_handle)
+
 
     for recordID in record['IdList']:
         genome_ids.add(recordID)
@@ -116,7 +117,6 @@ def getFullGenome(genome_ids):
                 print("This genome record was omitted because another RefSeq genome for the species exists - %s" % (genome_id))
                 flash("This genome record was omitted because another RefSeq genome for the species exists - %s" % (genome_id))
 
-        print (seqDict)
         return seqDict
 
     except HTTPError as ex:
