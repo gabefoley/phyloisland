@@ -68,62 +68,76 @@ def getFullGenome(genome_ids):
     found_ids = []
     correct_alphabet_ids = []
     non_ref_seq_ids = []
+    for genome_id in genome_ids:
 
-    genome_query_string = utilities.makeQueryString(genome_ids, link="+OR+")
 
-    print ("These are the genome records we identified")
-    print (" ".join(genome for genome in genome_ids) + "\n")
 
-    try:
-        genome_records = Entrez.efetch(db="nuccore", id=genome_query_string, rettype="gb")
+        genome_query_string = utilities.makeQueryString(genome_id, link="+OR+")
 
-        records = SeqIO.parse(genome_records, "gb")
+        print ("These are the genome records we identified")
+        print (genome_id)
+        # print (genome_query_string)
+        # print (" ".join(genome for genome in genome_id) + "\n")
 
-        found_species = []
+        try:
+            genome_records = Entrez.efetch(db="nuccore", id=genome_id, rettype="gb")
 
-        for record in records:
-            found_ids.append(record.id)
+            records = SeqIO.parse(genome_records, "gb")
 
-            found_species.append(record.annotations.get('organism'))
+            found_species = []
 
-            # Check if the genome is just "N" characters. Slice from the middle to account for genomes that begin or
-            # end with "N" characters
-            if any(nucleotide in 'A G C T' for nucleotide in record.seq[int(len(record.seq)/2):int(len(record.seq)/2 + 1000)]):
-                correct_alphabet_ids.append(record.id)
+            for record in records:
+                # print (record)
+                found_ids.append(record.id)
 
-                if record.description in seqDict:
+                found_species.append(record.annotations.get('organism'))
 
-                    # Prefer RefSeq sequences
-                    if 'RefSeq' not in record.annotations.get('keywords'):
-                        continue
+                # Check if the genome is just "N" characters. Slice from the middle to account for genomes that begin or
+                # end with "N" characters
+                if any(nucleotide in 'A G C T' for nucleotide in record.seq[int(len(record.seq)/2):int(len(record.seq)/2 + 1000)]):
+                    correct_alphabet_ids.append(record.id)
 
-                else:
+                    if record.description in seqDict:
 
-                    non_ref_seq_ids.append(record.id)
-                    seqDict[record.description] = record
+                        # Prefer RefSeq sequences
+                        if 'RefSeq' not in record.annotations.get('keywords'):
+                            continue
 
-            # Join all the found species together so we can quickly search to see if we didn't find something
-            combined_species = '\t'.join(found_species)
+                    else:
 
-        # Check if there were any genome IDs we couldn't find
-        for genome_id in genome_ids:
-            if genome_id not in found_ids:
+                        non_ref_seq_ids.append(record.id)
+                        seqDict[record.description] = record
+
+                # Join all the found species together so we can quickly search to see if we didn't find something
+                combined_species = '\t'.join(found_species)
+
+
+            # return seqDict
+
+        except HTTPError as ex:
+            for genome_id in genome_ids:
+                print (ex)
                 print("Couldn't find an appropriate genome record for %s" % (genome_id))
                 flash("Couldn't find an appropriate genome record for %s" % (genome_id))
-            if genome_id not in correct_alphabet_ids:
-                print("This genome record had all N characters - %s" % (genome_id))
-                flash("This genome record had all N characters - %s" % (genome_id))
-            elif genome_id not in non_ref_seq_ids:
-                print("This genome record was omitted because another RefSeq genome for the species exists - %s" % (genome_id))
-                flash("This genome record was omitted because another RefSeq genome for the species exists - %s" % (genome_id))
+            return
 
-        return seqDict
-
-    except HTTPError as ex:
-        for genome_id in genome_ids:
+    # Check if there were any genome IDs we couldn't find
+    print (genome_ids)
+    print (found_ids)
+    for genome_id in genome_ids:
+        if genome_id not in found_ids:
             print("Couldn't find an appropriate genome record for %s" % (genome_id))
             flash("Couldn't find an appropriate genome record for %s" % (genome_id))
-        return
+        if genome_id not in correct_alphabet_ids:
+            print("This genome record had all N characters - %s" % (genome_id))
+            flash("This genome record had all N characters - %s" % (genome_id))
+        elif genome_id not in non_ref_seq_ids:
+            print("This genome record was omitted because another RefSeq genome for the species exists - %s" % (
+            genome_id))
+            flash("This genome record was omitted because another RefSeq genome for the species exists - %s" % (
+            genome_id))
+
+    return seqDict
 
 def getShotgunGenome(species_names):
     query_string = utilities.makeQueryString(species_names, "[orgn]", " OR ")
@@ -136,7 +150,7 @@ def getShotgunGenome(species_names):
     print (query_string_with_filters + "\n")
 
     # Get a list of the genome IDs
-    genome_handle = Entrez.esearch(db="nucleotide", term= query_string_with_filters, rettype="gb", idtype='acc')
+    genome_handle = Entrez.esearch(db="nucleotide", term= query_string_with_filters, rettype="gb", idtype='acc', retmax='10000')
     record = Entrez.read(genome_handle)
 
     for recordID in record['IdList']:
