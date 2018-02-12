@@ -773,9 +773,7 @@ class UploadView(BaseView):
 
                         if genome_results:
                             addGenome(genome_results)
-                        else:
-                            print("\nWe didn't identify any shotgun sequenced genome records for %s. \n" % (
-                                name))
+
 
 
 
@@ -1066,7 +1064,6 @@ def readLinesFromFile(filepath):
         for line in query_file:
             if len(line) > 1:
                 content.add(line.strip())
-    print (content)
     return content
 
 # Setup the main flask-admin application

@@ -4,5 +4,6 @@
 .idea/
 static/uploads/
 tmp/
+tmp/*
 /servers.py
 /phyloinit.py
