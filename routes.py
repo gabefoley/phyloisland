@@ -765,9 +765,9 @@ class UploadView(BaseView):
                     genome_results = {}
                     genome_ids = mapToGenome.getGenomeIDs(name)
                     genome_results = mapToGenome.getFullGenome(genome_ids)
-                    if genome_results:
+                    if genome_results and genome_results != 'in_database':
                         addGenome(genome_results)
-                    else:
+                    elif genome_results != 'in_database':
                         print("\nWe didn't identify any genome records for %s. Attempting to search for shotgun sequenced genomes \n" % (name))
                         genome_results = mapToGenome.getShotgunGenome(name)
 
