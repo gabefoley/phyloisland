@@ -12,6 +12,7 @@ Entrez.email = "gabriel.foley@uqconnect.edu.au"
 
 seqDict = {}
 
+
 def getSpeciesNames(seq_records, type):
     # records = SeqIO.parse(file, "fasta")
     species_names = set()
@@ -20,6 +21,7 @@ def getSpeciesNames(seq_records, type):
 
     # Make a list of the records we're querying
     for record in seq_records.values():
+        print (record.id)
         record_ids.append(record.id)
         query_string = utilities.makeQueryString(record_ids, link="+OR+")
 
@@ -34,6 +36,7 @@ def getSpeciesNames(seq_records, type):
 
 def getGenomeIDs(species_names):
     genome_ids = set()
+
     query_string = utilities.makeQueryString(species_names, "[orgn]", " OR ")
 
 
@@ -42,7 +45,7 @@ def getGenomeIDs(species_names):
 
     # queryString += " AND genome[title] AND project[title]"
 
-    print ('Searching NCBI with the following query')
+    print ('\nSearching NCBI with the following query')
     print (query_string_with_filters + "\n")
 
     # Get a list of the genome IDs
@@ -68,13 +71,13 @@ def getFullGenome(genome_ids):
     found_ids = []
     correct_alphabet_ids = []
     non_ref_seq_ids = []
+    seqDict = {}
+
     for genome_id in genome_ids:
-
-
 
         genome_query_string = utilities.makeQueryString(genome_id, link="+OR+")
 
-        print ("These are the genome records we identified")
+        print ("\nThese are the genome records we identified")
         print (genome_id)
         # print (genome_query_string)
         # print (" ".join(genome for genome in genome_id) + "\n")
@@ -122,17 +125,17 @@ def getFullGenome(genome_ids):
             return
 
     # Check if there were any genome IDs we couldn't find
-    print (genome_ids)
-    print (found_ids)
+    # print (genome_ids)
+    # print (found_ids)
     for genome_id in genome_ids:
         if genome_id not in found_ids:
-            print("Couldn't find an appropriate genome record for %s" % (genome_id))
+            print("\nCouldn't find an appropriate genome record for %s" % (genome_id))
             flash("Couldn't find an appropriate genome record for %s" % (genome_id))
         if genome_id not in correct_alphabet_ids:
-            print("This genome record had all N characters - %s" % (genome_id))
+            print("\nThis genome record had all N characters - %s" % (genome_id))
             flash("This genome record had all N characters - %s" % (genome_id))
         elif genome_id not in non_ref_seq_ids:
-            print("This genome record was omitted because another RefSeq genome for the species exists - %s" % (
+            print("\nThis genome record was omitted because another RefSeq genome for the species exists - %s" % (
             genome_id))
             flash("This genome record was omitted because another RefSeq genome for the species exists - %s" % (
             genome_id))
@@ -144,9 +147,11 @@ def getShotgunGenome(species_names):
     query_string_with_filters = query_string + " AND genome[title] AND project[title] NOT contig[title]  NOT segment[title] NOT plasmid[title] NOT megaplasmid[title]"
     idDict = {}
     genome_ids = set()
+    seqDict = {}
+
     querypath = "tmp/tempfile"
 
-    print ('Searching NCBI with the following query')
+    print ('****** Searching NCBI with the following query')
     print (query_string_with_filters + "\n")
 
     # Get a list of the genome IDs
@@ -222,8 +227,8 @@ def getShotgunGenome(species_names):
             shotgun_seq = SeqRecord(Seq(shotgun_genome), id=genome_id + " Shotgun Sequence", annotations={"organism":species, "source": strain})
             seqDict[shotgun_seq.id] = shotgun_seq
 
-        print ('done')
-        print (seqDict)
+        # print ('done')
+        # print (seqDict)
 
         return seqDict
 

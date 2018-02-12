@@ -759,10 +759,27 @@ class UploadView(BaseView):
 
             elif (type == "species"):
                 species_names = readLinesFromFile("static/uploads/" + filename)
-                genome_ids = mapToGenome.getGenomeIDs(species_names)
-                genome_results = mapToGenome.getFullGenome(genome_ids)
-                if genome_results:
-                    addGenome(genome_results)
+
+                for name in species_names:
+                    genome_ids = {}
+                    genome_results = {}
+                    genome_ids = mapToGenome.getGenomeIDs(name)
+                    genome_results = mapToGenome.getFullGenome(genome_ids)
+                    if genome_results:
+                        addGenome(genome_results)
+                    else:
+                        print("\nWe didn't identify any genome records for %s. Attempting to search for shotgun sequenced genomes \n" % (name))
+                        genome_results = mapToGenome.getShotgunGenome(name)
+
+                        if genome_results:
+                            addGenome(genome_results)
+                        else:
+                            print("\nWe didn't identify any shotgun sequenced genome records for %s. \n" % (
+                                name))
+
+
+
+
             elif (type == "genome"):
                 genome_ids = readLinesFromFile("static/uploads/" + filename)
                 genome_results = mapToGenome.getFullGenome(genome_ids)
@@ -1047,7 +1064,9 @@ def readLinesFromFile(filepath):
 
     with open(filepath, 'r') as query_file:
         for line in query_file:
-            content.add(line.strip())
+            if len(line) > 1:
+                content.add(line.strip())
+    print (content)
     return content
 
 # Setup the main flask-admin application

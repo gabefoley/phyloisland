@@ -10,8 +10,14 @@ def makeQueryString(iter, info = "", link = "", final = ""):
     :return: String formatted with items and linking phrases
     """
     queryString = ""
-    for item in iter:
-        queryString += item + info + link
+
+    # If it is a single record passed as a string, don't cut it up
+    if isinstance(iter, str):
+        queryString += iter + info + link
+
+    else:
+        for item in iter:
+            queryString += item + info + link
 
     # Remove the final joining string from the queryString
     queryString = queryString[:-len(link)] + final
