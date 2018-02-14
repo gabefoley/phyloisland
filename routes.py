@@ -174,6 +174,12 @@ class SequenceRecordsView(ModelView):
 
         setSequenceAsReference(ids, "a2")
 
+    @action('set_chitinase_reference', 'Set this sequence as the chitinase reference')
+    def action_set_chitinase_reference(self, ids):
+
+        setSequenceAsReference(ids, "chitinase")
+
+
     @action('set_region1_reference', 'Set this sequence as the region 1 reference')
     def action_set_region1_reference(self, ids):
 
@@ -215,7 +221,7 @@ class SequenceRecordsView(ModelView):
 
 class GenomeRecordsView(ModelView):
     column_list = ('name', 'species', 'strain', 'description', 'a1_ref', 'a2_ref', 'sequence', 'a1', 'a1_length', 'a1_loc', 'a2',
-                   'a2_length', 'a2_loc', 'overlap', 'distance', 'region1_ref', 'region2_ref',
+                   'a2_length', 'a2_loc', 'overlap', 'distance', 'chitinase', 'chitinase_length', 'chitinase_loc', 'chitinase_distance_from_a2', 'region1_ref', 'region2_ref',
                    'region3_ref', 'region4_ref', 'region1', 'region1_length', 'region1_loc', 'region2',
                    'region2_length', 'region2_loc', 'region3', 'region3_length', 'region3_loc', 'region4',
                    'region4_length', 'region4_loc')
@@ -242,6 +248,15 @@ class GenomeRecordsView(ModelView):
             return model.a2[:15] + "..."
         else:
             return model.a2
+
+    def _chitinase_formatter(view, context, model, name):
+        # Format your string here e.g show first 20 characters
+        # can return any valid HTML e.g. a link to another view to show the detail or a popup window
+
+        if model.chitinase:
+            return model.chitinase[:15] + "..."
+        else:
+            return model.chitinase
 
     def _region1description_formatter(view, context, model, name):
         # Format your string here e.g show first 20 characters
@@ -289,6 +304,7 @@ class GenomeRecordsView(ModelView):
     column_formatters = {
         'a1': _a1description_formatter,
         'a2': _a2description_formatter,
+        'chitinase': _chitinase_formatter,
         'region1': _region1description_formatter,
         'region2': _region2description_formatter,
         'region3': _region3description_formatter,
@@ -309,7 +325,9 @@ class GenomeRecordsView(ModelView):
                       GetUniqueSpecies(
                           models.GenomeRecords.name, 'Get unique species'),
                       filters.IntGreaterFilter(models.GenomeRecords.distance, 'Distance greater than'),
-                      filters.IntSmallerFilter(models.GenomeRecords.distance, 'Distance smaller than')
+                      filters.IntSmallerFilter(models.GenomeRecords.distance, 'Distance smaller than'),
+                      filters.IntGreaterFilter(models.GenomeRecords.chitinase_distance_from_a2, 'Chitinase to A2 distance greater than'),
+                      filters.IntSmallerFilter(models.GenomeRecords.chitinase_distance_from_a2, 'Chitinase to A2 distance smaller than')
 
                       )
 
@@ -321,6 +339,18 @@ class GenomeRecordsView(ModelView):
         """
         del servers.bio_db[model.uid]
         servers.bio_server.commit()
+
+    @action('item5_get_closest_chitinase', 'Get closest chitinase to A2 region')
+    def item5_get_closest_chitinase(self, ids):
+        try:
+
+            print ('Getting closest chitinase')
+
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+
+            flash(gettext('Failed to get closest chitinase %(error)s', error=str(ex)), 'error')
 
     @action('item5_get_overlap', 'Get Overlap')
     def item5_get_overlap(self, ids):
@@ -358,6 +388,11 @@ class GenomeRecordsView(ModelView):
     def item7_set_a2_reference(self, ids):
 
         setRegionAsReference(ids, 'a2')
+
+    @action('item7_set_chitinase_reference', 'Set this chitinase region as the reference region')
+    def item7_set_chitinase_reference(self, ids):
+
+        setRegionAsReference(ids, 'chitinase')
 
     @action('item7_set_region1_reference', 'Set this region1 region as the reference region')
     def item7_set_region1_reference(self, ids):
@@ -403,6 +438,17 @@ class GenomeRecordsView(ModelView):
                 raise
 
             flash(gettext('Something went wrong when checking for A2 region -  %(error)s', error=str(ex)), 'error')
+
+    @action('item8_a2_profile_align_chitinase', 'Check for chitinase with a profile')
+    def item_a2_profile_align_chitinase(self, ids):
+        try:
+            checkWithProfile(ids, 'chitinase')
+            # Does this exception raise correctly?
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+
+            flash(gettext('Something went wrong when checking for chitinase -  %(error)s', error=str(ex)), 'error')
 
     @action('item8_a2_profile_align_region1', 'Check for region 1 with a profile')
     def item_a2_profile_align_region1(self, ids):
@@ -473,6 +519,20 @@ class GenomeRecordsView(ModelView):
                 raise
 
             flash(gettext('Something went wrong when checking for A2 region -  %(error)s', error=str(ex)), 'error')
+
+
+    @action('item3_check_chitinase', 'Check for chitinase')
+    def item3_check_chitinase(self, ids):
+        try:
+
+            checkForRegion(ids, 'chitinase')
+
+
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+
+            flash(gettext('Something went wrong when checking for chitinase -  %(error)s', error=str(ex)), 'error')
 
     @action('item3_check_region1', 'Check for region1')
     def item3_check_region1(self, ids):
@@ -551,6 +611,18 @@ class GenomeRecordsView(ModelView):
 
             flash(gettext('Failed to delete region. %(error)s', error=str(ex)), 'error')
 
+    @action('item2_delete_chitinase', 'Delete chitinase')
+    def item2_delete_chitinase(self, ids):
+        try:
+
+            checkForFeature.deleteFeature(ids, "chitinase", "chitinase_loc", "chitinase_length", "chitinase_distance_from_a2")
+
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+
+            flash(gettext('Failed to delete chitinase. %(error)s', error=str(ex)), 'error')
+
     @action('item2_delete_region1', 'Delete region 1')
     def item2_delete_region1(self, ids):
         try:
@@ -617,6 +689,15 @@ class GenomeRecordsView(ModelView):
                 raise
             flash(gettext('Failed to generate profile based on A2. %(error)s', error=str(ex)), 'error')
 
+    @action('item9_generate_profile_chitinase', 'Generate profile based on chitinase')
+    def itema9_generate_profile_chitinase(self, ids):
+        try:
+            createProfileFromRegion(ids, 'chitinase')
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+            flash(gettext('Failed to generate profile based on chitinase. %(error)s', error=str(ex)), 'error')
+
     @action('item9_generate_profile_region1', 'Generate profile based on region 1')
     def itema9_generate_profile_region1(self, ids):
         try:
@@ -657,7 +738,7 @@ class GenomeRecordsView(ModelView):
 class ProfileView(ModelView):
     """
     View of the Profile database for storing HMM Profiles """
-    column_list = ('name', 'a1_profile_ref', 'a2_profile_ref', 'region1_profile_ref', 'region2_profile_ref',
+    column_list = ('name', 'a1_profile_ref', 'a2_profile_ref', 'chitinase_profile_ref', 'region1_profile_ref', 'region2_profile_ref',
                    'region3_profile_ref', 'region4_profile_ref', 'download')
     form_columns = ('name', 'profile')
 
@@ -686,6 +767,10 @@ class ProfileView(ModelView):
     @action('item2_set_A2_reference', 'Set this profile as the A2 reference profile')
     def item1_set_a2_reference(self, ids):
         setProfileAsReference(ids, "a2")
+
+    @action('item2_set_chitinase_reference', 'Set this profile as the chitinase reference profile')
+    def item1_set_chitinase_reference(self, ids):
+        setProfileAsReference(ids, "chitinase")
 
     @action('item2_set_region1_reference', 'Set this profile as the region 1 reference profile')
     def item1_set_region1_reference(self, ids):
@@ -1080,7 +1165,7 @@ admin.add_view(ProfileView(model=models.Profile, session=servers.db.session, nam
 # setA2ReferenceProfile('a2')
 
 # Create A1 and A2 reference profiles on the disk
-for region in ["a1", "a2", "region1", "region2", "region3", "region4"]:
+for region in ["a1", "a2", "chitinase", "region1", "region2", "region3", "region4"]:
     setReferenceProfile(region)
 
 

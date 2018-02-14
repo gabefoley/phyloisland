@@ -181,6 +181,7 @@ def getShotgunGenome(species_names):
         records = SeqIO.parse(genome_records, "gb")
 
         if records:
+            # print ('found a record')
             for record in records:
 
                 species = " ".join(record.annotations.get('organism').split()[0:2])
@@ -231,7 +232,7 @@ def getShotgunGenome(species_names):
 
             querypath = "tmp/" + genome_id + "_shotgun_records"
 
-            print (genome_id)
+            # print (genome_id)
 
 
             ftpUrl = "ftp://ftp.ncbi.nlm.nih.gov/sra/wgs_aux/" + genome_id[0:2] + "/" + genome_id[2:4] + "/" + genome_id[0:4] + version + "/" + genome_id[0:4] + version + ".1.gbff.gz"

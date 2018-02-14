@@ -19,13 +19,14 @@ class SequenceRecords(db.Model):
     sequence = db.Column(db.Text)
     a1_ref = db.Column(db.Boolean)
     a2_ref = db.Column(db.Boolean)
+    chitinase_ref = db.Column(db.Boolean)
     region1_ref = db.Column(db.Boolean)
     region2_ref = db.Column(db.Boolean)
     region3_ref = db.Column(db.Boolean)
     region4_ref = db.Column(db.Boolean)
 
 
-    def __init__(self, name="", species="", description="", sequence="", a1_ref=0, a2_ref=0, region1_ref=0,
+    def __init__(self, name="", species="", description="", sequence="", a1_ref=0, a2_ref=0, chitinase_ref=0, region1_ref=0,
                  region2_ref=0, region3_ref=0, region4_ref=0,):
         self.name = name
         self.species = species
@@ -58,6 +59,11 @@ class GenomeRecords(db.Model):
     sequence = db.Column(db.Text)
     a1_ref = db.Column(db.Boolean)
     a2_ref = db.Column(db.Boolean)
+    chitinase = db.Column(db.Text)
+    chitinase_length = db.Column(db.Integer)
+    chitinase_loc = db.Column(db.Text)
+    chitinase_distance_from_a2 = db.Column(db.VARCHAR(255))
+    chitinase_ref = db.Column(db.Boolean)
     region1 = db.Column(db.Text)
     region1_length = db.Column(db.Integer)
     region1_loc = db.Column(db.Text)
@@ -78,6 +84,7 @@ class GenomeRecords(db.Model):
 
     def __init__(self, name="", species="", strain="", description="", a1="", a1_length="", a1_loc="",
                  a2="", a2_length="", a2_loc="", overlap="", distance="", sequence="", a1_ref=0, a2_ref=0,
+                 chitinase = "", chitinase_length=None, chitinase_loc="", chitinase_distance_from_a2="", chitinase_ref="",
                  region1="", region1_length=None, region1_loc="",region2="", region2_length=None, region2_loc="",
                  region3="", region3_length=None, region3_loc="", region4="", region4_length=None, region4_loc="",
                  region1_ref="", region2_ref="", region3_ref="", region4_ref="" ):
@@ -96,6 +103,11 @@ class GenomeRecords(db.Model):
         self.sequence = sequence
         self.a1_ref = a1_ref
         self.a2_ref = a2_ref
+        self.chitinase = chitinase
+        self.chitinase_length = chitinase_length
+        self.chitinase_loc = chitinase_loc
+        self.chitinase_distance_from_a2 = chitinase_distance_from_a2
+        self.chitinase_ref = chitinase_ref
         self.region1 = region1
         self.region1_length = region1_length
         self.region1_loc = region1_loc
@@ -134,17 +146,19 @@ class Profile(db.Model, BlobMixin):
     name = db.Column(db.Unicode(length=255), nullable=False, unique=True)
     a1_profile_ref = db.Column(db.Boolean)
     a2_profile_ref = db.Column(db.Boolean)
+    chitinase_profile_ref = db.Column(db.Boolean)
     region1_profile_ref = db.Column(db.Boolean)
     region2_profile_ref = db.Column(db.Boolean)
     region3_profile_ref = db.Column(db.Boolean)
     region4_profile_ref = db.Column(db.Boolean)
 
 
-    def __init__(self, name = "", blobMix = "", a1_profile_ref=0, a2_profile_ref=0, region1_profile_ref = 0,
+    def __init__(self, name = "", blobMix = "", a1_profile_ref=0, a2_profile_ref=0, chitinase_profile_ref = 0, region1_profile_ref = 0,
                  region2_profile_ref = 0, region3_profile_ref = 0, region4_profile_ref = 0,):
         self.name = name
         self.a1_profile_ref = a1_profile_ref
         self.a2_profile_ref = a2_profile_ref
+        self.chitinase_profile_ref = chitinase_profile_ref
         self.region1_profile_ref = region1_profile_ref
         self.region2_profile_ref = region2_profile_ref
         self.region3_profile_ref = region3_profile_ref
