@@ -33,7 +33,7 @@ def tBlastN(dbFile, queryFile, outfile, evalNum):
     p = subprocess.Popen(str(tN_cline),stdout=subprocess.PIPE, stderr=subprocess.PIPE,shell=(sys.platform!="win32"))
 
 
-def getBlastInfo(xmlFile):
+def getBlastInfo(xmlFile, closest_to=-1):
     """
     Get the location and sequence of the top scoring hits from a BLAST results
     :param xmlFile: BLAST records
@@ -43,9 +43,38 @@ def getBlastInfo(xmlFile):
     blast_parser = NCBIXML.parse(xmlFile)
     for record in blast_parser:
         for alignment in record.alignments:
-            for hsp in alignment.hsps:
-                blast_info["location"] = str(hsp.sbjct_start) + ":" + str(hsp.sbjct_end)
-                blast_info["sequence"] = hsp.sbjct
-                break
+            print ("BLAST search found %s hits " % (len(alignment.hsps)))
+
+            # If we just want the top hit and don't care about proximity
+            print ('closest to is', closest_to)
+            if closest_to == -1:
+                for hsp in alignment.hsps:
+                    # Check if this is on the reverse strand
+                    if (hsp.frame[1] < 0):
+                        blast_info["location"] = str(alignment.length - hsp.sbjct_end) + ":" + \
+                                                 str( alignment.length - hsp.sbjct_start)
+                    else:
+                        blast_info["location"] = str(hsp.sbjct_start) + ":" + str(hsp.sbjct_end)
+                    blast_info["sequence"] = hsp.sbjct
+                    break
+            # Otherwise we have a genomic location we want to get closest to
+            else:
+                # Set distance as high as possible
+                distance = alignment.length
+                for hsp in alignment.hsps:
+                    # Calculate the distance between this high scoring pair and the region we want to get closest to
+                    hsp_distance = hsp.sbjct_start - int(closest_to)
+
+                    # If this distance is shorter then set this as the closest pair
+                    if hsp_distance < distance:
+                        distance = hsp_distance
+                        # Check if this is on the reverse strands
+                        if (hsp.frame[1] < 0):
+                            blast_info["location"] = str(alignment.length - hsp.sbjct_end)  + ":" + \
+                                                     str(alignment.length - hsp.sbjct_start)
+                        else:
+                            blast_info["location"] = str(hsp.sbjct_start) + ":" + str(hsp.sbjct_end)
+                        blast_info["sequence"] = hsp.sbjct
+
     return blast_info
 

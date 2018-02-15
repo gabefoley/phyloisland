@@ -343,8 +343,18 @@ class GenomeRecordsView(ModelView):
     @action('item5_get_closest_chitinase', 'Get closest chitinase to A2 region')
     def item5_get_closest_chitinase(self, ids):
         try:
+            for id in ids:
 
-            print ('Getting closest chitinase')
+                query = models.GenomeRecords.query.filter(models.GenomeRecords.uid.in_(id))
+                for record in query.all():
+                    if record.a2 and record.a2_loc:
+                        a2_end_position = record.a2_loc.split(":")[1]
+                        checkForRegion(id, 'chitinase', a2_end_position)
+
+
+
+                    else:
+                        flash("That record doesn't have an A2 region associated with it")
 
         except Exception as ex:
             if not self.handle_view_exception(ex):
@@ -1047,7 +1057,7 @@ def setProfileAsReference(ids, region):
 
             flash("The profile named %s has been set as the reference profile for %s" % (record.name, region))
 
-def checkForRegion(ids, region):
+def checkForRegion(ids, region, closest_to = -1):
     genome_reference = eval("models.GenomeRecords.query.filter_by(" + region + "_ref=1).first()")
     sequence_reference = eval("models.SequenceRecords.query.filter_by(" + region + "_ref=1).first()")
 
@@ -1055,12 +1065,12 @@ def checkForRegion(ids, region):
 
     if genome_reference:
         reference = eval('SeqRecord(Seq(genome_reference.' + region + ', generic_protein), id=str(genome_reference.name) + "_" + "' + region + '")')
-        checkForFeature.getFeatureLocation(ids, reference, region, region + "_loc", region + "_length")
+        checkForFeature.getFeatureLocation(ids, reference, region, region + "_loc", region + "_length", closest_to)
 
 
     elif sequence_reference:
         reference = eval('SeqRecord(Seq(sequence_reference.sequence, generic_protein), id=str(sequence_reference.name) + "_" + "' + region + '")')
-        checkForFeature.getFeatureLocation(ids, reference, region, region + "_loc", region + "_length")
+        checkForFeature.getFeatureLocation(ids, reference, region, region + "_loc", region + "_length", closest_to)
 
 
     else:

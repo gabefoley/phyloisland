@@ -10,12 +10,12 @@ import Bio
 from Bio import SeqIO
 import phyloisland
 
-def getFeatureLocation(ids, reference, query_name, query_location, query_length):
-
-
+def getFeatureLocation(ids, reference, query_name, query_location, query_length, closest_to=-1):
 
 
     query = models.GenomeRecords.query.filter(models.GenomeRecords.uid.in_(ids))
+
+
     for record in query.all():
         print("Looking for an %s region in %s" % (query_name, record.name))
         dbpath = "tmp/temp_blastfiles" + str(record.name).replace(" (", "_").replace(" ", "_").replace(")", "_") + ".fasta"
@@ -46,7 +46,7 @@ def getFeatureLocation(ids, reference, query_name, query_location, query_length)
             if os.path.isfile(output_path):
                 print("Results of BLAST search have been written to %s \n" % output_path)
 
-                blast_info = BLAST.getBlastInfo(open(output_path))
+                blast_info = BLAST.getBlastInfo(open(output_path), closest_to)
 
 
                 if ("sequence" in blast_info and "location" in blast_info):
