@@ -362,7 +362,28 @@ class GenomeRecordsView(ModelView):
 
             flash(gettext('Failed to get closest chitinase %(error)s', error=str(ex)), 'error')
 
-    @action('item5_get_overlap', 'Get Overlap')
+    @action('item5_get_distance_between_A2_and_chitinase', 'Get distance between A2 and chitinase')
+    def item5_get_distance_between_A2_and_chitinase(self, ids):
+        try:
+            query = models.GenomeRecords.query.filter(models.GenomeRecords.uid.in_(ids))
+            for record in query.all():
+                if record.a2 == "" or record.chitinase == "":
+                    pass
+                else:
+                    distance = str(phyloisland.getDistance(record.a2_loc, record.chitinase_loc))
+                    record.chitinase_distance_from_a2 = distance
+
+                    servers.db.session.add(record)
+                    servers.db.session.commit()
+
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+
+            flash(gettext('Failed to get overlap %(error)s', error=str(ex)), 'error')
+
+
+    @action('item5_get_overlap', 'Get overlap')
     def item5_get_overlap(self, ids):
         try:
             query = models.GenomeRecords.query.filter(models.GenomeRecords.uid.in_(ids))

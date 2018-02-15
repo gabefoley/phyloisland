@@ -46,7 +46,6 @@ def getBlastInfo(xmlFile, closest_to=-1):
             print ("BLAST search found %s hits " % (len(alignment.hsps)))
 
             # If we just want the top hit and don't care about proximity
-            print ('closest to is', closest_to)
             if closest_to == -1:
                 for hsp in alignment.hsps:
                     # Check if this is on the reverse strand
