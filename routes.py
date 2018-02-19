@@ -767,6 +767,11 @@ class GenomeRecordsView(ModelView):
                 raise
             flash(gettext('Failed to generate profile based on region 4. %(error)s', error=str(ex)), 'error')
 
+    @action('item9a_download_A2_sequences', 'Download the A2 sequences as a FASTA file')
+    def item9a_download_A2_sequences(self, ids):
+        createFASTAFromRegion(ids, "a2")
+
+
 
 class ProfileView(ModelView):
     """
@@ -1154,6 +1159,24 @@ def createProfileFromRegion(ids, region):
             createProfile(align_list)
         else:
             flash("None of the selected genomes has an annotated %s so we couldn't build a profile" % (region))
+
+
+def createFASTAFromRegion(ids, region):
+    query = models.GenomeRecords.query.filter(models.GenomeRecords.uid.in_(ids))
+    align_list = []
+    for record in query.all():
+        if eval('record.' + region + '== ""'):
+            pass
+        else:
+            align_record = eval(
+                'SeqRecord(Seq(record.' + region + ', generic_protein), id=str(record.name), description="' + region + '_region")')
+            align_list.append(align_record)
+
+    if align_list:
+        utilities.saveFASTA(align_list, "tmp/output.fasta")
+    else:
+        flash("None of the selected genomes has an annotated %s so we couldn't build a profile" % (region))
+
 
 
 def saveProfile(profile):

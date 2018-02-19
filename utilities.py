@@ -1,5 +1,7 @@
 import os
 import glob
+from flask import flash
+from Bio import SeqIO
 def makeQueryString(iter, info = "", link = "", final = ""):
     """
     Take a list of items and concatanate them together
@@ -33,3 +35,8 @@ def removeFile(*args):
     """
     for arg in args:
         os.remove(arg)
+
+def saveFASTA(align_list, filepath):
+    SeqIO.write(align_list, filepath, "fasta")
+    print ("FASTA file was saved to %s" % (filepath))
+    flash ("FASTA file was saved to %s" % (filepath))
