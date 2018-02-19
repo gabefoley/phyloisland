@@ -41,39 +41,44 @@ def getBlastInfo(xmlFile, closest_to=-1):
     """
     blast_info = {}
     blast_parser = NCBIXML.parse(xmlFile)
-    for record in blast_parser:
-        for alignment in record.alignments:
-            print ("BLAST search found %s hits " % (len(alignment.hsps)))
 
-            # If we just want the top hit and don't care about proximity
-            if closest_to == -1:
-                for hsp in alignment.hsps:
-                    # Check if this is on the reverse strand
-                    if (hsp.frame[1] < 0):
-                        blast_info["location"] = str(alignment.length - hsp.sbjct_end) + ":" + \
-                                                 str( alignment.length - hsp.sbjct_start)
-                    else:
-                        blast_info["location"] = str(hsp.sbjct_start) + ":" + str(hsp.sbjct_end)
-                    blast_info["sequence"] = hsp.sbjct
-                    break
-            # Otherwise we have a genomic location we want to get closest to
-            else:
-                # Set distance as high as possible
-                distance = alignment.length
-                for hsp in alignment.hsps:
-                    # Calculate the distance between this high scoring pair and the region we want to get closest to
-                    hsp_distance = hsp.sbjct_start - int(closest_to)
+    try:
+        for record in blast_parser:
+            for alignment in record.alignments:
+                print ("BLAST search found %s hits " % (len(alignment.hsps)))
 
-                    # If this distance is shorter then set this as the closest pair
-                    if hsp_distance < distance:
-                        distance = hsp_distance
-                        # Check if this is on the reverse strands
+                # If we just want the top hit and don't care about proximity
+                if closest_to == -1:
+                    for hsp in alignment.hsps:
+                        # Check if this is on the reverse strand
                         if (hsp.frame[1] < 0):
-                            blast_info["location"] = str(alignment.length - hsp.sbjct_end)  + ":" + \
-                                                     str(alignment.length - hsp.sbjct_start)
+                            blast_info["location"] = str(alignment.length - hsp.sbjct_end) + ":" + \
+                                                     str( alignment.length - hsp.sbjct_start)
                         else:
                             blast_info["location"] = str(hsp.sbjct_start) + ":" + str(hsp.sbjct_end)
                         blast_info["sequence"] = hsp.sbjct
+                        break
+                # Otherwise we have a genomic location we want to get closest to
+                else:
+                    # Set distance as high as possible
+                    distance = alignment.length
+                    for hsp in alignment.hsps:
+                        # Calculate the distance between this high scoring pair and the region we want to get closest to
+                        hsp_distance = hsp.sbjct_start - int(closest_to)
+
+                        # If this distance is shorter then set this as the closest pair
+                        if hsp_distance < distance:
+                            distance = hsp_distance
+                            # Check if this is on the reverse strands
+                            if (hsp.frame[1] < 0):
+                                blast_info["location"] = str(alignment.length - hsp.sbjct_end)  + ":" + \
+                                                         str(alignment.length - hsp.sbjct_start)
+                            else:
+                                blast_info["location"] = str(hsp.sbjct_start) + ":" + str(hsp.sbjct_end)
+                            blast_info["sequence"] = hsp.sbjct
+    except ValueError:
+        print ("Couldn't find a BLAST hit")
+
 
     return blast_info
 
