@@ -230,7 +230,7 @@ class GenomeRecordsView(ModelView):
     edit_modal = True
     can_create = False
     can_view_details = True
-    page_size = 500
+    page_size = 20
 
 
     def _a1description_formatter(view, context, model, name):
