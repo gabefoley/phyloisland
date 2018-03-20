@@ -19,6 +19,7 @@ class SequenceRecords(db.Model):
     sequence = db.Column(db.Text)
     a1_ref = db.Column(db.Boolean)
     a2_ref = db.Column(db.Boolean)
+    pore_ref = db.Column(db.Boolean)
     chitinase_ref = db.Column(db.Boolean)
     region1_ref = db.Column(db.Boolean)
     region2_ref = db.Column(db.Boolean)
@@ -26,7 +27,7 @@ class SequenceRecords(db.Model):
     region4_ref = db.Column(db.Boolean)
 
 
-    def __init__(self, name="", species="", description="", sequence="", a1_ref=0, a2_ref=0, chitinase_ref=0, region1_ref=0,
+    def __init__(self, name="", species="", description="", sequence="", a1_ref=0, a2_ref=0, pore_ref=0, chitinase_ref=0, region1_ref=0,
                  region2_ref=0, region3_ref=0, region4_ref=0,):
         self.name = name
         self.species = species
@@ -34,6 +35,8 @@ class SequenceRecords(db.Model):
         self.sequence = sequence
         self.a1_ref = a1_ref
         self.a2_ref = a2_ref
+        self.pore_ref = pore_ref
+        self.chitinase_ref = chitinase_ref
         self.region1_ref = region1_ref
         self.region2_ref = region2_ref
         self.region3_ref = region3_ref
@@ -59,6 +62,11 @@ class GenomeRecords(db.Model):
     sequence = db.Column(db.Text)
     a1_ref = db.Column(db.Boolean)
     a2_ref = db.Column(db.Boolean)
+    pore = db.Column(db.Text)
+    pore_length = db.Column(db.Integer)
+    pore_loc = db.Column(db.Text)
+    pore_within_a2 = db.Column(db.String(255))
+    pore_ref = db.Column(db.Boolean)
     chitinase = db.Column(db.Text)
     chitinase_length = db.Column(db.Integer)
     chitinase_loc = db.Column(db.Text)
@@ -84,7 +92,8 @@ class GenomeRecords(db.Model):
 
     def __init__(self, name="", species="", strain="", description="", a1="", a1_length="", a1_loc="",
                  a2="", a2_length="", a2_loc="", overlap="", distance="", sequence="", a1_ref=0, a2_ref=0,
-                 chitinase = "", chitinase_length=None, chitinase_loc="", chitinase_distance_from_a2="", chitinase_ref="",
+                 pore = "", pore_length=None, pore_loc="", pore_within_a2="", pore_ref=0,
+                 chitinase = "", chitinase_length=None, chitinase_loc="", chitinase_distance_from_a2="", chitinase_ref=0,
                  region1="", region1_length=None, region1_loc="",region2="", region2_length=None, region2_loc="",
                  region3="", region3_length=None, region3_loc="", region4="", region4_length=None, region4_loc="",
                  region1_ref="", region2_ref="", region3_ref="", region4_ref="" ):
@@ -103,6 +112,11 @@ class GenomeRecords(db.Model):
         self.sequence = sequence
         self.a1_ref = a1_ref
         self.a2_ref = a2_ref
+        self.pore = pore
+        self.pore_length = pore_length
+        self.pore_loc = pore_loc
+        self.pore_within_a2 = pore_within_a2
+        self.pore_ref = pore_ref
         self.chitinase = chitinase
         self.chitinase_length = chitinase_length
         self.chitinase_loc = chitinase_loc
@@ -146,6 +160,7 @@ class Profile(db.Model, BlobMixin):
     name = db.Column(db.Unicode(length=255), nullable=False, unique=True)
     a1_profile_ref = db.Column(db.Boolean)
     a2_profile_ref = db.Column(db.Boolean)
+    pore_profile_ref = db.Column(db.Boolean)
     chitinase_profile_ref = db.Column(db.Boolean)
     region1_profile_ref = db.Column(db.Boolean)
     region2_profile_ref = db.Column(db.Boolean)
@@ -153,11 +168,12 @@ class Profile(db.Model, BlobMixin):
     region4_profile_ref = db.Column(db.Boolean)
 
 
-    def __init__(self, name = "", blobMix = "", a1_profile_ref=0, a2_profile_ref=0, chitinase_profile_ref = 0, region1_profile_ref = 0,
+    def __init__(self, name = "", blobMix = "", a1_profile_ref=0, a2_profile_ref=0, pore_profile_ref = 0, chitinase_profile_ref = 0, region1_profile_ref = 0,
                  region2_profile_ref = 0, region3_profile_ref = 0, region4_profile_ref = 0,):
         self.name = name
         self.a1_profile_ref = a1_profile_ref
         self.a2_profile_ref = a2_profile_ref
+        self.pore_profile_ref = pore_profile_ref
         self.chitinase_profile_ref = chitinase_profile_ref
         self.region1_profile_ref = region1_profile_ref
         self.region2_profile_ref = region2_profile_ref

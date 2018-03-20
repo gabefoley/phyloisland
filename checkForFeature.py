@@ -146,7 +146,7 @@ def addToDatabase():
 
 
 
-def deleteFeature(ids, record_name, record_location, record_length):
+def deleteFeature(**kwargs):
     """
     Delete a certain feature in database
     :param ids: List of ids to delete features from
@@ -154,14 +154,20 @@ def deleteFeature(ids, record_name, record_location, record_length):
     :param recordLocation: Name of feature location to delete
     :return:
     """
-    query = models.GenomeRecords.query.filter(models.GenomeRecords.uid.in_(ids))
+    query = models.GenomeRecords.query.filter(models.GenomeRecords.uid.in_(kwargs["ids"]))
     for record in query.all():
-        setattr(record, record_name, "")
-        setattr(record, record_location, "")
-        setattr(record, record_length, None)
-        setattr(record, "overlap", "")
-        setattr(record, "distance", "")
 
+        for key, value in kwargs.items():
+            if key == "string":
+                for item in value:
+                    setattr(record, item, "")
+            if key == "int":
+                for item in value:
+                    setattr(record, item, None)
+
+            elif key == "bool":
+                for item in value:
+                    setattr(record, item, 0)
 
         # Update the database
         servers.db.session.add(record)

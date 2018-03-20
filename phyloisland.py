@@ -281,6 +281,24 @@ def addToRecord(old, new, region):
     return old
 
 
+def check_if_contains(region, subregion):
+    """
+    Check if one region entirely contains a subregion
+    :param region: The region to check in
+    :param subregion: The subregion to check for
+    :return: Truth value about whether the region completely contains a subregion
+    """
+    region_start, region_end = [int(x) for x in region.split(":")]
+    subregion_start, subregion_end = [int(x) for x in subregion.split(":")]
+    print (region_start, subregion_start, subregion_end, region_end)
+    if int(region_start) <= int(subregion_start) <= int(subregion_end) <= int(region_end):
+        print ('its constained')
+        return True
+    else:
+        return False
+
+
+
 def check_overlap(overlap_1, overlap_2):
     for record in seqDict:
         # Only check records that have both of the regions

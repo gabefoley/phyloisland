@@ -54,13 +54,6 @@ a2_reference = SeqRecord(Seq("MSNSIEAKLQEDLRDALVDYYLGQIVPNSKDFTNLRSTIKNVDDLYDHLL
 
 genome_records = []
 
-# a1_profile_path = "tmp/A1_profile.hmm"
-# a2_profile_path = "tmp/A2_profile.hmm"
-# region1_profile_path = "tmp/region1_profile.hmm"
-# region2_profile_path = "tmp/region2_profile.hmm"
-# region3_profile_path = "tmp/region3_profile.hmm"
-# region4_profile_path = "tmp/region4_profile.hmm"
-
 
 def setReferenceProfile(region):
     # filter = globals()[region + '_profile_ref=1']()
@@ -174,6 +167,11 @@ class SequenceRecordsView(ModelView):
 
         setSequenceAsReference(ids, "a2")
 
+    @action('set_pore_reference', 'Set this sequence as the pore reference')
+    def action_set_pore_reference(self, ids):
+
+        setSequenceAsReference(ids, "pore")
+
     @action('set_chitinase_reference', 'Set this sequence as the chitinase reference')
     def action_set_chitinase_reference(self, ids):
 
@@ -220,8 +218,9 @@ class SequenceRecordsView(ModelView):
 
 
 class GenomeRecordsView(ModelView):
-    column_list = ('name', 'species', 'strain', 'description', 'a1_ref', 'a2_ref', 'sequence', 'a1', 'a1_length', 'a1_loc', 'a2',
-                   'a2_length', 'a2_loc', 'overlap', 'distance', 'chitinase', 'chitinase_length', 'chitinase_loc', 'chitinase_distance_from_a2', 'region1_ref', 'region2_ref',
+    column_list = ('name', 'species', 'strain', 'description', 'a1_ref', 'a2_ref', 'pore_ref', 'sequence', 'a1', 'a1_length', 'a1_loc', 'a2',
+                   'a2_length', 'a2_loc', 'overlap', 'distance', 'pore', 'pore_length', 'pore_loc', 'pore_within_a2',
+                   'chitinase', 'chitinase_length', 'chitinase_loc', 'chitinase_distance_from_a2', 'region1_ref', 'region2_ref',
                    'region3_ref', 'region4_ref', 'region1', 'region1_length', 'region1_loc', 'region2',
                    'region2_length', 'region2_loc', 'region3', 'region3_length', 'region3_loc', 'region4',
                    'region4_length', 'region4_loc')
@@ -259,6 +258,15 @@ class GenomeRecordsView(ModelView):
             return model.chitinase[:15] + "..."
         else:
             return model.chitinase
+
+    def _pore_formatter(view, context, model, name):
+        # Format your string here e.g show first 20 characters
+        # can return any valid HTML e.g. a link to another view to show the detail or a popup window
+
+        if model.pore:
+            return model.pore[:15] + "..."
+        else:
+            return model.pore
 
     def _region1description_formatter(view, context, model, name):
         # Format your string here e.g show first 20 characters
@@ -306,6 +314,7 @@ class GenomeRecordsView(ModelView):
     column_formatters = {
         'a1': _a1description_formatter,
         'a2': _a2description_formatter,
+        'pore': _pore_formatter,
         'chitinase': _chitinase_formatter,
         'region1': _region1description_formatter,
         'region2': _region2description_formatter,
@@ -363,6 +372,30 @@ class GenomeRecordsView(ModelView):
                 raise
 
             flash(gettext('Failed to get closest chitinase %(error)s', error=str(ex)), 'error')
+
+    @action('item4_check_if_pore_within_A2', 'Check if the pore is within the A2 region')
+
+    def item4_check_if_pore_within_A2(self, ids):
+        try:
+            query = models.GenomeRecords.query.filter(models.GenomeRecords.uid.in_(ids))
+            for record in query.all():
+                if record.a2 == "" or record.pore == "":
+                    pass
+                else:
+                    contains = phyloisland.check_if_contains(record.a2_loc, record.pore_loc)
+                    if contains:
+                        setattr(record, "pore_within_a2", "True")
+                    else:
+                        setattr(record, "pore_within_a2", "False")
+
+                    servers.db.session.add(record)
+                    servers.db.session.commit()
+
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+
+            flash(gettext('Failed to get overlap %(error)s', error=str(ex)), 'error')
 
     @action('item5_get_distance_between_A2_and_chitinase', 'Get distance between A2 and chitinase')
     def item5_get_distance_between_A2_and_chitinase(self, ids):
@@ -422,6 +455,12 @@ class GenomeRecordsView(ModelView):
 
         setRegionAsReference(ids, 'a2')
 
+    @action('item7_set_pore_reference', 'Set this pore region as the reference region')
+    def item7_set_pore_reference(self, ids):
+
+        setRegionAsReference(ids, 'pore')
+
+
     @action('item7_set_chitinase_reference', 'Set this chitinase region as the reference region')
     def item7_set_chitinase_reference(self, ids):
 
@@ -471,6 +510,17 @@ class GenomeRecordsView(ModelView):
                 raise
 
             flash(gettext('Something went wrong when checking for A2 region -  %(error)s', error=str(ex)), 'error')
+
+    @action('item8_a2_profile_align_pore', 'Check for pore with a profile')
+    def item_a2_profile_align_pore(self, ids):
+        try:
+            checkWithProfile(ids, 'pore')
+            # Does this exception raise correctly?
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+
+            flash(gettext('Something went wrong when checking for pore -  %(error)s', error=str(ex)), 'error')
 
     @action('item8_a2_profile_align_chitinase', 'Check for chitinase with a profile')
     def item_a2_profile_align_chitinase(self, ids):
@@ -553,6 +603,19 @@ class GenomeRecordsView(ModelView):
 
             flash(gettext('Something went wrong when checking for A2 region -  %(error)s', error=str(ex)), 'error')
 
+    @action('item3_check_pore', 'Check for pore')
+    def item3_check_pore(self, ids):
+        try:
+
+            checkForRegion(ids, 'pore')
+
+
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+
+            flash(gettext('Something went wrong when checking for pore -  %(error)s', error=str(ex)), 'error')
+
 
     @action('item3_check_chitinase', 'Check for chitinase')
     def item3_check_chitinase(self, ids):
@@ -585,7 +648,6 @@ class GenomeRecordsView(ModelView):
         try:
 
             checkForRegion(ids, 'region2')
-
 
         except Exception as ex:
             if not self.handle_view_exception(ex):
@@ -623,7 +685,7 @@ class GenomeRecordsView(ModelView):
     def item1_delete_a1(self, ids):
         try:
 
-            checkForFeature.deleteFeature(ids, "a1", "a1_loc", "a1_length")
+            checkForFeature.deleteFeature(ids=ids, string=["a1", "a1_loc"], int=["a1_length"], bool=["a1_ref"])
 
         except Exception as ex:
             if not self.handle_view_exception(ex):
@@ -635,8 +697,8 @@ class GenomeRecordsView(ModelView):
     @action('item2_delete_a2', 'Delete A2 region')
     def item2_delete_a2(self, ids):
         try:
+            checkForFeature.deleteFeature(ids=ids, string=["a2", "a2_loc", "pore_within_a2"], int=["a2_length"], bool=["a2_ref"])
 
-            checkForFeature.deleteFeature(ids, "a2", "a2_loc", "a2_length")
 
         except Exception as ex:
             if not self.handle_view_exception(ex):
@@ -644,11 +706,25 @@ class GenomeRecordsView(ModelView):
 
             flash(gettext('Failed to delete region. %(error)s', error=str(ex)), 'error')
 
+    @action('item2_delete_pore', 'Delete pore')
+    def item2_delete_pore(self, ids):
+        try:
+
+            checkForFeature.deleteFeature(ids=ids, string=["pore", "pore_loc", "pore_within_a2"], int=["pore_length"], bool=["pore_ref"])
+
+
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+
+            flash(gettext('Failed to delete pore. %(error)s', error=str(ex)), 'error')
+
     @action('item2_delete_chitinase', 'Delete chitinase')
     def item2_delete_chitinase(self, ids):
         try:
 
-            checkForFeature.deleteFeature(ids, "chitinase", "chitinase_loc", "chitinase_length", "chitinase_distance_from_a2")
+            checkForFeature.deleteFeature(ids=ids, string=["chitinase", "chitinase_loc"], int=["chitinase_length", "chitinase_distance_from_a2"], bool=["chitinase_ref"])
+
 
         except Exception as ex:
             if not self.handle_view_exception(ex):
@@ -660,7 +736,8 @@ class GenomeRecordsView(ModelView):
     def item2_delete_region1(self, ids):
         try:
 
-            checkForFeature.deleteFeature(ids, "region1", "region1_loc", "region1_length")
+            checkForFeature.deleteFeature(ids=ids, string=["region1", "region1_loc"], int=["region1_length"], bool=["region1_ref"])
+
 
         except Exception as ex:
             if not self.handle_view_exception(ex):
@@ -671,7 +748,7 @@ class GenomeRecordsView(ModelView):
     def item2_delete_region2(self, ids):
         try:
 
-            checkForFeature.deleteFeature(ids, "region2", "region2_loc", "region2_length")
+            checkForFeature.deleteFeature(ids=ids, string=["region2", "region2_loc"], int=["region2_length"], bool=["region2_ref"])
 
         except Exception as ex:
             if not self.handle_view_exception(ex):
@@ -683,7 +760,7 @@ class GenomeRecordsView(ModelView):
     def item2_delete_region3(self, ids):
         try:
 
-            checkForFeature.deleteFeature(ids, "region3", "region3_loc", "region3_length")
+            checkForFeature.deleteFeature(ids=ids, string=["region3", "region3_loc"], int=["region3_length"], bool=["region3_ref"])
 
         except Exception as ex:
             if not self.handle_view_exception(ex):
@@ -695,7 +772,7 @@ class GenomeRecordsView(ModelView):
     def item2_delete_region4(self, ids):
         try:
 
-            checkForFeature.deleteFeature(ids, "region4", "region4_loc", "region4_length")
+            checkForFeature.deleteFeature(ids=ids, string=["region4", "region4_loc"], int=["region4_length"], bool=["region4_ref"])
 
         except Exception as ex:
             if not self.handle_view_exception(ex):
@@ -721,6 +798,15 @@ class GenomeRecordsView(ModelView):
             if not self.handle_view_exception(ex):
                 raise
             flash(gettext('Failed to generate profile based on A2. %(error)s', error=str(ex)), 'error')
+
+    @action('item9_generate_profile_pore', 'Generate profile based on pore')
+    def itema9_generate_profile_pore(self, ids):
+        try:
+            createProfileFromRegion(ids, 'pore')
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+            flash(gettext('Failed to generate profile based on pore. %(error)s', error=str(ex)), 'error')
 
     @action('item9_generate_profile_chitinase', 'Generate profile based on chitinase')
     def itema9_generate_profile_chitinase(self, ids):
@@ -776,7 +862,7 @@ class GenomeRecordsView(ModelView):
 class ProfileView(ModelView):
     """
     View of the Profile database for storing HMM Profiles """
-    column_list = ('name', 'a1_profile_ref', 'a2_profile_ref', 'chitinase_profile_ref', 'region1_profile_ref', 'region2_profile_ref',
+    column_list = ('name', 'a1_profile_ref', 'a2_profile_ref', 'pore_profile_ref', 'chitinase_profile_ref', 'region1_profile_ref', 'region2_profile_ref',
                    'region3_profile_ref', 'region4_profile_ref', 'download')
     form_columns = ('name', 'profile')
 
@@ -805,6 +891,10 @@ class ProfileView(ModelView):
     @action('item2_set_A2_reference', 'Set this profile as the A2 reference profile')
     def item1_set_a2_reference(self, ids):
         setProfileAsReference(ids, "a2")
+
+    @action('item2_set_pore_reference', 'Set this profile as the pore reference profile')
+    def item1_set_pore_reference(self, ids):
+        setProfileAsReference(ids, "pore")
 
     @action('item2_set_chitinase_reference', 'Set this profile as the chitinase reference profile')
     def item1_set_chitinase_reference(self, ids):
@@ -1221,7 +1311,7 @@ admin.add_view(ProfileView(model=models.Profile, session=servers.db.session, nam
 # setA2ReferenceProfile('a2')
 
 # Create A1 and A2 reference profiles on the disk
-for region in ["a1", "a2", "chitinase", "region1", "region2", "region3", "region4"]:
+for region in ["a1", "a2", "pore", "chitinase", "region1", "region2", "region3", "region4"]:
     setReferenceProfile(region)
 
 
