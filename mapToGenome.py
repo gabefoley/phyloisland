@@ -189,32 +189,34 @@ def getShotgunGenome(species_names):
 
                 comment = record.annotations.get('comment')
 
-                idString = re.search('accession([\w\W].*)\.', comment)
-                # idString = re.search('accession (.*)\.', comment)
+                if comment:
 
-                # idString.group(0).split("\n")
-                # print(idString.group(0))
+                    idString = re.search('accession([\w\W].*)\.', str(comment))
+                    # idString = re.search('accession (.*)\.', comment)
 
-                if (idString):
-                    # print (idString.group(0).split(" ")[1])
+                    # idString.group(0).split("\n")
+                    # print(idString.group(0))
 
-
-                    # if (idString.group(1)):
-
-                    genome_id = idString.group(1)
-
-                    versionString = re.search('project[\w\W]\((.*)\)', comment)
-                    version = versionString.group(1)
+                    if (idString):
+                        # print (idString.group(0).split(" ")[1])
 
 
-                    if "_" in genome_id:
-                        genome_id = genome_id.split("_")[1]
+                        # if (idString.group(1)):
 
-                    idDict[genome_id.strip()] = version
+                        genome_id = idString.group(1)
 
-                else:
-                    print("Couldn't add an appropriate record from this genome - %s" % (species_names))
-                    return
+                        versionString = re.search('project[\w\W]\((.*)\)', comment)
+                        version = versionString.group(1)
+
+
+                        if "_" in genome_id:
+                            genome_id = genome_id.split("_")[1]
+
+                        idDict[genome_id.strip()] = version
+
+                    else:
+                        print("Couldn't add an appropriate record from this genome - %s" % (species_names))
+                        return
 
         else:
             print("Couldn't add a record from this genome - %s" % (species_names))
