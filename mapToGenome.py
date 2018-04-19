@@ -122,7 +122,7 @@ def get_full_genome(genome_ids):
 
             except HTTPError as ex:
                 for genome_id in genome_ids:
-                    print (ex)
+                    # print (ex)
                     print("Couldn't find an appropriate genome record for %s" % (genome_id))
                     flash("Couldn't find an appropriate genome record for %s" % (genome_id))
                 return
@@ -230,13 +230,10 @@ def get_shotgun_id_dict_from_id(genome_record):
 
 def get_shotgun_genome(shotgun_id_dict):
 
-    print ('here it is from in nhere')
-    print (shotgun_id_dict)
-
     try:
         for genome_id, genome_info in shotgun_id_dict.items():
 
-            print (genome_id, genome_info["version"])
+            # print (genome_id, genome_info["version"])
 
             # Check if we already have this shotgun sequence
 
@@ -292,8 +289,8 @@ def get_shotgun_genome(shotgun_id_dict):
         flash("There was an error reading the shotgun sequence file. Please try again")
         print("There was an error reading the shotgun sequence file. Please try again")
     except URLError:
-        flash("There was an error trying to read  the shotgun sequence from the FTP site. Please try again")
-        print("There was an error trying to read  the shotgun sequence from the FTP site. Please try again")
+        flash("There was an error trying to read  the shotgun sequence from the FTP site. Check that it is a valid shotgun sequence identifier and try again")
+        print("There was an error trying to read  the shotgun sequence from the FTP site. Check that it is a valid shotgun sequence identifier and try again")
 
     return seqDict
 

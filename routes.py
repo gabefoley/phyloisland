@@ -96,8 +96,8 @@ class GetUniqueSpecies(BaseSQLAFilter):
             else:
                 species_list.append(species)
                 id_list.append(record.id)
-        print(species_list)
-        print(id_list)
+        # print(species_list)
+        # print(id_list)
         return query.filter(self.get_column(alias).in_(id_list))
 
     def operation(self):
@@ -117,8 +117,7 @@ class GetUniqueSpeciesSequenceRecord(BaseSQLAFilter):
             else:
                 species_list.append(species)
                 id_list.append(record.id)
-        print(species_list)
-        print(id_list)
+
         return query.filter(self.get_column(alias).in_(id_list))
 
     def operation(self):
@@ -433,7 +432,6 @@ class GenomeRecordsView(ModelView):
                     pass
                 else:
                     distance = str(phyloisland.getDistance(record.a1_loc, record.a2_loc))
-                    print(distance)
                     if len(distance) > 1:
                         record.overlap = "False"
                         record.distance = distance
@@ -1057,7 +1055,7 @@ class MyHomeView(AdminIndexView):
 
 def addGenome(genome_results):
 
-    print (genome_results)
+    # print (genome_results)
     for record in genome_results:
 
         current = genome_results[record]
