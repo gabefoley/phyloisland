@@ -7,6 +7,8 @@ Phylo Island is a front-facing database that allows for curation and annotation 
 1. Python 3
 2. MySQL server
 3. Python modules as described in requirements.txt
+4. Blast commandline tools installed and callable from the command line
+5. HMMER, MUSCLE, MAFFT (alignment / profile-HMM building programs) installed and callable from the command line
 
 ## Installation for local deployment
 

@@ -32,7 +32,6 @@ try:
 except ImportError:
     from wtforms.utils import unset_value
 
-
 # Create directory for file fields to use
 file_path = op.join(op.dirname(__file__), 'filesdir')
 try:
@@ -41,6 +40,7 @@ except OSError:
     pass
 BASE_ROUTE = '/' + servers.base_route
 
+
 def local(route: str) -> str:
     if BASE_ROUTE == '/':
         return route
@@ -48,9 +48,13 @@ def local(route: str) -> str:
         return join(BASE_ROUTE, route[1:])
 
 
-a1_reference = SeqRecord(Seq("MDKYNNYSNVIKNKSSISPLLAAAAKIEPEITVLSSASKSNRSQYSQSLADTLLGLGYRSIFDIAKVSRQRFIKRHDESLLGNGAVIFDKAVSMANQVLQKYRKNRLEKSNSPLVPQTSSSTDASSESQTNKLPEYNQLFPEPWDNFCRPGAIEALDSPASYLLDLYKFIQSVELDGSNQARKLETRRADIPKLSLDNDALYKEVTALSIVNDVLSGSAREYIDQSGQADKAVNQILGDTHFPFTLPYSLPTQQINKGLGASNIELGTVIQRVDPQFSWNTTQEKYNQVLLAYTQLSSEQIALLSLPDVFTQNFLTQTELSAGYLSASTTEILAEKDLSRHGYIVKAADNIKGPTQLVEHSDASYDVIELTCTNQAKETITVKLRGENIITYQRTKARMVPFDNSSPFSRQLKLTFVAEDNPSLGNLDKGPYFANMDIYAAEWVRENVSSETMVSRPFLTMTYRIAIAKAGASLEELQPEADAFFINNFGLSAEDSSQLVKLVAFGDQTGSKAEEIESLLSCGENLPIVSPNVIFANPIFGSYFNDEPFPAPYHFGGVYINAHQRNAMTIIRAEGGREIQSLSNFRLERLNRFIRLQRWLDLPSHQLDLLLTSVMQADADNSQQEITEPVLKSLGLFRHLNLQYKITPEIFSSWLYQLTPFAVSGEIAFFDRIFNREQLFDQPFILDGGSFTYLDAKGSDAKSVKQLCAGLNISAVTFQFIAPLVQSALGLEAGTLVRSFEVVSSLYRLVSIPQTFGLSTEDGLILMNILTDEMGYLAKQPAFDDKQTQDKDFLSIILKMEALSAWLTKNNLTPASLALLLGVTRLAVVPTNNMVTFFKGIANGLSENVCLTTDDFQRQELEGADWWTLLSTNQVIDDMGLVLDIHPVWGKSDEEMLMEKIQSIGVSNDNNTLSIIVQILIQAKNAQENLLSQTISAEYGVERSVVPLQLRWLGSNVYSVLNQVLNNTPTDISSIVPKLSELTYSLLIYTQLINSLKLNKEFIFLRLTQPNWLGLTQPKLSTQLSLPEIYLITCYQDWVVNANKNEDSIHEYLEFANIKKTEAEKTLVDNSEKCAELLAEILAWDAGEILKAASLLGLNPPQATNVFEIDWIRRLQTLSEKTMISTEYLWQMGDLTENSEFSLKEGVGEAVMAALKAQGDSDNV", generic_protein), id="Yersinia entomophaga A1")
+a1_reference = SeqRecord(Seq(
+    "MDKYNNYSNVIKNKSSISPLLAAAAKIEPEITVLSSASKSNRSQYSQSLADTLLGLGYRSIFDIAKVSRQRFIKRHDESLLGNGAVIFDKAVSMANQVLQKYRKNRLEKSNSPLVPQTSSSTDASSESQTNKLPEYNQLFPEPWDNFCRPGAIEALDSPASYLLDLYKFIQSVELDGSNQARKLETRRADIPKLSLDNDALYKEVTALSIVNDVLSGSAREYIDQSGQADKAVNQILGDTHFPFTLPYSLPTQQINKGLGASNIELGTVIQRVDPQFSWNTTQEKYNQVLLAYTQLSSEQIALLSLPDVFTQNFLTQTELSAGYLSASTTEILAEKDLSRHGYIVKAADNIKGPTQLVEHSDASYDVIELTCTNQAKETITVKLRGENIITYQRTKARMVPFDNSSPFSRQLKLTFVAEDNPSLGNLDKGPYFANMDIYAAEWVRENVSSETMVSRPFLTMTYRIAIAKAGASLEELQPEADAFFINNFGLSAEDSSQLVKLVAFGDQTGSKAEEIESLLSCGENLPIVSPNVIFANPIFGSYFNDEPFPAPYHFGGVYINAHQRNAMTIIRAEGGREIQSLSNFRLERLNRFIRLQRWLDLPSHQLDLLLTSVMQADADNSQQEITEPVLKSLGLFRHLNLQYKITPEIFSSWLYQLTPFAVSGEIAFFDRIFNREQLFDQPFILDGGSFTYLDAKGSDAKSVKQLCAGLNISAVTFQFIAPLVQSALGLEAGTLVRSFEVVSSLYRLVSIPQTFGLSTEDGLILMNILTDEMGYLAKQPAFDDKQTQDKDFLSIILKMEALSAWLTKNNLTPASLALLLGVTRLAVVPTNNMVTFFKGIANGLSENVCLTTDDFQRQELEGADWWTLLSTNQVIDDMGLVLDIHPVWGKSDEEMLMEKIQSIGVSNDNNTLSIIVQILIQAKNAQENLLSQTISAEYGVERSVVPLQLRWLGSNVYSVLNQVLNNTPTDISSIVPKLSELTYSLLIYTQLINSLKLNKEFIFLRLTQPNWLGLTQPKLSTQLSLPEIYLITCYQDWVVNANKNEDSIHEYLEFANIKKTEAEKTLVDNSEKCAELLAEILAWDAGEILKAASLLGLNPPQATNVFEIDWIRRLQTLSEKTMISTEYLWQMGDLTENSEFSLKEGVGEAVMAALKAQGDSDNV",
+    generic_protein), id="Yersinia entomophaga A1")
 
-a2_reference = SeqRecord(Seq("MSNSIEAKLQEDLRDALVDYYLGQIVPNSKDFTNLRSTIKNVDDLYDHLLLDTQVSAKVITSRLSLVTQSVQQYINRIALNLEPGLSINQQEATDWEEFANRYGYWAANQQLRMFPEIYVDPTLRLTKTEFFFQLESALNQGKLTDDVAQKAVLGYLNNFEEVSNLEIIAGYQDGIDIENDKTYFVARTRMQPYRYFWRSLDASQRNANSQELYPTAWSEWKAISVPLENVANGIVRPIMMDNRLYISWFEVAEEKETDSDGNIIVSGRYRTKIRLAHLGFDGVWSSGTTLREEVLADQMEEMIAVVDRMEDEPRLALVAFKEMSESWDVVFSYICDSMLIESSNLPTTTHPPKPGDGDKGLSDLDDYGANLVWFYLHETANGGKAEYKQLILYPVIINRDWPIELDKTHQGDFGTVDDFTLNSNYTGDELSLYLQSSSTYKYDFSKSKNIIYGIWKEDANNNRCWLNYKLLTPEDYEPQINATLVMCDKGDVNIITGFSLPNGGVDAGGKIKVTLRVGKKLRDKFQIKQFSQTQYLQFPEASSADVWYIGKQIRLNTLFAKELIGKASRSLDLVLSWETQNSRLEEAILGGAAELIDLDGANGIYFWELFFHMPFMVSWRFNVEQRYEDANRWVKYLFNPFECEDEPALLLGKPPYWNSRPLVDEPFKGYSLTQPSDPDAIAASDPIHYRKAVFNFLTKNIIDQGDMEYRKLQPSARTLARLSYSTASSLLGRRPDVQLTSFWQPLTLEDASYKTDSEIRAIEMQSQPLTFEPVVHDQTMSAVDNDIFMYPMNNELRGLWDRIENRIYNLRHNLTLDGKEINMDLYDSSISPRGLMKQRYQRVVTARNASKMNFKVPNYRFEPMLNRSKSGVETLIQFGSTLLSLLERKDSLSFDAYQMIQSGDLYRFSIDLQQQDIDINKASLEALQVSKQSAQDRYDHFKELYDENISSTEQKVIELQSQAANSLLMAQGMRTAAAALDVIPNIYGLAVGGSHWGAPLNAAAEIIMIKYQADSSKSESLSVSESYRRRRQEWELQYKQAEWEVNSVEQQINLQNMQIKAANKRLEQVEAQQQQAMALLDYFSERFTNESLYTWLISQLSSLYLQAYDAVLSLCLSAEASLLYELNLGEQSFVGGGGWNDLYQGLMAGETLKLALMRMERVYVEQNSRRQEITKTISLKALLGESWPAELNKLKQKTPINFNLEEQIFVEDYQELYQRRIKSVSVSLPMLVGPYEDVCAQLTQTSSSYSTRADLKTVENMLTKRTFADTPHLVRSIQPNQQISLSTGVNDSGLFMLNFDDERFLPFEGSGVDSSWRLQFTNLKQNLDSLNDVILHVKYTAAIGSSTFSQGVRKILANINNDE", generic_protein), id="Yersinia entomophaga A2")
+a2_reference = SeqRecord(Seq(
+    "MSNSIEAKLQEDLRDALVDYYLGQIVPNSKDFTNLRSTIKNVDDLYDHLLLDTQVSAKVITSRLSLVTQSVQQYINRIALNLEPGLSINQQEATDWEEFANRYGYWAANQQLRMFPEIYVDPTLRLTKTEFFFQLESALNQGKLTDDVAQKAVLGYLNNFEEVSNLEIIAGYQDGIDIENDKTYFVARTRMQPYRYFWRSLDASQRNANSQELYPTAWSEWKAISVPLENVANGIVRPIMMDNRLYISWFEVAEEKETDSDGNIIVSGRYRTKIRLAHLGFDGVWSSGTTLREEVLADQMEEMIAVVDRMEDEPRLALVAFKEMSESWDVVFSYICDSMLIESSNLPTTTHPPKPGDGDKGLSDLDDYGANLVWFYLHETANGGKAEYKQLILYPVIINRDWPIELDKTHQGDFGTVDDFTLNSNYTGDELSLYLQSSSTYKYDFSKSKNIIYGIWKEDANNNRCWLNYKLLTPEDYEPQINATLVMCDKGDVNIITGFSLPNGGVDAGGKIKVTLRVGKKLRDKFQIKQFSQTQYLQFPEASSADVWYIGKQIRLNTLFAKELIGKASRSLDLVLSWETQNSRLEEAILGGAAELIDLDGANGIYFWELFFHMPFMVSWRFNVEQRYEDANRWVKYLFNPFECEDEPALLLGKPPYWNSRPLVDEPFKGYSLTQPSDPDAIAASDPIHYRKAVFNFLTKNIIDQGDMEYRKLQPSARTLARLSYSTASSLLGRRPDVQLTSFWQPLTLEDASYKTDSEIRAIEMQSQPLTFEPVVHDQTMSAVDNDIFMYPMNNELRGLWDRIENRIYNLRHNLTLDGKEINMDLYDSSISPRGLMKQRYQRVVTARNASKMNFKVPNYRFEPMLNRSKSGVETLIQFGSTLLSLLERKDSLSFDAYQMIQSGDLYRFSIDLQQQDIDINKASLEALQVSKQSAQDRYDHFKELYDENISSTEQKVIELQSQAANSLLMAQGMRTAAAALDVIPNIYGLAVGGSHWGAPLNAAAEIIMIKYQADSSKSESLSVSESYRRRRQEWELQYKQAEWEVNSVEQQINLQNMQIKAANKRLEQVEAQQQQAMALLDYFSERFTNESLYTWLISQLSSLYLQAYDAVLSLCLSAEASLLYELNLGEQSFVGGGGWNDLYQGLMAGETLKLALMRMERVYVEQNSRRQEITKTISLKALLGESWPAELNKLKQKTPINFNLEEQIFVEDYQELYQRRIKSVSVSLPMLVGPYEDVCAQLTQTSSSYSTRADLKTVENMLTKRTFADTPHLVRSIQPNQQISLSTGVNDSGLFMLNFDDERFLPFEGSGVDSSWRLQFTNLKQNLDSLNDVILHVKYTAAIGSSTFSQGVRKILANINNDE",
+    generic_protein), id="Yersinia entomophaga A2")
 
 genome_records = []
 
@@ -60,9 +64,7 @@ def setReferenceProfile(region):
     query = eval('models.Profile.query.filter_by(' + region + '_profile_ref=1).first()')
     if query:
         with open("tmp/" + region + "_profile.hmm", 'w') as profile_path:
-
             profile_path.write(query.profile.decode('utf-8'))
-
 
 
 @servers.application.route("/" + servers.base_route + "/<int:id>", methods=['GET'])
@@ -81,7 +83,6 @@ def download_blob(id):
 
 
 class GetUniqueSpecies(BaseSQLAFilter):
-
     def apply(self, query, value, alias="None"):
 
         species_list = []
@@ -94,33 +95,33 @@ class GetUniqueSpecies(BaseSQLAFilter):
             else:
                 species_list.append(species)
                 id_list.append(record.id)
-        print (species_list)
-        print (id_list)
+        print(species_list)
+        print(id_list)
         return query.filter(self.get_column(alias).in_(id_list))
 
     def operation(self):
         return 'Yes'
 
+
 class GetUniqueSpeciesSequenceRecord(BaseSQLAFilter):
+    def apply(self, query, value, alias="None"):
 
-            def apply(self, query, value, alias="None"):
+        species_list = []
+        id_list = []
 
-                species_list = []
-                id_list = []
+        for record in servers.bio_db.values():
+            species = (" ".join(record.annotations.get('organism').split()[0:2]))
+            if species in species_list:
+                continue
+            else:
+                species_list.append(species)
+                id_list.append(record.id)
+        print(species_list)
+        print(id_list)
+        return query.filter(self.get_column(alias).in_(id_list))
 
-                for record in servers.bio_db.values():
-                    species = (" ".join(record.annotations.get('organism').split()[0:2]))
-                    if species in species_list:
-                        continue
-                    else:
-                        species_list.append(species)
-                        id_list.append(record.id)
-                print(species_list)
-                print(id_list)
-                return query.filter(self.get_column(alias).in_(id_list))
-
-            def operation(self):
-                return 'Yes'
+    def operation(self):
+        return 'Yes'
 
 
 class SequenceRecordsView(ModelView):
@@ -145,6 +146,7 @@ class SequenceRecordsView(ModelView):
             return model.sequence[:15] + "..."
         else:
             return model.sequence
+
     column_formatters = {
         'sequence': _seqdescription_formatter,
     }
@@ -177,7 +179,6 @@ class SequenceRecordsView(ModelView):
 
         setSequenceAsReference(ids, "chitinase")
 
-
     @action('set_region1_reference', 'Set this sequence as the region 1 reference')
     def action_set_region1_reference(self, ids):
 
@@ -198,7 +199,6 @@ class SequenceRecordsView(ModelView):
 
         setSequenceAsReference(ids, "region4")
 
-
     @action('generate_profile', 'Generate a profile from these sequences')
     def action_generate_profile(self, ids):
         try:
@@ -218,19 +218,20 @@ class SequenceRecordsView(ModelView):
 
 
 class GenomeRecordsView(ModelView):
-    column_list = ('name', 'species', 'strain', 'description', 'a1_ref', 'a2_ref', 'pore_ref', 'sequence', 'a1', 'a1_length', 'a1_loc', 'a2',
-                   'a2_length', 'a2_loc', 'overlap', 'distance', 'pore', 'pore_length', 'pore_loc', 'pore_within_a2',
-                   'chitinase', 'chitinase_length', 'chitinase_loc', 'chitinase_distance_from_a2', 'region1_ref', 'region2_ref',
-                   'region3_ref', 'region4_ref', 'region1', 'region1_length', 'region1_loc', 'region2',
-                   'region2_length', 'region2_loc', 'region3', 'region3_length', 'region3_loc', 'region4',
-                   'region4_length', 'region4_loc')
+    column_list = (
+        'name', 'species', 'strain', 'description', 'a1_ref', 'a2_ref', 'pore_ref', 'sequence', 'a1', 'a1_length', 'a1_loc',
+        'a2',
+        'a2_length', 'a2_loc', 'overlap', 'distance', 'pore', 'pore_length', 'pore_loc', 'pore_within_a2',
+        'chitinase', 'chitinase_length', 'chitinase_loc', 'chitinase_distance_from_a2', 'region1_ref', 'region2_ref',
+        'region3_ref', 'region4_ref', 'region1', 'region1_length', 'region1_loc', 'region2',
+        'region2_length', 'region2_loc', 'region3', 'region3_length', 'region3_loc', 'region4',
+        'region4_length', 'region4_loc')
     column_searchable_list = ['name', 'species', 'a1', 'a2', 'overlap']
     create_modal = True
     edit_modal = True
     can_create = False
     can_view_details = True
     page_size = 20
-
 
     def _a1description_formatter(view, context, model, name):
         # Format your string here e.g show first 20 characters
@@ -276,6 +277,7 @@ class GenomeRecordsView(ModelView):
             return model.region1[:15] + "..."
         else:
             return model.region1
+
     def _region2description_formatter(view, context, model, name):
         # Format your string here e.g show first 20 characters
         # can return any valid HTML e.g. a link to another view to show the detail or a popup window
@@ -293,6 +295,7 @@ class GenomeRecordsView(ModelView):
             return model.region3[:15] + "..."
         else:
             return model.region3
+
     def _region4description_formatter(view, context, model, name):
         # Format your string here e.g show first 20 characters
         # can return any valid HTML e.g. a link to another view to show the detail or a popup window
@@ -311,6 +314,7 @@ class GenomeRecordsView(ModelView):
             return model.sequence[:15] + "..."
         else:
             return model.sequence
+
     column_formatters = {
         'a1': _a1description_formatter,
         'a2': _a2description_formatter,
@@ -337,8 +341,10 @@ class GenomeRecordsView(ModelView):
                           models.GenomeRecords.name, 'Get unique species'),
                       filters.IntGreaterFilter(models.GenomeRecords.distance, 'Distance greater than'),
                       filters.IntSmallerFilter(models.GenomeRecords.distance, 'Distance smaller than'),
-                      filters.IntGreaterFilter(models.GenomeRecords.chitinase_distance_from_a2, 'Chitinase to A2 distance greater than'),
-                      filters.IntSmallerFilter(models.GenomeRecords.chitinase_distance_from_a2, 'Chitinase to A2 distance smaller than')
+                      filters.IntGreaterFilter(models.GenomeRecords.chitinase_distance_from_a2,
+                                               'Chitinase to A2 distance greater than'),
+                      filters.IntSmallerFilter(models.GenomeRecords.chitinase_distance_from_a2,
+                                               'Chitinase to A2 distance smaller than')
 
                       )
 
@@ -374,7 +380,6 @@ class GenomeRecordsView(ModelView):
             flash(gettext('Failed to get closest chitinase %(error)s', error=str(ex)), 'error')
 
     @action('item4_check_if_pore_within_A2', 'Check if the pore is within the A2 region')
-
     def item4_check_if_pore_within_A2(self, ids):
         try:
             query = models.GenomeRecords.query.filter(models.GenomeRecords.uid.in_(ids))
@@ -417,7 +422,6 @@ class GenomeRecordsView(ModelView):
 
             flash(gettext('Failed to get overlap %(error)s', error=str(ex)), 'error')
 
-
     @action('item5_get_overlap', 'Get overlap')
     def item5_get_overlap(self, ids):
         try:
@@ -449,7 +453,6 @@ class GenomeRecordsView(ModelView):
 
         setRegionAsReference(ids, 'a1')
 
-
     @action('item7_set_A2_reference', 'Set this A2 region as the reference region')
     def item7_set_a2_reference(self, ids):
 
@@ -459,7 +462,6 @@ class GenomeRecordsView(ModelView):
     def item7_set_pore_reference(self, ids):
 
         setRegionAsReference(ids, 'pore')
-
 
     @action('item7_set_chitinase_reference', 'Set this chitinase region as the reference region')
     def item7_set_chitinase_reference(self, ids):
@@ -498,7 +500,6 @@ class GenomeRecordsView(ModelView):
                 raise
 
             flash(gettext('Something went wrong when checking for A1 region -  %(error)s', error=str(ex)), 'error')
-
 
     @action('item8_a2_profile_align_a2', 'Check for A2 region with a profile')
     def item_a2_profile_align_a2(self, ids):
@@ -616,7 +617,6 @@ class GenomeRecordsView(ModelView):
 
             flash(gettext('Something went wrong when checking for pore -  %(error)s', error=str(ex)), 'error')
 
-
     @action('item3_check_chitinase', 'Check for chitinase')
     def item3_check_chitinase(self, ids):
         try:
@@ -661,7 +661,6 @@ class GenomeRecordsView(ModelView):
 
             checkForRegion(ids, 'region3')
 
-
         except Exception as ex:
             if not self.handle_view_exception(ex):
                 raise
@@ -673,7 +672,6 @@ class GenomeRecordsView(ModelView):
         try:
 
             checkForRegion(ids, 'region4')
-
 
         except Exception as ex:
             if not self.handle_view_exception(ex):
@@ -693,12 +691,11 @@ class GenomeRecordsView(ModelView):
 
             flash(gettext('Failed to delete region. %(error)s', error=str(ex)), 'error')
 
-
     @action('item2_delete_a2', 'Delete A2 region')
     def item2_delete_a2(self, ids):
         try:
-            checkForFeature.deleteFeature(ids=ids, string=["a2", "a2_loc", "pore_within_a2"], int=["a2_length"], bool=["a2_ref"])
-
+            checkForFeature.deleteFeature(ids=ids, string=["a2", "a2_loc", "pore_within_a2"], int=["a2_length"],
+                                          bool=["a2_ref"])
 
         except Exception as ex:
             if not self.handle_view_exception(ex):
@@ -710,7 +707,8 @@ class GenomeRecordsView(ModelView):
     def item2_delete_pore(self, ids):
         try:
 
-            checkForFeature.deleteFeature(ids=ids, string=["pore", "pore_loc", "pore_within_a2"], int=["pore_length"], bool=["pore_ref"])
+            checkForFeature.deleteFeature(ids=ids, string=["pore", "pore_loc", "pore_within_a2"], int=["pore_length"],
+                                          bool=["pore_ref"])
 
 
         except Exception as ex:
@@ -723,7 +721,9 @@ class GenomeRecordsView(ModelView):
     def item2_delete_chitinase(self, ids):
         try:
 
-            checkForFeature.deleteFeature(ids=ids, string=["chitinase", "chitinase_loc"], int=["chitinase_length", "chitinase_distance_from_a2"], bool=["chitinase_ref"])
+            checkForFeature.deleteFeature(ids=ids, string=["chitinase", "chitinase_loc"],
+                                          int=["chitinase_length", "chitinase_distance_from_a2"],
+                                          bool=["chitinase_ref"])
 
 
         except Exception as ex:
@@ -736,7 +736,8 @@ class GenomeRecordsView(ModelView):
     def item2_delete_region1(self, ids):
         try:
 
-            checkForFeature.deleteFeature(ids=ids, string=["region1", "region1_loc"], int=["region1_length"], bool=["region1_ref"])
+            checkForFeature.deleteFeature(ids=ids, string=["region1", "region1_loc"], int=["region1_length"],
+                                          bool=["region1_ref"])
 
 
         except Exception as ex:
@@ -744,11 +745,13 @@ class GenomeRecordsView(ModelView):
                 raise
 
             flash(gettext('Failed to delete region. %(error)s', error=str(ex)), 'error')
+
     @action('item2_delete_region2', 'Delete region 2')
     def item2_delete_region2(self, ids):
         try:
 
-            checkForFeature.deleteFeature(ids=ids, string=["region2", "region2_loc"], int=["region2_length"], bool=["region2_ref"])
+            checkForFeature.deleteFeature(ids=ids, string=["region2", "region2_loc"], int=["region2_length"],
+                                          bool=["region2_ref"])
 
         except Exception as ex:
             if not self.handle_view_exception(ex):
@@ -760,7 +763,8 @@ class GenomeRecordsView(ModelView):
     def item2_delete_region3(self, ids):
         try:
 
-            checkForFeature.deleteFeature(ids=ids, string=["region3", "region3_loc"], int=["region3_length"], bool=["region3_ref"])
+            checkForFeature.deleteFeature(ids=ids, string=["region3", "region3_loc"], int=["region3_length"],
+                                          bool=["region3_ref"])
 
         except Exception as ex:
             if not self.handle_view_exception(ex):
@@ -772,7 +776,8 @@ class GenomeRecordsView(ModelView):
     def item2_delete_region4(self, ids):
         try:
 
-            checkForFeature.deleteFeature(ids=ids, string=["region4", "region4_loc"], int=["region4_length"], bool=["region4_ref"])
+            checkForFeature.deleteFeature(ids=ids, string=["region4", "region4_loc"], int=["region4_length"],
+                                          bool=["region4_ref"])
 
         except Exception as ex:
             if not self.handle_view_exception(ex):
@@ -858,12 +863,13 @@ class GenomeRecordsView(ModelView):
         createFASTAFromRegion(ids, "a2")
 
 
-
 class ProfileView(ModelView):
     """
     View of the Profile database for storing HMM Profiles """
-    column_list = ('name', 'a1_profile_ref', 'a2_profile_ref', 'pore_profile_ref', 'chitinase_profile_ref', 'region1_profile_ref', 'region2_profile_ref',
-                   'region3_profile_ref', 'region4_profile_ref', 'download')
+    column_list = (
+        'name', 'a1_profile_ref', 'a2_profile_ref', 'pore_profile_ref', 'chitinase_profile_ref', 'region1_profile_ref',
+        'region2_profile_ref',
+        'region3_profile_ref', 'region4_profile_ref', 'download')
     form_columns = ('name', 'profile')
 
     form_extra_fields = {'profile': models.BlobUploadField(
@@ -884,9 +890,7 @@ class ProfileView(ModelView):
 
     @action('item1_set_A1_reference', 'Set this profile as the A1 reference profile')
     def item1_set_a1_reference(self, ids):
-
         setProfileAsReference(ids, "a1")
-
 
     @action('item2_set_A2_reference', 'Set this profile as the A2 reference profile')
     def item1_set_a2_reference(self, ids):
@@ -922,7 +926,7 @@ class UploadView(BaseView):
     View for uploading files
     """
 
-    @expose("/", methods =('GET', 'POST'))
+    @expose("/", methods=('GET', 'POST'))
     def upload(self):
         form = models.UploadForm()
 
@@ -965,8 +969,8 @@ class UploadView(BaseView):
                         if genome_results and genome_results != 'in_database':
                             addGenome(genome_results)
                         elif genome_results != 'in_database' and search_shotgun:
-                            print ("All of the genome records we identifed were all N characters. Attempting to "
-                                   "search for shotgun sequenced genomes \n")
+                            print("All of the genome records we identifed were all N characters. Attempting to "
+                                  "search for shotgun sequenced genomes \n")
                             shotgun_id_dict = mapToGenome.get_shotgun_id_dict(species_names)
                             genome_results = mapToGenome.getFullGenome(shotgun_id_dict)
 
@@ -986,18 +990,20 @@ class UploadView(BaseView):
                     genome_results = {}
                     genome_ids = mapToGenome.getGenomeIDs(name)
                     genome_results = mapToGenome.getFullGenome(genome_ids)
-                    print ('here is the genome results')
-                    print (genome_results)
+                    print('here is the genome results')
+                    print(genome_results)
                     if genome_results and genome_results != 'in_database':
                         addGenome(genome_results)
                     elif genome_results != 'in_database' and search_shotgun:
-                        print("\nWe didn't identify any genome records for %s. Attempting to search for shotgun sequenced genomes \n" % (name))
+                        print(
+                            "\nWe didn't identify any genome records for %s. Attempting to search for shotgun sequenced genomes \n" % (
+                                name))
                         shotgun_id_dict = mapToGenome.get_shotgun_id_dict(name)
                         genome_results = mapToGenome.get_shotgun_genome(shotgun_id_dict)
 
                         if genome_results:
                             addGenome(genome_results)
-                    elif genome_results != 'in_database' and not  search_shotgun:
+                    elif genome_results != 'in_database' and not search_shotgun:
                         print(
                             "\nWe didn't identify any genome records for %s. And we are not attempting to search for shotgun sequenced genomes \n" % (
                                 name))
@@ -1016,21 +1022,19 @@ class UploadView(BaseView):
                     elif genome_results != 'in_database' and search_shotgun:
                         print(
                             "\nWe didn't identify any genome records for %s. Attempting to search for shotgun sequenced genomes \n" % (
-                            name))
+                                name))
 
                         shotgun_id_dict = mapToGenome.get_shotgun_id_dict(name)
                         genome_results = mapToGenome.get_shotgun_genome(shotgun_id_dict)
 
                         if genome_results:
                             addGenome(genome_results)
-                    elif genome_results != 'in_database' and not  search_shotgun:
+                    elif genome_results != 'in_database' and not search_shotgun:
                         print(
                             "\nWe didn't identify any genome records for %s. And we are not attempting to search for shotgun sequenced genomes \n" % (
                                 name))
 
-
         return self.render("upload_admin.html", form=form)
-
 
 
 class MyHomeView(AdminIndexView):
@@ -1040,7 +1044,6 @@ class MyHomeView(AdminIndexView):
 
 
 def addGenome(genome_results):
-
     for record in genome_results:
 
         current = genome_results[record]
@@ -1087,7 +1090,6 @@ def addGenome(genome_results):
             servers.db.session.commit()
 
 
-
 def addSequence(seq_records):
     for record in seq_records.values():
         seq_name = record.id
@@ -1101,12 +1103,13 @@ def addSequence(seq_records):
         seq_check = models.SequenceRecords.query.filter_by(name=seq_name).first()
         if seq_check == None:
             print('Adding sequence with ID - %s from species - %s to the sequence database' % (
-            seq_name, seq_species) + "\n")
+                seq_name, seq_species) + "\n")
             servers.db.session.add(seq_entry)
             servers.db.session.commit()
         else:
             print('Sequence with ID - %s from species - %s already exists in the sequence database' % (
-            seq_name, seq_species) + "\n")
+                seq_name, seq_species) + "\n")
+
 
 def setRegionAsReference(ids, region):
     if len(ids) > 1:
@@ -1172,7 +1175,8 @@ def setSequenceAsReference(ids, region):
             # global a1_reference
             region_name = region + "_reference"
             # eval("region_name") = SeqRecord(Seq(record.sequence, generic_protein), id=str(record.name) + '_reference')
-            flash("The %s region from %s has been set as the reference %s sequence" % ( region, record.name, region))
+            flash("The %s region from %s has been set as the reference %s sequence" % (region, record.name, region))
+
 
 def setProfileAsReference(ids, region):
     if len(ids) > 1:
@@ -1203,38 +1207,37 @@ def setProfileAsReference(ids, region):
 
             flash("The profile named %s has been set as the reference profile for %s" % (record.name, region))
 
-def checkForRegion(ids, region, closest_to = -1):
+
+def checkForRegion(ids, region, closest_to=-1):
     genome_reference = eval("models.GenomeRecords.query.filter_by(" + region + "_ref=1).first()")
     sequence_reference = eval("models.SequenceRecords.query.filter_by(" + region + "_ref=1).first()")
 
-
-
     if genome_reference:
-        reference = eval('SeqRecord(Seq(genome_reference.' + region + ', generic_protein), id=str(genome_reference.name) + "_" + "' + region + '")')
+        reference = eval(
+            'SeqRecord(Seq(genome_reference.' + region + ', generic_protein), id=str(genome_reference.name) + "_" + "' + region + '")')
         checkForFeature.getFeatureLocation(ids, reference, region, region + "_loc", region + "_length", closest_to)
 
 
     elif sequence_reference:
-        reference = eval('SeqRecord(Seq(sequence_reference.sequence, generic_protein), id=str(sequence_reference.name) + "_" + "' + region + '")')
+        reference = eval(
+            'SeqRecord(Seq(sequence_reference.sequence, generic_protein), id=str(sequence_reference.name) + "_" + "' + region + '")')
         checkForFeature.getFeatureLocation(ids, reference, region, region + "_loc", region + "_length", closest_to)
 
 
     else:
-        flash ("Please set a reference sequence for %s first" % (region))
-
+        flash("Please set a reference sequence for %s first" % (region))
 
 
 def checkWithProfile(ids, region):
-
     # Check if a reference profile for A1 exists
     profile_reference = eval("models.Profile.query.filter_by(" + region + "_profile_ref=1).first()")
 
     if (profile_reference):
         print("Using the %s profile named %s to check for %s regions" % (region, profile_reference.name, region))
-        eval('checkForFeature.get_feature_location_with_profile(ids, "tmp/' + region + '_profile.hmm", "' + region + '", "' + region + ' _loc")')
+        eval(
+            'checkForFeature.get_feature_location_with_profile(ids, "tmp/' + region + '_profile.hmm", "' + region + '", "' + region + ' _loc")')
     else:
         flash("Please set a profile as the %s reference profile first" % (region), "error")
-
 
 
 def createProfile(align_list):
@@ -1251,32 +1254,31 @@ def createProfile(align_list):
     outfile = open(hmm_path, "w")
     result = subprocess.call(["hmmbuild", hmm_path, "align.aln"], stdout=subprocess.PIPE)
 
-
     while not os.path.exists(hmm_path):
         time.sleep(1)
 
     if os.path.isfile(hmm_path):
-
         file = open(hmm_path, 'rb')
-
 
         saveProfile(file)
         utilities.removeFile(hmm_path, "align.fasta", "align.aln")
 
-def createProfileFromRegion(ids, region):
-        query = models.GenomeRecords.query.filter(models.GenomeRecords.uid.in_(ids))
-        align_list = []
-        for record in query.all():
-            if eval('record.' + region  + '== ""'):
-                pass
-            else:
-                align_record = eval('SeqRecord(Seq(record.' + region + ', generic_protein), id=str(record.name) + "_" + "' + region +'")')
-                align_list.append(align_record)
 
-        if align_list:
-            createProfile(align_list)
+def createProfileFromRegion(ids, region):
+    query = models.GenomeRecords.query.filter(models.GenomeRecords.uid.in_(ids))
+    align_list = []
+    for record in query.all():
+        if eval('record.' + region + '== ""'):
+            pass
         else:
-            flash("None of the selected genomes has an annotated %s so we couldn't build a profile" % (region))
+            align_record = eval(
+                'SeqRecord(Seq(record.' + region + ', generic_protein), id=str(record.name) + "_" + "' + region + '")')
+            align_list.append(align_record)
+
+    if align_list:
+        createProfile(align_list)
+    else:
+        flash("None of the selected genomes has an annotated %s so we couldn't build a profile" % (region))
 
 
 def createFASTAFromRegion(ids, region):
@@ -1296,7 +1298,6 @@ def createFASTAFromRegion(ids, region):
         flash("None of the selected genomes has an annotated %s so we couldn't build a profile" % (region))
 
 
-
 def saveProfile(profile):
     """
     Save a profile into the database
@@ -1309,6 +1310,7 @@ def saveProfile(profile):
     profileEntry.set_blobMix(blobMix)
     servers.db.session.add(profileEntry)
     servers.db.session.commit()
+
 
 def readLinesFromFile(filepath):
     """
@@ -1325,12 +1327,15 @@ def readLinesFromFile(filepath):
                 content.add(line.strip())
     return content
 
+
 # Setup the main flask-admin application
-admin = Admin(servers.application, index_view=AdminIndexView(name= servers.base_name, url="/" + servers.base_route), template_mode="bootstrap3")
+admin = Admin(servers.application, index_view=AdminIndexView(name=servers.base_name, url="/" + servers.base_route),
+              template_mode="bootstrap3")
 
 # Add the views to the flask-admin application
 admin.add_view(UploadView(name='Upload', endpoint='upload_admin'))
-admin.add_view(SequenceRecordsView(model=models.SequenceRecords, session=servers.db.session, endpoint="sequence_records"))
+admin.add_view(
+    SequenceRecordsView(model=models.SequenceRecords, session=servers.db.session, endpoint="sequence_records"))
 admin.add_view(GenomeRecordsView(model=models.GenomeRecords, session=servers.db.session, endpoint="genome_view"))
 admin.add_view(ProfileView(model=models.Profile, session=servers.db.session, name='Profiles'))
 
@@ -1342,7 +1347,5 @@ admin.add_view(ProfileView(model=models.Profile, session=servers.db.session, nam
 for region in ["a1", "a2", "pore", "chitinase", "region1", "region2", "region3", "region4"]:
     setReferenceProfile(region)
 
-
 if __name__ == '__main__':
     servers.application.run(debug=True, port=7777, use_reloader=False)
-
