@@ -19,7 +19,6 @@ def getSpeciesNames(seq_records, type):
     species_names = set()
     record_ids = []
 
-
     # Make a list of the records we're querying
     for record in seq_records.values():
         print (record.id)
@@ -40,19 +39,17 @@ def getGenomeIDs(species_names):
 
     query_string = utilities.makeQueryString(species_names, "[orgn]", " OR ")
 
-
     #TODO: Let the user decide how to filter the GenBank records (i.e. let user decide if we're not accepting shotgun, segments, etc...)
     query_string_with_filters = query_string + " AND genome[title] NOT shotgun[title] NOT contig[title]  NOT segment[title] NOT plasmid[title] NOT megaplasmid[title]"
 
     # queryString += " AND genome[title] AND project[title]"
 
-    print ('\n ***** Searching NCBI with the following query')
-    print (query_string_with_filters + "\n")
+    print('\n ***** Searching NCBI with the following query')
+    print(query_string_with_filters + "\n")
 
     # Get a list of the genome IDs
     genome_handle = Entrez.esearch(db="nucleotide", term= query_string_with_filters, rettype="gb", idtype='acc', retmax='10000')
     record = Entrez.read(genome_handle)
-
 
     for recordID in record['IdList']:
         genome_ids.add(recordID)
@@ -60,9 +57,7 @@ def getGenomeIDs(species_names):
     return genome_ids
 
 
-
-
-def getFullGenome(genome_ids):
+def get_full_genome(genome_ids):
     """
     Given an uploaded file, return the most appropriate genome record and add it to the database
     :param region_file: The file containing the regions we are interested in
@@ -78,13 +73,12 @@ def getFullGenome(genome_ids):
 
         genome_query_string = utilities.makeQueryString(genome_id, link="+OR+")
 
-        print ("\nThese are the genome records we identified")
-        print (genome_id)
+        print("\nThese are the genome records we identified")
+        print(genome_id)
         # print (genome_query_string)
         # print (" ".join(genome for genome in genome_id) + "\n")
 
         check = models.GenomeRecords.query.filter_by(name=genome_id).first()
-
 
         if check :
 
@@ -100,13 +94,12 @@ def getFullGenome(genome_ids):
                 found_species = []
 
                 for record in records:
-                    # print (record)
                     found_ids.append(record.id)
 
                     found_species.append(record.annotations.get('organism'))
 
-                    # Check if the genome is just "N" characters. Slice from the middle to account for genomes that begin or
-                    # end with "N" characters
+                    # Check if the genome is just "N" characters. Slice from the middle to account for genomes that
+                    # begin or end with "N" characters
                     if any(nucleotide in 'A G C T' for nucleotide in record.seq[int(len(record.seq)/2):int(len(record.seq)/2 + 1000)]):
                         correct_alphabet_ids.append(record.id)
 
@@ -135,15 +128,13 @@ def getFullGenome(genome_ids):
                 return
 
         # Check if there were any genome IDs we couldn't find
-        # print (genome_ids)
-        # print (found_ids)
         for genome_id in genome_ids:
             if genome_id not in found_ids:
                 print("\nCouldn't find an appropriate genome record for %s" % (genome_id))
                 flash("Couldn't find an appropriate genome record for %s" % (genome_id))
             if genome_id not in correct_alphabet_ids:
                 print("\nThis genome record had all N characters - %s" % (genome_id))
-                flash("This genome record had all N characters - %s" % (genome_id))
+                # flash("This genome record had all N characters - %s" % (genome_id))
             elif genome_id not in non_ref_seq_ids:
                 print("\nThis genome record was omitted because another RefSeq genome for the species exists - %s" % (
                 genome_id))
@@ -152,11 +143,12 @@ def getFullGenome(genome_ids):
 
         return seqDict
 
-def get_shotgun_id_dict(species_names, idDict):
+
+def get_shotgun_id_dict(species_names):
     query_string = utilities.makeQueryString(species_names, "[orgn]", " OR ")
     query_string_with_filters = query_string + " AND genome[title] AND project[title] NOT contig[title]  NOT segment[title] NOT plasmid[title] NOT megaplasmid[title]"
     genome_ids = set()
-    seqDict = {}
+    shotgun_id_dict = {}
 
     querypath = "tmp/tempfile"
 
@@ -191,31 +183,29 @@ def get_shotgun_id_dict(species_names, idDict):
                 if comment:
                     print (comment)
 
-                    idString = re.search('accession([\w\W].*)\.', str(comment))
-                    # idString = re.search('accession (.*)\.', comment)
+                    id_string = re.search('accession([\w\W].*)\.', str(comment))
+                    # id_string = re.search('accession (.*)\.', comment)
 
-                    # idString.group(0).split("\n")
-                    # print(idString.group(0))
+                    # id_string.group(0).split("\n")
+                    # print(id_string.group(0))
 
-                    if (idString):
-                        # print (idString.group(0).split(" ")[1])
+                    if (id_string):
+                        # print (id_string.group(0).split(" ")[1])
 
+                        # if (id_string.group(1)):
 
-                        # if (idString.group(1)):
-
-                        genome_id = idString.group(1)
+                        genome_id = id_string.group(1)
 
                         versionString = re.search('project[\w\W]\((.*)\)', comment)
                         version = versionString.group(1)
-
 
                         if "_" in genome_id:
                             genome_id = genome_id.split("_")[1]
 
 
 
-                        idDict[genome_id.strip()] = {"version" : version, "species" : species, "source" : strain}
-
+                        shotgun_id_dict[genome_id.strip()] = {"version" : version, "species" : species, "source" : strain}
+                        return shotgun_id_dict
 
                     else:
                         print("Couldn't add an appropriate record from this genome - %s" % (species_names))
@@ -228,19 +218,21 @@ def get_shotgun_id_dict(species_names, idDict):
 def get_shotgun_id_dict_from_id(genome_record):
     shotgun_id_dict = {}
     genome_id = genome_record.split(".")[0]
+    if "_" in genome_id:
+        genome_id = genome_id.split("_")[1]
     version = genome_record.split(".")[1]
 
-    if len(version) < 1:
-        version = 0 + version
+    if len(version) == 1:
+        version = "0" + version
 
     shotgun_id_dict[genome_id] = {"version" : version}
-
+    return shotgun_id_dict
 
 
 def get_shotgun_genome(shotgun_id_dict):
-    for genome_id, version in shotgun_id_dict.items():
+    for genome_id, genome_info in shotgun_id_dict.items():
 
-        print (genome_id, version)
+        print (genome_id, genome_info["version"])
 
         # Check if we already have this shotgun sequence
 
@@ -255,8 +247,7 @@ def get_shotgun_genome(shotgun_id_dict):
 
             # print (genome_id)
 
-
-            ftpUrl = "ftp://ftp.ncbi.nlm.nih.gov/sra/wgs_aux/" + genome_id[0:2] + "/" + genome_id[2:4] + "/" + genome_id[0:4] + version + "/" + genome_id[0:4] + version + ".1.gbff.gz"
+            ftpUrl = "ftp://ftp.ncbi.nlm.nih.gov/sra/wgs_aux/" + genome_id[0:2] + "/" + genome_id[2:4] + "/" + genome_id[0:4] + genome_info["version"] + "/" + genome_id[0:4] + genome_info["version"] + ".1.gbff.gz"
             print (ftpUrl)
             # Download the file from the URL
             zipresp = urlopen(ftpUrl)
@@ -275,7 +266,7 @@ def get_shotgun_genome(shotgun_id_dict):
                     query_file.write(line.decode('utf-8'))
 
             file_from_zip.close()
-            print ('The shotgun sequence data from %s has been written to %s \n' % (genome_id, querypath))
+            print('The shotgun sequence data from %s has been written to %s \n' % (genome_id, querypath))
             new_records = SeqIO.parse(querypath, "gb")
 
 
@@ -287,8 +278,6 @@ def get_shotgun_genome(shotgun_id_dict):
 
             # Check if we have species and strain information
 
-
-
             species = get_shotgun_annotations(shotgun_id_dict[genome_id], "species")
             source = get_shotgun_annotations((shotgun_id_dict[genome_id]), "source")
 
@@ -296,10 +285,7 @@ def get_shotgun_genome(shotgun_id_dict):
                                     annotations={"organism": species, "source": source})
             seqDict[shotgun_seq.id] = shotgun_seq
 
-
-
     return seqDict
-
 
 
 def get_shotgun_annotations(shotgun_seq, term):

@@ -259,7 +259,7 @@ class UploadForm(FlaskForm):
                                 ("species", "Species list"), ("genome", "Genome ID list")])
     add_sequence = BooleanField("Add sequences to sequence database?", default="checked")
     add_genome = BooleanField("Search for genomic records?", default="checked")
-    search_shotgun = BooleanField("Should we try and search for shotgun sequenced genomes if we can't find another "
+    search_shotgun = BooleanField("Search for shotgun sequenced genomes if we can't find another "
                                   "genomic record?", default="checked")
 
     upload_submit = SubmitField("Upload file")

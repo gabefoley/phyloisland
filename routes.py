@@ -26,6 +26,7 @@ from flask import send_file
 from markupsafe import Markup
 import utilities
 import time
+from urllib.error import HTTPError
 
 try:
     from wtforms.fields.core import _unset_value as unset_value
@@ -219,7 +220,8 @@ class SequenceRecordsView(ModelView):
 
 class GenomeRecordsView(ModelView):
     column_list = (
-        'name', 'species', 'strain', 'description', 'a1_ref', 'a2_ref', 'pore_ref', 'sequence', 'a1', 'a1_length', 'a1_loc',
+        'name', 'species', 'strain', 'description', 'a1_ref', 'a2_ref', 'pore_ref', 'sequence', 'a1', 'a1_length',
+        'a1_loc',
         'a2',
         'a2_length', 'a2_loc', 'overlap', 'distance', 'pore', 'pore_length', 'pore_loc', 'pore_within_a2',
         'chitinase', 'chitinase_length', 'chitinase_loc', 'chitinase_distance_from_a2', 'region1_ref', 'region2_ref',
@@ -943,97 +945,96 @@ class UploadView(BaseView):
             # phyloisland.seqDict = {}
             # phyloisland.unmappable = []
 
-            if type == "protein" or type == "nucleotide":
-                seq_records = SeqIO.to_dict(SeqIO.parse("static/uploads/" + filename, "fasta"))
+            try:
 
-                if not seq_records:
-                    print("Couldn't find any sequences in the uploaded file.")
-                    flash("Couldn't find any sequences in the uploaded file.")
+                if type == "protein" or type == "nucleotide":
+                    seq_records = SeqIO.to_dict(SeqIO.parse("static/uploads/" + filename, "fasta"))
 
-                else:
-                    if add_seq:
-                        addSequence(seq_records)
+                    if not seq_records:
+                        print("Couldn't find any sequences in the uploaded file.")
+                        flash("Couldn't find any sequences in the uploaded file.")
 
-                    if add_genome:
-                        species_names = mapToGenome.getSpeciesNames(seq_records, type)
-                        genome_ids = mapToGenome.getGenomeIDs(species_names)
-                        genome_query_string = utilities.makeQueryString(genome_ids, link="+OR+")
+                    else:
+                        if add_seq:
+                            addSequence(seq_records)
 
-                        if genome_query_string == "":
-                            print("We didn't identify any genome records. Attempting to search for shotgun sequenced "
-                                  "genomes \n")
-                            genome_results = mapToGenome.get_shotgun_id_dict(species_names)
-                        else:
-                            genome_results = mapToGenome.getFullGenome(genome_ids)
+                        if add_genome:
+                            species_names = mapToGenome.getSpeciesNames(seq_records, type)
+                            genome_ids = mapToGenome.getGenomeIDs(species_names)
+                            genome_query_string = utilities.makeQueryString(genome_ids, link="+OR+")
 
+                            if genome_query_string == "":
+                                print("We didn't identify any genome records. Attempting to search for shotgun sequenced "
+                                      "genomes \n")
+                                genome_results = mapToGenome.get_shotgun_id_dict(species_names)
+                            else:
+                                genome_results = mapToGenome.get_full_genome(genome_ids)
+
+                            if genome_results and genome_results != 'in_database':
+                                addGenome(genome_results)
+                            elif genome_results != 'in_database' and search_shotgun:
+                                print("All of the genome records we identifed were all N characters. Attempting to "
+                                      "search for shotgun sequenced genomes \n")
+                                shotgun_id_dict = mapToGenome.get_shotgun_id_dict(species_names)
+                                genome_results = mapToGenome.get_full_genome(shotgun_id_dict)
+
+                                if genome_results:
+                                    addGenome(genome_results)
+
+                            elif genome_results != 'in_database' and not search_shotgun:
+                                print(
+                                    "\nWe didn't identify any genome records for %s. And we are not attempting to search for shotgun sequenced genomes \n" % (
+                                        name))
+
+                elif type == "species":
+                    species_names = readLinesFromFile("static/uploads/" + filename)
+
+                    for name in species_names:
+                        genome_ids = {}
+                        genome_results = {}
+                        genome_ids = mapToGenome.getGenomeIDs(name)
+                        genome_results = mapToGenome.get_full_genome(genome_ids)
                         if genome_results and genome_results != 'in_database':
                             addGenome(genome_results)
                         elif genome_results != 'in_database' and search_shotgun:
-                            print("All of the genome records we identifed were all N characters. Attempting to "
-                                  "search for shotgun sequenced genomes \n")
-                            shotgun_id_dict = mapToGenome.get_shotgun_id_dict(species_names)
-                            genome_results = mapToGenome.getFullGenome(shotgun_id_dict)
+                            print(
+                                "\nWe didn't identify any genome records for %s. Attempting to search for shotgun sequenced genomes \n" % (
+                                    name))
+                            shotgun_id_dict = mapToGenome.get_shotgun_id_dict(name)
+                            genome_results = mapToGenome.get_shotgun_genome(shotgun_id_dict)
 
                             if genome_results:
                                 addGenome(genome_results)
-
                         elif genome_results != 'in_database' and not search_shotgun:
                             print(
                                 "\nWe didn't identify any genome records for %s. And we are not attempting to search for shotgun sequenced genomes \n" % (
                                     name))
 
-            elif type == "species":
-                species_names = readLinesFromFile("static/uploads/" + filename)
+                elif type == "genome":
+                    genome_names = readLinesFromFile("static/uploads/" + filename)
 
-                for name in species_names:
-                    genome_ids = {}
-                    genome_results = {}
-                    genome_ids = mapToGenome.getGenomeIDs(name)
-                    genome_results = mapToGenome.getFullGenome(genome_ids)
-                    print('here is the genome results')
-                    print(genome_results)
-                    if genome_results and genome_results != 'in_database':
-                        addGenome(genome_results)
-                    elif genome_results != 'in_database' and search_shotgun:
-                        print(
-                            "\nWe didn't identify any genome records for %s. Attempting to search for shotgun sequenced genomes \n" % (
-                                name))
-                        shotgun_id_dict = mapToGenome.get_shotgun_id_dict(name)
-                        genome_results = mapToGenome.get_shotgun_genome(shotgun_id_dict)
-
-                        if genome_results:
+                    for name in genome_names:
+                        genome_ids = {}
+                        genome_results = {}
+                        genome_ids = readLinesFromFile("static/uploads/" + filename)
+                        genome_results = mapToGenome.get_full_genome([name])
+                        if genome_results and genome_results != 'in_database':
                             addGenome(genome_results)
-                    elif genome_results != 'in_database' and not search_shotgun:
-                        print(
-                            "\nWe didn't identify any genome records for %s. And we are not attempting to search for shotgun sequenced genomes \n" % (
-                                name))
+                        elif genome_results != 'in_database' and search_shotgun:
+                            print("\nWe didn't identify any genome records for %s. Attempting to search for shotgun "
+                                  "sequenced genomes \n" % (
+                                    name))
 
-
-            elif (type == "genome"):
-                genome_names = readLinesFromFile("static/uploads/" + filename)
-
-                for name in genome_names:
-                    genome_ids = {}
-                    genome_results = {}
-                    genome_ids = readLinesFromFile("static/uploads/" + filename)
-                    genome_results = mapToGenome.getFullGenome(genome_ids)
-                    if genome_results and genome_results != 'in_database':
-                        addGenome(genome_results)
-                    elif genome_results != 'in_database' and search_shotgun:
-                        print(
-                            "\nWe didn't identify any genome records for %s. Attempting to search for shotgun sequenced genomes \n" % (
-                                name))
-
-                        shotgun_id_dict = mapToGenome.get_shotgun_id_dict(name)
-                        genome_results = mapToGenome.get_shotgun_genome(shotgun_id_dict)
-
-                        if genome_results:
-                            addGenome(genome_results)
-                    elif genome_results != 'in_database' and not search_shotgun:
-                        print(
-                            "\nWe didn't identify any genome records for %s. And we are not attempting to search for shotgun sequenced genomes \n" % (
-                                name))
-
+                            shotgun_id_dict = mapToGenome.get_shotgun_id_dict_from_id(name)
+                            genome_results = mapToGenome.get_shotgun_genome(shotgun_id_dict)
+                            if genome_results:
+                                addGenome(genome_results)
+                        elif genome_results != 'in_database' and not search_shotgun:
+                            print(
+                                "\nWe didn't identify any genome records for %s. And we are not attempting to search for shotgun sequenced genomes \n" % (
+                                    name))
+            except HTTPError as error:
+                flash("There was a HTTP error. Please try again")
         return self.render("upload_admin.html", form=form)
 
 
