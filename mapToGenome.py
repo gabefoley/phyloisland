@@ -152,10 +152,9 @@ def getFullGenome(genome_ids):
 
         return seqDict
 
-def getShotgunGenome(species_names):
+def get_shotgun_id_dict(species_names, idDict):
     query_string = utilities.makeQueryString(species_names, "[orgn]", " OR ")
     query_string_with_filters = query_string + " AND genome[title] AND project[title] NOT contig[title]  NOT segment[title] NOT plasmid[title] NOT megaplasmid[title]"
-    idDict = {}
     genome_ids = set()
     seqDict = {}
 
@@ -190,6 +189,7 @@ def getShotgunGenome(species_names):
                 comment = record.annotations.get('comment')
 
                 if comment:
+                    print (comment)
 
                     idString = re.search('accession([\w\W].*)\.', str(comment))
                     # idString = re.search('accession (.*)\.', comment)
@@ -214,7 +214,7 @@ def getShotgunGenome(species_names):
 
 
 
-                        idDict[genome_id.strip()] = version
+                        idDict[genome_id.strip()] = {"version" : version, "species" : species, "source" : strain}
 
 
                     else:
@@ -224,7 +224,23 @@ def getShotgunGenome(species_names):
         else:
             print("Couldn't add a record from this genome - %s" % (species_names))
 
-    for genome_id, version in idDict.items():
+
+def get_shotgun_id_dict_from_id(genome_record):
+    shotgun_id_dict = {}
+    genome_id = genome_record.split(".")[0]
+    version = genome_record.split(".")[1]
+
+    if len(version) < 1:
+        version = 0 + version
+
+    shotgun_id_dict[genome_id] = {"version" : version}
+
+
+
+def get_shotgun_genome(shotgun_id_dict):
+    for genome_id, version in shotgun_id_dict.items():
+
+        print (genome_id, version)
 
         # Check if we already have this shotgun sequence
 
@@ -269,25 +285,32 @@ def getShotgunGenome(species_names):
             for record in new_records:
                 shotgun_genome += str(record.seq)
 
-            shotgun_seq = SeqRecord(Seq(shotgun_genome), id=genome_id + " Shotgun Sequence", annotations={"organism":species, "source": strain})
+            # Check if we have species and strain information
+
+
+
+            species = get_shotgun_annotations(shotgun_id_dict[genome_id], "species")
+            source = get_shotgun_annotations((shotgun_id_dict[genome_id]), "source")
+
+            shotgun_seq = SeqRecord(Seq(shotgun_genome), id=genome_id + " Shotgun Sequence",
+                                    annotations={"organism": species, "source": source})
             seqDict[shotgun_seq.id] = shotgun_seq
 
-        # print ('done')
-        # print (seqDict)
-
-
-        # else:
-        #     print ("Couldn't read in any sequences ")
 
 
     return seqDict
 
-            # with gzip.open("tmp/tempfilenew.gz", 'rb') as f:
-                    #     file_content = f.read().decode('utf-8')
-                    #     print ('fono')
-                    #     new_record = SeqIO.read(file_content, "gb")
-                    #     print ('bono')
-                    #     print (new_record.name)
 
 
-
+def get_shotgun_annotations(shotgun_seq, term):
+    """
+    Retrive annotations from within a specific shotgun sequence entry
+    :param shotgun_seq: The shotgun sequence to retrieve from
+    :param term: The annotation to retrieve
+    :return: The value of the annotation from the shotgun sequence
+    """
+    if term in shotgun_seq:
+        annotation = shotgun_seq[term]
+    else:
+        annotation = ""
+    return annotation

@@ -938,9 +938,8 @@ class UploadView(BaseView):
             # phyloisland.seqDict = {}
             # phyloisland.unmappable = []
 
-            if (type == "protein" or type == "nucleotide"):
+            if type == "protein" or type == "nucleotide":
                 seq_records = SeqIO.to_dict(SeqIO.parse("static/uploads/" + filename, "fasta"))
-
 
                 if not seq_records:
                     print("Couldn't find any sequences in the uploaded file.")
@@ -956,16 +955,19 @@ class UploadView(BaseView):
                         genome_query_string = utilities.makeQueryString(genome_ids, link="+OR+")
 
                         if genome_query_string == "":
-                            print("We didn't identify any genome records. Attempting to search for shotgun sequenced genomes \n")
-                            genome_results = mapToGenome.getShotgunGenome(species_names)
+                            print("We didn't identify any genome records. Attempting to search for shotgun sequenced "
+                                  "genomes \n")
+                            genome_results = mapToGenome.get_shotgun_id_dict(species_names)
                         else:
                             genome_results = mapToGenome.getFullGenome(genome_ids)
 
                         if genome_results:
                             addGenome(genome_results)
                         else:
-                            print ("All of the genome records we identifed were all N characters. Attempting to search for shotgun sequenced genomes \n")
-                            genome_results = mapToGenome.getShotgunGenome(species_names)
+                            print ("All of the genome records we identifed were all N characters. Attempting to "
+                                   "search for shotgun sequenced genomes \n")
+                            shotgun_id_dict = mapToGenome.get_shotgun_id_dict(species_names)
+                            genome_results = mapToGenome.getFullGenome(shotgun_id_dict)
 
                             if genome_results:
                                 addGenome(genome_results)
@@ -978,28 +980,39 @@ class UploadView(BaseView):
                     genome_results = {}
                     genome_ids = mapToGenome.getGenomeIDs(name)
                     genome_results = mapToGenome.getFullGenome(genome_ids)
+                    print ('here is the genome results')
+                    print (genome_results)
                     if genome_results and genome_results != 'in_database':
                         addGenome(genome_results)
                     elif genome_results != 'in_database':
                         print("\nWe didn't identify any genome records for %s. Attempting to search for shotgun sequenced genomes \n" % (name))
-                        genome_results = mapToGenome.getShotgunGenome(name)
+                        shotgun_id_dict = mapToGenome.get_shotgun_id_dict(name)
+                        genome_results = mapToGenome.get_shotgun_genome(shotgun_id_dict)
 
                         if genome_results:
                             addGenome(genome_results)
 
 
-
-
-
             elif (type == "genome"):
-                genome_ids = readLinesFromFile("static/uploads/" + filename)
-                genome_results = mapToGenome.getFullGenome(genome_ids)
-                if genome_results != None:
-                    addGenome(genome_results)
-            # # Map the sequence to its genome
-            # genomeResults = mapToGenome.getFullGenome("static/uploads/" + filename)
+                genome_names = readLinesFromFile("static/uploads/" + filename)
 
-            # return self.render("upload_admin.html", form=form, records=records)
+                for name in genome_names:
+                    genome_ids = {}
+                    genome_results = {}
+                    genome_ids = readLinesFromFile("static/uploads/" + filename)
+                    genome_results = mapToGenome.getFullGenome(genome_ids)
+                    if genome_results and genome_results != 'in_database':
+                        addGenome(genome_results)
+                    elif genome_results != 'in_database':
+                        print(
+                            "\nWe didn't identify any genome records for %s. Attempting to search for shotgun sequenced genomes \n" % (
+                            name))
+
+                        shotgun_id_dict = mapToGenome.get_shotgun_id_dict(name)
+                        genome_results = mapToGenome.get_shotgun_genome(shotgun_id_dict)
+
+                        if genome_results:
+                            addGenome(genome_results)
 
         return self.render("upload_admin.html", form=form)
 
@@ -1316,5 +1329,5 @@ for region in ["a1", "a2", "pore", "chitinase", "region1", "region2", "region3",
 
 
 if __name__ == '__main__':
-    servers.application.run(debug=True, port=7776, use_reloader=False)
+    servers.application.run(debug=True, port=7777, use_reloader=False)
 
