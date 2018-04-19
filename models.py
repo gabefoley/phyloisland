@@ -2,13 +2,14 @@ from servers import *
 from werkzeug.datastructures import FileStorage
 from wtforms import ValidationError, fields
 from wtforms.validators import required
-from wtforms.widgets import HTMLString, html_params, FileInput
+from wtforms.widgets import FileInput
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, FileField, SelectField, BooleanField, validators
-from wtforms.validators import DataRequired
+from wtforms import SubmitField, FileField, SelectField, BooleanField, validators
 from gettext import gettext
 
+
 # Create models
+
 
 class SequenceRecords(db.Model):
     __tablename__ = 'seqrecord'
@@ -26,9 +27,9 @@ class SequenceRecords(db.Model):
     region3_ref = db.Column(db.Boolean)
     region4_ref = db.Column(db.Boolean)
 
-
-    def __init__(self, name="", species="", description="", sequence="", a1_ref=0, a2_ref=0, pore_ref=0, chitinase_ref=0, region1_ref=0,
-                 region2_ref=0, region3_ref=0, region4_ref=0,):
+    def __init__(self, name="", species="", description="", sequence="", a1_ref=0, a2_ref=0, pore_ref=0,
+                 chitinase_ref=0, region1_ref=0,
+                 region2_ref=0, region3_ref=0, region4_ref=0, ):
         self.name = name
         self.species = species
         self.description = description
@@ -41,7 +42,6 @@ class SequenceRecords(db.Model):
         self.region2_ref = region2_ref
         self.region3_ref = region3_ref
         self.region4_ref = region4_ref
-
 
 
 class GenomeRecords(db.Model):
@@ -91,11 +91,11 @@ class GenomeRecords(db.Model):
 
     def __init__(self, name="", species="", strain="", description="", a1="", a1_length="", a1_loc="",
                  a2="", a2_length="", a2_loc="", overlap="", distance="", sequence="", a1_ref=0, a2_ref=0,
-                 pore = "", pore_length=None, pore_loc="", pore_within_a2="", pore_ref=0,
-                 chitinase = "", chitinase_length=None, chitinase_loc="", chitinase_distance_from_a2="", chitinase_ref=0,
-                 region1="", region1_length=None, region1_loc="",region2="", region2_length=None, region2_loc="",
+                 pore="", pore_length=None, pore_loc="", pore_within_a2="", pore_ref=0,
+                 chitinase="", chitinase_length=None, chitinase_loc="", chitinase_distance_from_a2="", chitinase_ref=0,
+                 region1="", region1_length=None, region1_loc="", region2="", region2_length=None, region2_loc="",
                  region3="", region3_length=None, region3_loc="", region4="", region4_length=None, region4_loc="",
-                 region1_ref="", region2_ref="", region3_ref="", region4_ref="" ):
+                 region1_ref="", region2_ref="", region3_ref="", region4_ref=""):
         self.name = name
         self.species = species
         self.strain = strain
@@ -166,9 +166,9 @@ class Profile(db.Model, BlobMixin):
     region3_profile_ref = db.Column(db.Boolean)
     region4_profile_ref = db.Column(db.Boolean)
 
-
-    def __init__(self, name = "", blobMix = "", a1_profile_ref=0, a2_profile_ref=0, pore_profile_ref = 0, chitinase_profile_ref = 0, region1_profile_ref = 0,
-                 region2_profile_ref = 0, region3_profile_ref = 0, region4_profile_ref = 0,):
+    def __init__(self, name="", blob_mix="", a1_profile_ref=0, a2_profile_ref=0, pore_profile_ref=0,
+                 chitinase_profile_ref=0, region1_profile_ref=0,
+                 region2_profile_ref=0, region3_profile_ref=0, region4_profile_ref=0, ):
         self.name = name
         self.a1_profile_ref = a1_profile_ref
         self.a2_profile_ref = a2_profile_ref
@@ -179,26 +179,24 @@ class Profile(db.Model, BlobMixin):
         self.region3_profile_ref = region3_profile_ref
         self.region4_profile_ref = region4_profile_ref
 
-        self.blobMix = blobMix
+        self.blob_mix = blob_mix
 
-    def set_blobMix(self, blobMix):
-        self.blobMix = blobMix
-        self.mimetype = blobMix.mimetype
-        self.filename = blobMix.filename
-        self.profile = blobMix.profile
-        self.size = blobMix.size
-
-
+    def set_blob_mix(self, blob_mix):
+        self.blob_mix = blob_mix
+        self.mimetype = blob_mix.mimetype
+        self.filename = blob_mix.filename
+        self.profile = blob_mix.profile
+        self.size = blob_mix.size
 
     def __unicode__(self):
         return u"name : {name}; filename : {filename})".format(name=self.name, filename=self.filename)
 
 
 class BlobUploadField(fields.StringField):
-
     widget = FileInput()
 
-    def __init__(self, label=None, allowed_extensions=None, size_field=None, filename_field=None, mimetype_field=None, **kwargs):
+    def __init__(self, label=None, allowed_extensions=None, size_field=None, filename_field=None, mimetype_field=None,
+                 **kwargs):
 
         self.allowed_extensions = allowed_extensions
         self.size_field = size_field
@@ -237,17 +235,10 @@ class BlobUploadField(fields.StringField):
 
     def populate_obj(self, obj, name):
 
-
         if self._is_uploaded_file(self.data):
 
             _profile = self.data.read()
-
-
-
             setattr(obj, name, _profile)
-
-
-            # setattr(obj, self.profile, _blob)
 
             if self.size_field:
                 setattr(obj, self.size_field, len(_profile))
@@ -261,9 +252,11 @@ class BlobUploadField(fields.StringField):
 
 # Form for uploading files
 class UploadForm(FlaskForm):
-    file = FileField('Upload the file that contains the information we will map to the genome records.', [validators.DataRequired()])
-    type = SelectField('What type of file is this?', [validators.DataRequired()], choices = [("protein",
-                                                                                              "FASTA (amino acids)"), ("nucleotide", "FASTA (nucleotides)"), ("species", "Species list"), ("genome", "Genome ID list")])
+    file = FileField('Upload the file that contains the information we will map to the genome records.',
+                     [validators.DataRequired()])
+    type = SelectField('What type of file is this?', [validators.DataRequired()],
+                       choices=[("protein", "FASTA (amino acids)"), ("nucleotide", "FASTA (nucleotides)"),
+                                ("species", "Species list"), ("genome", "Genome ID list")])
     add_sequence = BooleanField("Add sequences to sequence database?", default="checked")
     add_genome = BooleanField("Search for genomic records?", default="checked")
     search_shotgun = BooleanField("Should we try and search for shotgun sequenced genomes if we can't find another "
