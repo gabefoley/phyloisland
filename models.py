@@ -89,7 +89,6 @@ class GenomeRecords(db.Model):
     region3_ref = db.Column(db.Boolean)
     region4_ref = db.Column(db.Boolean)
 
-
     def __init__(self, name="", species="", strain="", description="", a1="", a1_length="", a1_loc="",
                  a2="", a2_length="", a2_loc="", overlap="", distance="", sequence="", a1_ref=0, a2_ref=0,
                  pore = "", pore_length=None, pore_loc="", pore_within_a2="", pore_ref=0,
@@ -263,8 +262,11 @@ class BlobUploadField(fields.StringField):
 # Form for uploading files
 class UploadForm(FlaskForm):
     file = FileField('Upload the file that contains the information we will map to the genome records.', [validators.DataRequired()])
-    type = SelectField('What type of file is this?', [validators.DataRequired()], choices = [("protein", "FASTA (amino acids)"), ("nucleotide", "FASTA (nucleotides)"), ("species", "Species list"), ("genome", "Genome ID list")])
+    type = SelectField('What type of file is this?', [validators.DataRequired()], choices = [("protein",
+                                                                                              "FASTA (amino acids)"), ("nucleotide", "FASTA (nucleotides)"), ("species", "Species list"), ("genome", "Genome ID list")])
     add_sequence = BooleanField("Add sequences to sequence database?", default="checked")
     add_genome = BooleanField("Search for genomic records?", default="checked")
+    search_shotgun = BooleanField("Should we try and search for shotgun sequenced genomes if we can't find another "
+                                  "genomic record?", default="checked")
 
     upload_submit = SubmitField("Upload file")
