@@ -212,7 +212,10 @@ def getShotgunGenome(species_names):
                         if "_" in genome_id:
                             genome_id = genome_id.split("_")[1]
 
+
+
                         idDict[genome_id.strip()] = version
+
 
                     else:
                         print("Couldn't add an appropriate record from this genome - %s" % (species_names))

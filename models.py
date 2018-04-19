@@ -250,7 +250,6 @@ class BlobUploadField(fields.StringField):
 
             # setattr(obj, self.profile, _blob)
 
-
             if self.size_field:
                 setattr(obj, self.size_field, len(_profile))
 
@@ -260,13 +259,12 @@ class BlobUploadField(fields.StringField):
             if self.mimetype_field:
                 setattr(obj, self.mimetype_field, self.data.content_type)
 
+
 # Form for uploading files
 class UploadForm(FlaskForm):
     file = FileField('Upload the file that contains the information we will map to the genome records.', [validators.DataRequired()])
     type = SelectField('What type of file is this?', [validators.DataRequired()], choices = [("protein", "FASTA (amino acids)"), ("nucleotide", "FASTA (nucleotides)"), ("species", "Species list"), ("genome", "Genome ID list")])
     add_sequence = BooleanField("Add sequences to sequence database?", default="checked")
-
+    add_genome = BooleanField("Search for genomic records?", default="checked")
 
     upload_submit = SubmitField("Upload file")
-
-

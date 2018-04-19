@@ -932,6 +932,7 @@ class UploadView(BaseView):
             filename = servers.allfiles.save(request.files['file'])
             type = form.type.data
             add_seq = form.add_sequence.data
+            add_genome = form.add_genome.data
 
             # # Create the initial seqRecords
             # phyloisland.seqDict = {}
@@ -946,31 +947,30 @@ class UploadView(BaseView):
                     flash("Couldn't find any sequences in the uploaded file.")
 
                 else:
-                    if (add_seq):
+                    if add_seq:
                         addSequence(seq_records)
 
-                    species_names = mapToGenome.getSpeciesNames(seq_records, type)
-                    genome_ids = mapToGenome.getGenomeIDs(species_names)
-                    genome_query_string = utilities.makeQueryString(genome_ids, link="+OR+")
+                    if add_genome:
+                        species_names = mapToGenome.getSpeciesNames(seq_records, type)
+                        genome_ids = mapToGenome.getGenomeIDs(species_names)
+                        genome_query_string = utilities.makeQueryString(genome_ids, link="+OR+")
 
-                    if (genome_query_string == ""):
-                        print("We didn't identify any genome records. Attempting to search for shotgun sequenced genomes \n")
-                        genome_results = mapToGenome.getShotgunGenome(species_names)
-                    else:
-                        genome_results = mapToGenome.getFullGenome(genome_ids)
-
-
-                    if genome_results:
-                        addGenome(genome_results)
-                    else:
-                        print ("All of the genome records we identifed were all N characters. Attempting to search for shotgun sequenced genomes \n")
-                        genome_results = mapToGenome.getShotgunGenome(species_names)
+                        if genome_query_string == "":
+                            print("We didn't identify any genome records. Attempting to search for shotgun sequenced genomes \n")
+                            genome_results = mapToGenome.getShotgunGenome(species_names)
+                        else:
+                            genome_results = mapToGenome.getFullGenome(genome_ids)
 
                         if genome_results:
                             addGenome(genome_results)
+                        else:
+                            print ("All of the genome records we identifed were all N characters. Attempting to search for shotgun sequenced genomes \n")
+                            genome_results = mapToGenome.getShotgunGenome(species_names)
 
+                            if genome_results:
+                                addGenome(genome_results)
 
-            elif (type == "species"):
+            elif type == "species":
                 species_names = readLinesFromFile("static/uploads/" + filename)
 
                 for name in species_names:
