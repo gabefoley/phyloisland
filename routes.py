@@ -966,7 +966,13 @@ class UploadView(BaseView):
                             if genome_query_string == "":
                                 print("We didn't identify any genome records. Attempting to search for shotgun sequenced "
                                       "genomes \n")
-                                genome_results = mapToGenome.get_shotgun_id_dict(species_names)
+                                shotgun_id_dict = {}
+                                for name in species_names:
+                                    shotgun_id_dict = mapToGenome.update_shotgun_id_dict(name, shotgun_id_dict)
+                                # print ('here is the shotgun id dict')
+                                # print (shotgun_id_dict)
+                                genome_results = mapToGenome.get_shotgun_genome(shotgun_id_dict)
+
                             else:
                                 genome_results = mapToGenome.get_full_genome(genome_ids)
 
@@ -975,8 +981,12 @@ class UploadView(BaseView):
                             elif genome_results != 'in_database' and search_shotgun:
                                 print("All of the genome records we identifed were all N characters. Attempting to "
                                       "search for shotgun sequenced genomes \n")
-                                shotgun_id_dict = mapToGenome.get_shotgun_id_dict(species_names)
-                                genome_results = mapToGenome.get_full_genome(shotgun_id_dict)
+                                shotgun_id_dict = mapToGenome.update_shotgun_id_dict(species_names, shotgun_id_dict)
+                                genome_results = mapToGenome.get_shotgun_genome(shotgun_id_dict)
+
+                                # print ('hi my name is shotgun id dict')
+                                # print (shotgun_id_dict)
+                                # genome_results = mapToGenome.get_full_genome(shotgun_id_dict)
 
                                 if genome_results:
                                     addGenome(genome_results)
@@ -1000,7 +1010,8 @@ class UploadView(BaseView):
                             print(
                                 "\nWe didn't identify any genome records for %s. Attempting to search for shotgun sequenced genomes \n" % (
                                     name))
-                            shotgun_id_dict = mapToGenome.get_shotgun_id_dict(name)
+                            shotgun_id_dict = {}
+                            shotgun_id_dict = mapToGenome.update_shotgun_id_dict(name, shotgun_id_dict)
                             genome_results = mapToGenome.get_shotgun_genome(shotgun_id_dict)
 
                             if genome_results:
@@ -1045,6 +1056,8 @@ class MyHomeView(AdminIndexView):
 
 
 def addGenome(genome_results):
+
+    print (genome_results)
     for record in genome_results:
 
         current = genome_results[record]

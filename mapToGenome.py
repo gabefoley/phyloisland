@@ -2,7 +2,7 @@ from Bio import Entrez, SeqIO
 import utilities
 import re
 from urllib.request import urlopen
-from urllib.error import HTTPError
+from urllib.error import HTTPError, URLError
 import gzip
 from flask import flash
 from Bio.Seq import Seq
@@ -21,7 +21,7 @@ def getSpeciesNames(seq_records, type):
 
     # Make a list of the records we're querying
     for record in seq_records.values():
-        print (record.id)
+        # print (record.id)
         record_ids.append(record.id)
         query_string = utilities.makeQueryString(record_ids, link="+OR+")
 
@@ -144,11 +144,10 @@ def get_full_genome(genome_ids):
         return seqDict
 
 
-def get_shotgun_id_dict(species_names):
+def update_shotgun_id_dict(species_names, shotgun_id_dict):
     query_string = utilities.makeQueryString(species_names, "[orgn]", " OR ")
     query_string_with_filters = query_string + " AND genome[title] AND project[title] NOT contig[title]  NOT segment[title] NOT plasmid[title] NOT megaplasmid[title]"
     genome_ids = set()
-    shotgun_id_dict = {}
 
     querypath = "tmp/tempfile"
 
@@ -181,7 +180,7 @@ def get_shotgun_id_dict(species_names):
                 comment = record.annotations.get('comment')
 
                 if comment:
-                    print (comment)
+                    # print (comment)
 
                     id_string = re.search('accession([\w\W].*)\.', str(comment))
                     # id_string = re.search('accession (.*)\.', comment)
@@ -230,60 +229,71 @@ def get_shotgun_id_dict_from_id(genome_record):
 
 
 def get_shotgun_genome(shotgun_id_dict):
-    for genome_id, genome_info in shotgun_id_dict.items():
 
-        print (genome_id, genome_info["version"])
+    print ('here it is from in nhere')
+    print (shotgun_id_dict)
 
-        # Check if we already have this shotgun sequence
+    try:
+        for genome_id, genome_info in shotgun_id_dict.items():
 
-        check = models.GenomeRecords.query.filter_by(name=genome_id + " Shotgun Sequence").first()
+            print (genome_id, genome_info["version"])
 
-        if check:
-            print('The shotgun sequence data from %s already exists in the database' % (genome_id))
+            # Check if we already have this shotgun sequence
 
-        else:
+            check = models.GenomeRecords.query.filter_by(name=genome_id + " Shotgun Sequence").first()
 
-            querypath = "tmp/" + genome_id + "_shotgun_records"
+            if check:
+                print('The shotgun sequence data from %s already exists in the database' % (genome_id))
 
-            # print (genome_id)
+            else:
 
-            ftpUrl = "ftp://ftp.ncbi.nlm.nih.gov/sra/wgs_aux/" + genome_id[0:2] + "/" + genome_id[2:4] + "/" + genome_id[0:4] + genome_info["version"] + "/" + genome_id[0:4] + genome_info["version"] + ".1.gbff.gz"
-            print (ftpUrl)
-            # Download the file from the URL
-            zipresp = urlopen(ftpUrl)
-            # Create a new file on the hard drive
-            tempzip = open(querypath + ".gz", "wb")
-            # Write the contents of the downloaded file into the new file
-            tempzip.write(zipresp.read())
-            # Close the newly-created file
-            tempzip.close()
-            # Re-open the newly-created file
+                querypath = "tmp/" + genome_id + "_shotgun_records"
 
-            file_from_zip = gzip.open(querypath + ".gz", mode="rb")
+                # print (genome_id)
 
-            with open(querypath, 'w') as query_file:
-                for line in file_from_zip:
-                    query_file.write(line.decode('utf-8'))
+                ftpUrl = "ftp://ftp.ncbi.nlm.nih.gov/sra/wgs_aux/" + genome_id[0:2] + "/" + genome_id[2:4] + "/" + genome_id[0:4] + genome_info["version"] + "/" + genome_id[0:4] + genome_info["version"] + ".1.gbff.gz"
+                print (ftpUrl)
+                # Download the file from the URL
+                zipresp = urlopen(ftpUrl)
+                # Create a new file on the hard drive
+                tempzip = open(querypath + ".gz", "wb")
+                # Write the contents of the downloaded file into the new file
+                tempzip.write(zipresp.read())
+                # Close the newly-created file
+                tempzip.close()
+                # Re-open the newly-created file
 
-            file_from_zip.close()
-            print('The shotgun sequence data from %s has been written to %s \n' % (genome_id, querypath))
-            new_records = SeqIO.parse(querypath, "gb")
+                file_from_zip = gzip.open(querypath + ".gz", mode="rb")
+
+                with open(querypath, 'w') as query_file:
+                    for line in file_from_zip:
+                        query_file.write(line.decode('utf-8'))
+
+                file_from_zip.close()
+                print('The shotgun sequence data from %s has been written to %s \n' % (genome_id, querypath))
+                new_records = SeqIO.parse(querypath, "gb")
 
 
-            # Collate all of the nucleotide records together to make the genome
-            shotgun_genome = ""
+                # Collate all of the nucleotide records together to make the genome
+                shotgun_genome = ""
 
-            for record in new_records:
-                shotgun_genome += str(record.seq)
+                for record in new_records:
+                    shotgun_genome += str(record.seq)
 
-            # Check if we have species and strain information
+                # Check if we have species and strain information
 
-            species = get_shotgun_annotations(shotgun_id_dict[genome_id], "species")
-            source = get_shotgun_annotations((shotgun_id_dict[genome_id]), "source")
+                species = get_shotgun_annotations(shotgun_id_dict[genome_id], "species")
+                source = get_shotgun_annotations((shotgun_id_dict[genome_id]), "source")
 
-            shotgun_seq = SeqRecord(Seq(shotgun_genome), id=genome_id + " Shotgun Sequence",
-                                    annotations={"organism": species, "source": source})
-            seqDict[shotgun_seq.id] = shotgun_seq
+                shotgun_seq = SeqRecord(Seq(shotgun_genome), id=genome_id + " Shotgun Sequence",
+                                        annotations={"organism": species, "source": source})
+                seqDict[shotgun_seq.id] = shotgun_seq
+    except EOFError as error:
+        flash("There was an error reading the shotgun sequence file. Please try again")
+        print("There was an error reading the shotgun sequence file. Please try again")
+    except URLError:
+        flash("There was an error trying to read  the shotgun sequence from the FTP site. Please try again")
+        print("There was an error trying to read  the shotgun sequence from the FTP site. Please try again")
 
     return seqDict
 
