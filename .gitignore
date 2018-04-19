@@ -3,11 +3,11 @@
 *.pyc
 .idea/
 static/uploads/
-
 tmp/*
 !tmp/.gitkeep
 refs/*
-!refs/.gitkeeps
-
+!refs/.gitkeep
+testing/
+testing/*
 /servers.py
 /phyloinit.py
