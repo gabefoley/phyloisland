@@ -979,15 +979,17 @@ class UploadView(BaseView):
                             elif genome_results != 'in_database' and search_shotgun:
                                 print("All of the genome records we identifed were all N characters. Attempting to "
                                       "search for shotgun sequenced genomes \n")
-                                shotgun_id_dict = mapToGenome.update_shotgun_id_dict(species_names, shotgun_id_dict)
-                                genome_results = mapToGenome.get_shotgun_genome(shotgun_id_dict)
+                                shotgun_id_dict = {}
+                                for name in species_names:
+                                    shotgun_id_dict = mapToGenome.update_shotgun_id_dict(name, shotgun_id_dict)
+                                    genome_results = mapToGenome.get_shotgun_genome(shotgun_id_dict)
 
-                                # print ('hi my name is shotgun id dict')
-                                # print (shotgun_id_dict)
-                                # genome_results = mapToGenome.get_full_genome(shotgun_id_dict)
+                                    # print ('hi my name is shotgun id dict')
+                                    # print (shotgun_id_dict)
+                                    # genome_results = mapToGenome.get_full_genome(shotgun_id_dict)
 
-                                if genome_results:
-                                    addGenome(genome_results)
+                                    if genome_results:
+                                        addGenome(genome_results)
 
                             elif genome_results != 'in_database' and not search_shotgun:
                                 print(

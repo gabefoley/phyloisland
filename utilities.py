@@ -2,6 +2,8 @@ import os
 import glob
 from flask import flash
 from Bio import SeqIO
+
+
 def makeQueryString(iter, info = "", link = "", final = ""):
     """
     Take a list of items and concatanate them together
