@@ -127,11 +127,16 @@ def get_feature_location_with_profile(ids, reference, recordName, recordLocation
                     # result = subprocess.call(["hmmsearch -o %s %s %s" % (hmmsearch_results, reference, cleaned_path)])
 
                     print ("The results from the HMM search have been written to %s \n" % hmmsearch_results)
+                    # read_hmmer_results(hmmsearch_results)
                     # result = subprocess.call(["hmmsearch", 'files/output.txt', reference, cleaned_path], stdout=subprocess.PIPE)
                     # for x in result:
                     #     print (x)
 
                 # utilities.removeFile(reference, cleaned_path)
+# def read_hmmer_results(filepath):
+#     with open(filepath) as hmmsearch_results:
+#         for line in hmmsearch_results:
+#             print (line)
 
 
 def checkFeatureAlreadyAnnotated():
@@ -172,3 +177,4 @@ def deleteFeature(**kwargs):
         # Update the database
         servers.db.session.add(record)
         servers.db.session.commit()
+

@@ -181,7 +181,7 @@ class Profile(db.Model, BlobMixin):
 
         self.blob_mix = blob_mix
 
-    def set_blob_mix(self, blob_mix):
+    def set_blobMix(self, blob_mix):
         self.blob_mix = blob_mix
         self.mimetype = blob_mix.mimetype
         self.filename = blob_mix.filename

@@ -1255,18 +1255,18 @@ def checkWithProfile(ids, region):
 
 
 def createProfile(align_list):
-    SeqIO.write(align_list, "align.fasta", "fasta")
-    muscle_cline = MuscleCommandline(input="align.fasta")
+    SeqIO.write(align_list, "tmp/align.fasta", "fasta")
+    muscle_cline = MuscleCommandline(input="tmp/align.fasta")
     # result = subprocess.run(str(muscle_cline), stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True) )
     child = subprocess.Popen(str(muscle_cline), stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                              universal_newlines=True, shell=(sys.platform != "win32"))
     child.wait()
 
     alignment = AlignIO.read(child.stdout, "fasta")
-    AlignIO.write(alignment, "align.aln", "fasta")
+    AlignIO.write(alignment, "tmp/align.aln", "fasta")
     hmm_path = "tmp/profile3.hmm"
     outfile = open(hmm_path, "w")
-    result = subprocess.call(["hmmbuild", hmm_path, "align.aln"], stdout=subprocess.PIPE)
+    result = subprocess.call(["hmmbuild", hmm_path, "tmp/align.aln"], stdout=subprocess.PIPE)
 
     while not os.path.exists(hmm_path):
         time.sleep(1)
@@ -1275,7 +1275,7 @@ def createProfile(align_list):
         file = open(hmm_path, 'rb')
 
         saveProfile(file)
-        utilities.removeFile(hmm_path, "align.fasta", "align.aln")
+        utilities.removeFile(hmm_path, "tmp/align.fasta", "tmp/align.aln")
 
 
 def createProfileFromRegion(ids, region):
