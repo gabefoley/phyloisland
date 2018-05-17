@@ -1044,6 +1044,17 @@ class UploadView(BaseView):
                             print(
                                 "\nWe didn't identify any genome records for %s. And we are not attempting to search for shotgun sequenced genomes \n" % (
                                     name))
+
+                elif type == "profile":
+
+                    hmm_path = "static/uploads/" + filename
+                    while not os.path.exists(hmm_path):
+                        time.sleep(1)
+                    if os.path.isfile(hmm_path):
+
+                        file = open(hmm_path, 'rb')
+
+                        saveProfile(file)
             except HTTPError as error:
                 flash("There was a HTTP error. Please try again")
         return self.render("upload_admin.html", form=form)

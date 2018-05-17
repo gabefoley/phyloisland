@@ -256,7 +256,7 @@ class UploadForm(FlaskForm):
                      [validators.DataRequired()])
     type = SelectField('What type of file is this?', [validators.DataRequired()],
                        choices=[("protein", "FASTA (amino acids)"), ("nucleotide", "FASTA (nucleotides)"),
-                                ("species", "Species list"), ("genome", "Genome ID list")])
+                                ("species", "Species list"), ("genome", "Genome ID list"), ("profile", "Profile")])
     add_sequence = BooleanField("Add sequences to sequence database?", default="checked")
     add_genome = BooleanField("Search for genomic records?", default="checked")
     search_shotgun = BooleanField("Search for shotgun sequenced genomes if we can't find another "

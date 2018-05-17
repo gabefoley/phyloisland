@@ -82,7 +82,6 @@ def get_feature_location_with_profile(ids, reference, recordName, recordLocation
     :return:
     """
 
-
     query = models.GenomeRecords.query.filter(models.GenomeRecords.uid.in_(ids))
     for record in query.all():
         seq_record = servers.bio_db.lookup(primary_id=record.name)
