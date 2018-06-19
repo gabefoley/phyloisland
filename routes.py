@@ -27,6 +27,7 @@ from markupsafe import Markup
 import utilities
 import time
 from urllib.error import HTTPError
+import ToxinGraphicsMain
 
 try:
     from wtforms.fields.core import _unset_value as unset_value
@@ -861,6 +862,16 @@ class GenomeRecordsView(ModelView):
     @action('item9a_download_A2_sequences', 'Download the A2 sequences as a FASTA file')
     def item9a_download_A2_sequences(self, ids):
         createFASTAFromRegion(ids, "a2")
+        
+
+    @action('item10_generate_genome_diagram', 'Generate a Diagram')
+    def item10_generate_genome_diagram(self, ids):
+        try:
+            ToxinGraphicsMain.writeImageToFile(ids)
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+            flash(gettext('Failed to generate Diagram based on selected Genomes. %(error)s', error=str(ex)), 'error')
 
 
 class ProfileView(ModelView):

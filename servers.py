@@ -1,4 +1,4 @@
-from BioSQL import BioSeqDatabase
+    from BioSQL import BioSeqDatabase
 from flask_uploads import UploadSet, configure_uploads, ALL
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
