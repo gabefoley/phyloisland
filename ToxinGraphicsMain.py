@@ -22,17 +22,17 @@ def writeImageToFile(ids):
     output_path = "tmp/"+name+".png"
     for record in query.all():
         
-        locs = []
+        locs = {}
         if getattr(record, "a1_loc") != "":
-            locs.append(getattr(record, "a1_loc").split(":"))
+            locs["a1"] = getattr(record, "a1_loc").split(":")
         if getattr(record, "a2_loc") != "":
-            locs.append(getattr(record, "a2_loc").split(":"))       
+            locs["a2"] = getattr(record, "a2_loc").split(":")       
         
         
         print("adding %s genome to diagram" % (record.name))
         seq_record = servers.bio_db.lookup(primary_id = record.name)
         for location in locs:
-            feature = SeqFeature(location = FeatureLocation(int(location[0]), int(location[1]), strand=1), type = "CDS")
+            feature = SeqFeature(location = FeatureLocation(int(locs[location][0]), int(locs[location][1]), strand=1), type = location)
             seq_record.features.append(feature)
         
         max_len = max(max_len, len(seq_record))
