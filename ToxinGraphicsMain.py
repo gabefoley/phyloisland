@@ -20,8 +20,8 @@ def writeImageToFile(ids):
     gd_diagram = GenomeDiagram.Diagram(name)
     max_len = 0
     output_path = "tmp/"+name+".png"
-    #start = 0
-    #end = 0
+    start = 0
+    end = 0
     # For my work I was considering changing 'region1, 2, and 3' to a3, TcB, and TcC for convenience
     # Up to others though if I fully change that (is just a UI thing tbh)
     region_colours = {"a1":"orange", "a2":"red", "chi":"green", "a3":"yellow",
@@ -78,18 +78,23 @@ def writeImageToFile(ids):
             # Add Features
         print(seq_record.features)
         for feature in seq_record.features:
-            print(feature)
-            gd_feature_set.add_feature(feature, label = True, name
-                               = feature.type, color = region_colours[feature.type], label_position = "start", label_size = 6, label_angle = 0)
-        """start = max(start, min(svals))
+            if feature.type in locs.keys():
+                gd_feature_set.add_feature(feature, label = True, name
+                                           = feature.type, color = region_colours[feature.type], label_position = "start", label_size = 6, label_angle = 0)
+            elif feature.type == "CDS":
+                 gd_feature_set.add_feature(feature)
+                 
+        """    For 'Zoomed' sections:     
+        start = max(start, min(svals))
         if start > 1500:
             start -= 1000
         end = min(len(seq_record), max(endvals))
         if len(seq_record) - end > 1500:
             end += 1000
             """
+            
     """ Draw and Write the Diagram to file """
-    gd_diagram.draw(format="linear", pagesize = "A4", fragments = 1, start = 0, end = max_len)
+    gd_diagram.draw(format="linear", pagesize = "A2", fragments = 0, start = start, end = end)
     gd_diagram.write(output_path, "PNG")
     print("Genome Diagram has been added to file %s ", output_path)
     
