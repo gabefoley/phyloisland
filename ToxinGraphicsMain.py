@@ -20,6 +20,10 @@ def writeImageToFile(ids):
     gd_diagram = GenomeDiagram.Diagram(name)
     max_len = 0
     output_path = "tmp/"+name+".png"
+    #start = 0
+    #end = 0
+    # For my work I was considering changing 'region1, 2, and 3' to a3, TcB, and TcC for convenience
+    # Up to others though if I fully change that (is just a UI thing tbh)
     region_colours = {"a1":"orange", "a2":"red", "chi":"green", "a3":"yellow",
                       "TcB":"blue", "TcC":"magenta", "pore":"grey", "region4":"pink"}
     for record in query.all():
@@ -53,25 +57,39 @@ def writeImageToFile(ids):
         seq_record = servers.bio_db.lookup(primary_id = record.name)
         
         """ Add the features from dictionary to the seq_record features """
+        svals = []
+        endvals = []        
         for location in locs:
+            """ Extract start and end values ffrom each location, and add to independent lists """
+            sval = int(locs[location][0])
+            endval = int(locs[location][1])
+            svals.append(sval)
+            endvals.append(endval)
+            """ create and add features based on locations """
             feature = SeqFeature(location = FeatureLocation(int(locs[location][0]), int(locs[location][1]), strand=1), type = location)
             seq_record.features.append(feature)
+
         """ Set up the Genome Diagram """
         max_len = max(max_len, len(seq_record))
+
         gd_track_for_features = gd_diagram.new_track(1, name = 
         seq_record.name, greytrack = True, start = 0, end = len(seq_record))
         gd_feature_set = gd_track_for_features.new_set()
-        i = 0
             # Add Features
         print(seq_record.features)
         for feature in seq_record.features:
             print(feature)
             gd_feature_set.add_feature(feature, label = True, name
                                = feature.type, color = region_colours[feature.type], label_position = "start", label_size = 6, label_angle = 0)
-            i+=1
-
+        """start = max(start, min(svals))
+        if start > 1500:
+            start -= 1000
+        end = min(len(seq_record), max(endvals))
+        if len(seq_record) - end > 1500:
+            end += 1000
+            """
     """ Draw and Write the Diagram to file """
-    gd_diagram.draw(format="linear", pagesize = "A4", fragments = 0, start = 0, end = max_len)
+    gd_diagram.draw(format="linear", pagesize = "A4", fragments = 1, start = 0, end = max_len)
     gd_diagram.write(output_path, "PNG")
     print("Genome Diagram has been added to file %s ", output_path)
     
