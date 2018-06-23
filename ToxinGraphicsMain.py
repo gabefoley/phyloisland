@@ -20,6 +20,8 @@ def writeImageToFile(ids):
     gd_diagram = GenomeDiagram.Diagram(name)
     max_len = 0
     output_path = "tmp/"+name+".png"
+    region_colours = {"a1":"orange", "a2":"red", "chi":"green", "a3":"yellow",
+                      "TcB":"blue", "TcC":"magenta", "pore":"grey", "region4":"pink"}
     for record in query.all():
         
         """ Create a dictionary for key = feature type -> value = location """
@@ -27,11 +29,24 @@ def writeImageToFile(ids):
         # Prepare for literally the worst code in existence
         """ We have to pull the features from location data in database
         instead of directly from database because of current limitations """
+        # Brute force if statements to pull from database
+        # TODO - Could likely turn this into a for loop in some way
         if getattr(record, "a1_loc") != "":
             locs["a1"] = getattr(record, "a1_loc").split(":")
         if getattr(record, "a2_loc") != "":
             locs["a2"] = getattr(record, "a2_loc").split(":")
-            
+        if getattr(record, "pore_loc") != "":
+            locs["pore"] = getattr(record, "pore_loc").split(":")
+        if getattr(record, "chitinase_loc") != "":
+            locs["chi"] = getattr(record, "chitinase_loc").split(":")
+        if getattr(record, "region1_loc") != "":
+            locs["a3"] = getattr(record, "region1_loc").split(":")
+        if getattr(record, "region2_loc") != "":
+            locs["TcB"] = getattr(record, "region2_loc").split(":")
+        if getattr(record, "region3_loc") != "":
+            locs["TcC"] = getattr(record, "region3_loc").split(":")
+        if getattr(record, "region1_loc") != "":
+            locs["region4"] = getattr(record, "region4_loc").split(":")
         
         
         print("adding %s genome to diagram" % (record.name))
@@ -52,7 +67,7 @@ def writeImageToFile(ids):
         for feature in seq_record.features:
             print(feature)
             gd_feature_set.add_feature(feature, label = True, name
-                               = str(i + 1), label_position = "start", label_size = 6, label_angle = 0)
+                               = feature.type, color = region_colours[feature.type], label_position = "start", label_size = 6, label_angle = 0)
             i+=1
 
     """ Draw and Write the Diagram to file """
