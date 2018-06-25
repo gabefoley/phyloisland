@@ -872,6 +872,15 @@ class GenomeRecordsView(ModelView):
             if not self.handle_view_exception(ex):
                 raise
             flash(gettext('Failed to generate Diagram based on selected Genomes. %(error)s', error=str(ex)), 'error')
+    
+    @action('item11_generate_gb_file', 'Write Sequence to File')
+    def item11_generate_gb_file(self, ids):
+        try:
+            ToxinGraphicsMain.writeSeqToFile(ids)
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+            flash(gettext('Failed to generate Diagram based on selected Genomes. %(error)s', error =str(ex)), 'error')
 
 
 class ProfileView(ModelView):

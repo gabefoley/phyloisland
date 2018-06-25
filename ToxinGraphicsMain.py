@@ -11,6 +11,8 @@ from Bio import SeqIO
 from Bio.Graphics import GenomeDiagram
 from Bio.SeqFeature import SeqFeature, FeatureLocation
 import phyloisland
+from Bio.Seq import Seq
+from Bio.Alphabet import generic_dna
 
 def writeImageToFile(ids):
 
@@ -101,18 +103,11 @@ def writeImageToFile(ids):
 def writeSeqToFile(ids):
     # Write Annotated Sequences to Genbank files to allow easy movement to Artemis
     query = models.GenomeRecords.query.filter(models.GenomeRecords.uid.in_(ids))
-    name = "GBTestSeq_"+phyloisland.randstring(5)
-    out_path = "tmp/"+ name + ".gb"
-    if len(query) > 1:
-        # Multiple queries
-        print("writing %s sequences to GenBank File" %(len(query)))
-        seqlist = []
-        for record in query.all():
-            seq_record = servers.bio_db.lookup(primary_id = record.name)
-            seqlist.append(seq_record)
-        SeqIO.write(seqlist, out_path, "genbank")
-    else:
-
-        # Single Query
-        seq_record = servers.bio_db.lookup(primary_id = query.name)
+    print("writing sequences to GenBank File")
+    for record in query.all():
+        seq_record = servers.bio_db.lookup(primary_id = record.name)
+        seq_record.seq = Seq(getattr(record, "sequence"), generic_dna)
+        name = "GBTestSeq_"+record.name
+        out_path = "tmp/"+ name + ".gb"
         SeqIO.write(seq_record, out_path, "genbank")
+

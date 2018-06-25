@@ -87,7 +87,7 @@ def get_full_genome(genome_ids):
         else:
 
             try:
-                genome_records = Entrez.efetch(db="nuccore", id=genome_id, rettype="gb")
+                genome_records = Entrez.efetch(db="nuccore", id=genome_id, rettype="gb", retmode = 'text')
 
                 records = SeqIO.parse(genome_records, "gb")
 
