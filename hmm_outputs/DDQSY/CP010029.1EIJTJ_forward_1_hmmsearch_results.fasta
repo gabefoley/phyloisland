@@ -1,0 +1,131 @@
+# hmmsearch :: search profile(s) against a sequence database
+# HMMER 3.1b2 (February 2015); http://hmmer.org/
+# Copyright (C) 2015 Howard Hughes Medical Institute.
+# Freely distributed under the GNU General Public License (GPLv3).
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# query HMM file:                  tmp/a2_profile.hmm
+# target sequence database:        tmp/CP010029.1EIJTJ_forward_1_translated_genome.fasta
+# output directed to file:         tmp/CP010029.1EIJTJ_forward_1_hmmsearch_results.fasta
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Query:       align  [M=2538]
+Scores for complete sequences (score includes all domains):
+   --- full sequence ---   --- best 1 domain ---    -#dom-
+    E-value  score  bias    E-value  score  bias    exp  N  Sequence Description
+    ------- ------ -----    ------- ------ -----   ---- --  -------- -----------
+          0 2078.4  27.6          0 1299.5  11.2    3.1  3  CP010029  Yersinia entomophaga strain MH96 genome
+
+
+Domain annotation for each sequence (and alignments):
+>> CP010029  Yersinia entomophaga strain MH96 genome
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  468.7   5.7  1.6e-144  1.6e-144     940    1232 ..  267302  267611 ..  267289  267613 .. 0.95
+   2 !  321.3   0.0  4.3e-100  4.3e-100    1282    1655 ..  267610  267882 ..  267609  267884 .. 0.99
+   3 ! 1299.5  11.2         0         0    1787    2535 ..  267883  268632 ..  267882  268646 .. 0.99
+
+  Alignments for each domain:
+  == domain 1  score: 468.7 bits;  conditional E-value: 1.6e-144
+     align    940 erlssvlcnwflaniqpeg.......vslhsrddlysyllldnqvssaikttrlaeaiagiqlyinrilnrlePnaridvstrqfftdw.evanr 1026  
+                  e l   l++++l +i p+         +++++ddly++llld+qvs++++t+rl+++++++q+yinri+++leP+++i+   +q++tdw e+anr
+  CP010029 267302 EDLRDALVDYYLGQIVPNSkdftnlrSTIKNVDDLYDHLLLDTQVSAKVITSRLSLVTQSVQQYINRIALNLEPGLSIN---QQEATDWeEFANR 267393
+                  6677778888888888875222222235789************************************************...*******99**** PP
+
+     align   1027 ystwaavsrlvyyPenyidPtlrlgktrlldellealsqsklsrdvveeavktyltrfeevadlkvvsayqdnvdsetdltyfvartrenlpeyy 1121  
+                  y++waa+++l+++Pe+y+dPtlrl+kt+++++l++al+q+kl++dv+++av++yl++feev++l+++++yqd++d+e+d+tyfvartr+++++y+
+  CP010029 267394 YGYWAANQQLRMFPEIYVDPTLRLTKTEFFFQLESALNQGKLTDDVAQKAVLGYLNNFEEVSNLEIIAGYQDGIDIENDKTYFVARTRMQPYRYF 267488
+                  *********************************************************************************************** PP
+
+     align   1122 wrnvdisrrqag..elaanawkewkkidvavepvkdai.rPvilrerlyliw...vekeevakdGtdivetydrfklklaflrfdGswsaptsy. 1209  
+                  wr++d+s+r+a+  el+++aw+ewk+i+v++e+v+++i rP+++++rly++w   +e++e+++dG++iv++++r+k++la+l+fdG+ws++t++ 
+  CP010029 267489 WRSLDASQRNANsqELYPTAWSEWKAISVPLENVANGIvRPIMMDNRLYISWfevAEEKETDSDGNIIVSGRYRTKIRLAHLGFDGVWSSGTTLr 267583
+                  ************9*****************************************99*************************************** PP
+
+     align   1210 .....diteeveavvdkkedeerlalaa 1232  
+                       d++ee++avvd++ede+rlal+a
+  CP010029 267584 eevlaDQMEEMIAVVDRMEDEPRLALVA 267611
+                  ***************************9 PP
+
+  == domain 2  score: 321.3 bits;  conditional E-value: 4.3e-100
+     align   1282 sryselketfdiiftqgndlvrkasyrlaqdfevPasldmgsaiGddsltvledgnipqitskyssdnlaitlheaaftvrydGsgnvirnkqis 1376  
+                    ++e++e++d++f++++d+++++s++l++++++P+++d     Gd++l++l+d         y++++++++lhe+a     +G           
+  CP010029 267610 VAFKEMSESWDVVFSYICDSMLIESSNLPTTTHPPKPGD-----GDKGLSDLDD---------YGANLVWFYLHETA-----NG----------- 267674
+                  579************************************.....**********.........**************.....99........... PP
+
+     align   1377 amkltgvdGkseyknailianivkryggysdldgPievykktknyiasvddfllnadytrrllllpvennyyarlfefdfsknkilnivftvgsn 1471  
+                          Gk+eyk++il+++i++r       d+Pie++k++++++++vddf+ln++yt+++l+l++++   ++++++dfsk+k  ni++++   
+  CP010029 267675 --------GKAEYKQLILYPVIINR-------DWPIELDKTHQGDFGTVDDFTLNSNYTGDELSLYLQS---SSTYKYDFSKSK--NIIYGI--- 267746
+                  ........*****************.......*************************************...************..******... PP
+
+     align   1472 ktsdfkkcsyavdannsrgflifssyqssdyldidtginetdvkitvvagsktdvfiisdfiaslPansvdampytfkpleidasslaftnniik 1566  
+                           +++dann+r++l++++++++dy        e+++++t+v+++k+dv+ii++f  slP+++vda                  +++ik
+  CP010029 267747 ---------WKEDANNNRCWLNYKLLTPEDY--------EPQINATLVMCDKGDVNIITGF--SLPNGGVDA------------------GGKIK 267804
+                  .........**********************........**********************..*********..................9**** PP
+
+     align   1567 ldlvvekkakdkrvlkkikqtlsvkrveynsedilflrethsgaqymqlgvyrirlntllaselvsrantgldliltmetq..rleeailG 1655  
+                  ++l+v+kk++dk+++k+++qt++++++e++s+d++++++             +irlntl+a+el+++a+++ldl+l++etq  rleeailG
+  CP010029 267805 VTLRVGKKLRDKFQIKQFSQTQYLQFPEASSADVWYIGK-------------QIRLNTLFAKELIGKASRSLDLVLSWETQnsRLEEAILG 267882
+                  ***************************************.............9*************************************9 PP
+
+  == domain 3  score: 1299.5 bits;  conditional E-value: 0
+     align   1787 GysalidldsasalyywelfyytPlmvfqrllqekrfdeatrwikyvynPagyivedeia.....PwiwnsrPleeetsknanlldaidPdavaq 1876  
+                  G+++lidld+a+++y+welf+++P+mv++r+++e+r+++a+rw+ky++nP  +++ede+a     P++wnsrPl++e++k+++l++++dPda+a+
+  CP010029 267883 GAAELIDLDGANGIYFWELFFHMPFMVSWRFNVEQRYEDANRWVKYLFNP--FECEDEPAlllgkPPYWNSRPLVDEPFKGYSLTQPSDPDAIAA 267975
+                  99************************************************..******************************************* PP
+
+     align   1877 ydPihykvavfmrlldqlilrGdmayreltrdalneaklsyvralellGdePedygsqqwaalslsvaashtvdaaykqdltaldagevatqPrt 1971  
+                  +dPihy++avf++l++++i++Gdm+yr+l+++a+++a+lsy++a++llG++P+++++++w++l+l+       da+yk+d ++++a+e+++qP+t
+  CP010029 267976 SDPIHYRKAVFNFLTKNIIDQGDMEYRKLQPSARTLARLSYSTASSLLGRRPDVQLTSFWQPLTLE-------DASYKTD-SEIRAIEMQSQPLT 268062
+                  ******************************************************************.......*******.************** PP
+
+     align   1972 aeslv..........dlflpeynpaltdywdtlrlrlfnlrhnlsldGkelslalyaesidPkallksrvq..asqggsavlpgklslyrfevml 2054  
+                  +e++v          d+f++++n++l+++wd++++r++nlrhnl+ldGke++++ly++si+P++l+k+r+q  +++++++++++k+++yrfe+ml
+  CP010029 268063 FEPVVhdqtmsavdnDIFMYPMNNELRGLWDRIENRIYNLRHNLTLDGKEINMDLYDSSISPRGLMKQRYQrvVTARNASKMNFKVPNYRFEPML 268157
+                  ************************************************************************9********************** PP
+
+     align   2055 erarnlvaqliqfGtsllslaerddadelttlllqqgmelatqsirlqqrtvdevdadlavlaesrrsaqdrlekykelydedinsgeqraislf 2149  
+                  +r++++v++liqfG++llsl+er+d++++++++++q+++l+++si+lqq+++d+++a+l++l++s++saqdr++++kelyde+i+s+eq++i+l+
+  CP010029 268158 NRSKSGVETLIQFGSTLLSLLERKDSLSFDAYQMIQSGDLYRFSIDLQQQDIDINKASLEALQVSKQSAQDRYDHFKELYDENISSTEQKVIELQ 268252
+                  *********************************************************************************************** PP
+
+     align   2150 daaagqslaaqalsvaeavadlvPnvfGlavGGsrwGaalrasasvislsatasqysadklsrseayrrrrqewelqrdnadgevkqvdaqlesl 2244  
+                  ++aa+++l+aq++++a+a++d++Pn++GlavGGs+wGa+l+a+a++i+++++a+++++++ls+se+yrrrrqewelq+++a++ev++v++q++++
+  CP010029 268253 SQAANSLLMAQGMRTAAAALDVIPNIYGLAVGGSHWGAPLNAAAEIIMIKYQADSSKSESLSVSESYRRRRQEWELQYKQAEWEVNSVEQQINLQ 268347
+                  *********************************************************************************************** PP
+
+     align   2245 kirreaaqkrveyqetqqaqtqallellqrkftnkalyswlrgklsalyyqffdlvlslclsaeealrreltdnevtfirGGawndltaGlmaGe 2339  
+                  +++++aa+kr+e++e+qq+q++all++++++ftn++ly+wl+++ls+ly+q++d+vlslclsae++l++el+++e++f++GG+wndl++GlmaGe
+  CP010029 268348 NMQIKAANKRLEQVEAQQQQAMALLDYFSERFTNESLYTWLISQLSSLYLQAYDAVLSLCLSAEASLLYELNLGEQSFVGGGGWNDLYQGLMAGE 268442
+                  *********************************************************************************************** PP
+
+     align   2340 tlllalaemekvylerderalevtrtvslaqfykalssdnfnltekltqflregkgnvgasgaelklskrkieisvrlsdlkivsdypesfgntr 2434  
+                  tl+lal++me+vy+e+++r++e+t+t+sl    kal++++++                    ael+++k+k++i+++l+++++v+dy+e++  +r
+  CP010029 268443 TLKLALMRMERVYVEQNSRRQEITKTISL----KALLGESWP--------------------AELNKLKQKTPINFNLEEQIFVEDYQELY--QR 268511
+                  *****************************....*********....................9****************************..** PP
+
+     align   2435 rlkqvsvtlPalvGPyediravlnyggsivspra..........................csaialstGvndsGlfmldfddsrylPfeGisvdd 2503  
+                  r+k+vsv+lP+lvGPyed++a+l++++s++s+ra                          +++i+lstGvndsGlfml+fdd+r+lPfeG++vd+
+  CP010029 268512 RIKSVSVSLPMLVGPYEDVCAQLTQTSSSYSTRAdlktvenmltkrtfadtphlvrsiqpNQQISLSTGVNDSGLFMLNFDDERFLPFEGSGVDS 268606
+                  *********************************************************************************************** PP
+
+     align   2504 sgsltlsfpdatdrlkalleslsdiilhiryt 2535  
+                  s++l+++      +lk++l+sl+d+ilh++yt
+  CP010029 268607 SWRLQFT------NLKQNLDSLNDVILHVKYT 268632
+                  *******......******************9 PP
+
+
+
+Internal pipeline statistics summary:
+-------------------------------------
+Query model(s):                              1  (2538 nodes)
+Target sequences:                            1  (1425135 residues searched)
+Passed MSV filter:                         1  (1); expected 0.0 (0.02)
+Passed bias filter:                        1  (1); expected 0.0 (0.02)
+Passed Vit filter:                         1  (1); expected 0.0 (0.001)
+Passed Fwd filter:                         1  (1); expected 0.0 (1e-05)
+Initial search space (Z):                  1  [actual number of targets]
+Domain search space  (domZ):               1  [number of targets reported over threshold]
+# CPU time: 20.48u 0.06s 00:00:20.54 Elapsed: 00:00:20.54
+# Mc/sec: 176.10
+//
+[ok]

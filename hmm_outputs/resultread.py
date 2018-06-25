@@ -10,7 +10,7 @@ import glob
 from Bio import SearchIO
 import csv
 
-paths = ['prof1', 'tcda1', 'tcda2','tcda4','xpta1','xpta2','yena1','yena2']
+paths = ['DDQSY', 'FJWHO', 'ITMTT']
 
 
 
@@ -22,10 +22,13 @@ def resultRead(paths):
             for i in range(len(qresult.hsps)):
                     try:
                         hsp = qresult[0][i]
-                        hmm_dict[str(qresult.accession)] = [str(hsp.env_start), str(hsp.env_end)]
+                        print(i)
+                        hmm_dict[str(qresult.accession) + '_'+str(i)] = [str(hsp.env_start), str(hsp.env_end)]
                     except:
                         continue
             file = open('testing.csv', 'w')
             with file:
                 writer = csv.writer(file)
                 writer.writerows(hmm_dict)
+                
+resultRead(paths)
