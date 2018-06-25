@@ -9,7 +9,6 @@ import os
 import glob
 from Bio import SearchIO
 import csv
-import pandas as pd
 
 paths = ['DDQSY', 'FJWHO', 'ITMTT']
 
@@ -18,6 +17,8 @@ paths = ['DDQSY', 'FJWHO', 'ITMTT']
 def resultRead(paths):
     hmm_dict = {}
     for path in paths:
+        if glob.glob(os.path.join(path, '*.csv')):
+            break
         for infile in glob.glob( os.path.join(path, '*.fasta')):
             qresult = SearchIO.read(infile, 'hmmer3-text')
             for i in range(len(qresult.hsps)):
@@ -27,7 +28,7 @@ def resultRead(paths):
                     except:
                         continue
             print(hmm_dict)
-            file = open('testing.csv', 'w')
+            file = open(path +'/'+path + 'hits.csv', 'w')
             for key, value in sorted(hmm_dict.items()):
                     file.write(str(key) +'\t' + str(value) + '\n')
                                     
