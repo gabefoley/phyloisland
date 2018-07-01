@@ -104,8 +104,43 @@ def writeSeqToFile(ids):
     # Write Annotated Sequences to Genbank files to allow easy movement to Artemis
     query = models.GenomeRecords.query.filter(models.GenomeRecords.uid.in_(ids))
     print("writing sequences to GenBank File")
-    for record in query.all():
+    for record in query.all():       
+        """ Create a dictionary for key = feature type -> value = location """
+        locs = {}
+        colour_dict = {"a1":"255 165 0", "a2":"255 0 0", "a3":"255 255 0", "TcB":"0 0 255", "TcC":"255 0 255", "chi":"0 255 0"}
+        # Prepare for literally the worst code in existence
+        """ We have to pull the features from location data in database
+        instead of directly from database because of current limitations """
+        # Brute force if statements to pull from database
+        # TODO - Could likely turn this into a for loop in some way
+        if getattr(record, "a1_loc") != "":
+            locs["a1"] = getattr(record, "a1_loc").split(":")
+        if getattr(record, "a2_loc") != "":
+            locs["a2"] = getattr(record, "a2_loc").split(":")
+        if getattr(record, "pore_loc") != "":
+            locs["pore"] = getattr(record, "pore_loc").split(":")
+        if getattr(record, "chitinase_loc") != "":
+            locs["chi"] = getattr(record, "chitinase_loc").split(":")
+        if getattr(record, "region1_loc") != "":
+            locs["a3"] = getattr(record, "region1_loc").split(":")
+        if getattr(record, "region2_loc") != "":
+            locs["TcB"] = getattr(record, "region2_loc").split(":")
+        if getattr(record, "region3_loc") != "":
+            locs["TcC"] = getattr(record, "region3_loc").split(":")
+        if getattr(record, "region1_loc") != "":
+            locs["region4"] = getattr(record, "region4_loc").split(":")
+        
+        
+        print("adding %s genome to diagram" % (record.name))
         seq_record = servers.bio_db.lookup(primary_id = record.name)
+        
+    
+        for location in locs:
+            """ create and add features based on locations """
+            color = {'color':colour_dict[location]}
+            feature = SeqFeature(location = FeatureLocation(int(locs[location][0]), int(locs[location][1]), strand=1), type = "misc_feature", qualifiers = color)
+            seq_record.features.append(feature)
+            
         seq_record.seq = Seq(getattr(record, "sequence"), generic_dna)
         name = "GBTestSeq_"+record.name
         out_path = "tmp/"+ name + ".gb"
