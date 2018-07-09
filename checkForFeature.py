@@ -94,16 +94,19 @@ def get_feature_location_with_profile(ids, reference, recordName, recordLocation
 
         # Get the nucleotide sequence of the genome
         nuc_seq = Bio.Seq.Seq(str(seq_record.seq).replace("b'", "").replace("'", ""))
-
+        outpath = "tmp/" + reference
         # Check three forward reading frames
+        if not os.path.exists("tmp/"+reference):
+            os.makedirs(outpath)
+        
         for forward in [True, False]:
             for i in list(range(0, 3)):
 
                 strand = "_forward_" +str(i) if forward else "_backward_" + str(i)
                 sequence = nuc_seq[i:] if forward else nuc_seq.reverse_complement()[i:]
 
-                cleaned_path = "tmp/" + seq_record.id + random_id + strand + "_translated_genome.fasta"
-                hmmsearch_results = "tmp/" + seq_record.id + random_id + strand + "_hmmsearch_results.fasta"
+                cleaned_path = outpath+"/" + seq_record.id + random_id + strand + "_translated_genome.fasta"
+                hmmsearch_results = outpath+ "/" + seq_record.id + random_id + strand + "_hmmsearch_results.fasta"
 
                 cleaned_path = cleaned_path.replace(" ", "_")
                 hmmsearch_results = hmmsearch_results.replace(" ", "_")

@@ -1311,7 +1311,7 @@ def createProfile(align_list):
 
 def createProfileFromRegion(ids, region):
     query = models.GenomeRecords.query.filter(models.GenomeRecords.uid.in_(ids))
-    align_list = []
+    align_list = [
     for record in query.all():
         if eval('record.' + region + '== ""'):
             pass

@@ -32,4 +32,3 @@ def resultRead(paths):
             for key, value in sorted(hmm_dict.items()):
                     file.write(str(key) +'\t' + str(value) + '\n')
                                     
-resultRead(paths)
