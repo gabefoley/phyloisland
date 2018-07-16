@@ -94,9 +94,9 @@ def get_feature_location_with_profile(ids, reference, recordName, recordLocation
 
         # Get the nucleotide sequence of the genome
         nuc_seq = Bio.Seq.Seq(str(seq_record.seq).replace("b'", "").replace("'", ""))
-        outpath = "tmp/" + reference
+        outpath = reference
         # Check three forward reading frames
-        if not os.path.exists("tmp/"+reference):
+        if not os.path.exists(reference):
             os.makedirs(outpath)
         
         for forward in [True, False]:
