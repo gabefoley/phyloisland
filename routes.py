@@ -1246,7 +1246,7 @@ def setProfileAsReference(ids, region):
 
             # Write the new profile to the tmp folder ready to be used
 
-            with open("hmm_outputs/" + region + "_profile.hmm", 'w') as profile_path:
+            with open("hmm_outputs/" +"/"+ record.name +"/"+ region + "_profile.hmm", 'w') as profile_path:
                 profile_path.write(record.profile.decode('utf-8'))
 
             flash("The profile named %s has been set as the reference profile for %s" % (record.name, region))
@@ -1280,7 +1280,7 @@ def checkWithProfile(ids, region):
     if (profile_reference):
         print("Using the %s profile named %s to check for %s regions" % (region, profile_name, region))
         eval(
-            'checkForFeature.get_feature_location_with_profile(ids, "hmm_outputs/' + profile_name + '/' + region + '", "' + region + '", "' + region + ' _loc")')
+            'checkForFeature.get_feature_location_with_profile(ids, "hmm_outputs/' + profile_name + '", "' + region + '", "' + region + ' _loc")')
     else:
         flash("Please set a profile as the %s reference profile first" % (region), "error")
 

@@ -123,7 +123,7 @@ def get_feature_location_with_profile(ids, reference, recordName, recordLocation
 
                 if os.path.isfile(cleaned_path):
 
-                    stdoutdata = subprocess.getoutput("hmmsearch -o %s %s %s" % (hmmsearch_results, reference, cleaned_path))
+                    stdoutdata = subprocess.getoutput("hmmsearch -o %s %s %s" % (hmmsearch_results, 'tmp/' +recordName +"_profile.hmm", cleaned_path))
 
                     print (stdoutdata)
                     # result = subprocess.call(["hmmsearch -o %s %s %s" % (hmmsearch_results, reference, cleaned_path)])
