@@ -1246,8 +1246,9 @@ def setProfileAsReference(ids, region):
             servers.db.session.commit()
 
             # Write the new profile to the tmp folder ready to be used
-
-            with open("hmm_outputs/" +"/"+ record.name +"/"+ region + "_profile.hmm", 'w') as profile_path:
+            if not os.path.exists("hmm_outputs/" + "/"+ record.name +"/" + region):
+                os.makedirs("hmm_outputs/"+"/"+ record.name + "/" + region)
+            with open("hmm_outputs/" +"/"+ record.name +"/"+ region + "profile.hmm", 'w') as profile_path:
                 profile_path.write(record.profile.decode('utf-8'))
 
             flash("The profile named %s has been set as the reference profile for %s" % (record.name, region))
