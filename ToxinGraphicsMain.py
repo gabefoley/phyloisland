@@ -115,7 +115,7 @@ def writeSeqToFile(ids):
         # TODO - Could likely turn this into a for loop in some way
         if getattr(record, "a1_loc") != "":
             locs["a1"] = getattr(record, "a1_loc").split(":")
-        if getattr(record, "a2_loc") != "":
+        if getattr(record, "a2 loc") != "":
             locs["a2"] = getattr(record, "a2_loc").split(":")
         if getattr(record, "pore_loc") != "":
             locs["pore"] = getattr(record, "pore_loc").split(":")
@@ -154,7 +154,7 @@ def writeHMMToImage(hmm_dict, region, seq_record):
     max_len = 0
     output_path = "tmp/"+name+".png"
     start = 0
-    end = 0
+    end = len(seq_record)
     # For my work I was considering changing 'region1, 2, and 3' to a3, TcB, and TcC for convenience
     # Up to others though if I fully change that (is just a UI thing tbh)
     region_colours = {"a1":"orange", "a2":"red", "chi":"green", "a3":"yellow",
@@ -191,7 +191,6 @@ def writeHMMToImage(hmm_dict, region, seq_record):
     seq_record.name, greytrack = True, start = 0, end = len(seq_record))
     gd_feature_set = gd_track_for_features.new_set()
     # Add Features
-    print(seq_record.features)
     for feature in seq_record.features:
         if feature.type in locs.keys():
             gd_feature_set.add_feature(feature, label = True, name
@@ -209,6 +208,6 @@ def writeHMMToImage(hmm_dict, region, seq_record):
             """
             
     """ Draw and Write the Diagram to file """
-    gd_diagram.draw(format="linear", pagesize = "A2", fragments = 0, start = start, end = end)
+    gd_diagram.draw(format="linear", pagesize = "A2", fragments = 0, start = start, end = len(seq_record))
     gd_diagram.write(output_path, "PNG")
     print("Genome Diagram has been added to file %s ", output_path)

@@ -135,10 +135,10 @@ def get_feature_location_with_profile(ids, reference, recordName, recordLocation
                     # result = subprocess.call(["hmmsearch", 'files/output.txt', reference, cleaned_path], stdout=subprocess.PIPE)
                     # for x in result:
                     #     print (x)
-                    print("Creating a diagram of % region hits" %region)
-                    hmmerout = resultread.HMMread(outpath)
-                    ToxinGraphicsMain.writeHMMToImage(hmmerout, region, record)
-                    print("WIP Diagram not created")
+        print("Creating a diagram of % region hits" %region)
+        hmmerout = resultread.HMMread(outpath)
+        ToxinGraphicsMain.writeHMMToImage(hmmerout, region, seq_record)
+        print("WIP Diagram not created")
                     
                 # utilities.removeFile(reference, cleaned_path)
 # def read_hmmer_results(filepath):
