@@ -9,6 +9,8 @@ import subprocess
 import Bio
 from Bio import SeqIO
 import phyloisland
+import resultread
+import ToxinGraphicsMain
 
 def getFeatureLocation(ids, reference, query_name, query_location, query_length, closest_to=-1):
 
@@ -72,7 +74,7 @@ def getFeatureLocation(ids, reference, query_name, query_location, query_length,
             raise ValueError("%s isn't a file!" % "files/temp_blastfiles.fasta")
 
 
-def get_feature_location_with_profile(ids, reference, recordName, recordLocation):
+def get_feature_location_with_profile(ids, reference, recordName, recordLocation, region):
     """
     Annotate a genome sequence with a feature location based on a profile
     :param ids: Genome sequences to annotate
@@ -133,7 +135,11 @@ def get_feature_location_with_profile(ids, reference, recordName, recordLocation
                     # result = subprocess.call(["hmmsearch", 'files/output.txt', reference, cleaned_path], stdout=subprocess.PIPE)
                     # for x in result:
                     #     print (x)
-
+                    print("Creating a diagram of % region hits" %region)
+                    hmmerout = resultread.HMMread(outpath)
+                    ToxinGraphicsMain.writeHMMToImage(hmmerout, region, record)
+                    print("WIP Diagram not created")
+                    
                 # utilities.removeFile(reference, cleaned_path)
 # def read_hmmer_results(filepath):
 #     with open(filepath) as hmmsearch_results:
