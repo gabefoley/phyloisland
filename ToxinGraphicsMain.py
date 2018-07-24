@@ -163,7 +163,7 @@ def writeHMMToImage(hmm_dict, region, seq_record):
     i = 0
     for reg in hmm_dict.values():       
         """ Create a dictionary for key = feature type -> value = location """
-        locs[region + "_" + str(i)] = reg.split(":")
+        locs[region] = reg.split(":")
         # Prepare for literally the worst code in existence
         """ We have to pull the features from location data in database
         instead of directly from database because of current limitations """
