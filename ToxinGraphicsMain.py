@@ -146,21 +146,19 @@ def writeSeqToFile(ids):
         out_path = "tmp/"+ name + ".gb"
         SeqIO.write(seq_record, out_path, "genbank")
 
-def writeHMMToImage(hmm_dict, region, seq_record):
+def writeHMMToImage(hmm_dict, reference, region, seq_record):
     # Currently taking region to be run simultaneously with hmmer, will need to manipulate some stuff for later
     # Initiation of GenomeDiagram assets"
     name = "GenomeDiagram_"+phyloisland.randstring(5)
     gd_diagram = GenomeDiagram.Diagram(name)
     max_len = 0
-    output_path = "tmp/"+name+".png"
+    output_path = reference +"/"+seq_record.name + "/" + seq_record.name + ".png"
     start = 0
-    end = len(seq_record)
     # For my work I was considering changing 'region1, 2, and 3' to a3, TcB, and TcC for convenience
     # Up to others though if I fully change that (is just a UI thing tbh)
     region_colours = {"a1":"orange", "a2":"red", "chi":"green", "a3":"yellow",
                       "TcB":"blue", "TcC":"magenta", "pore":"grey", "region4":"pink"}
     locs = {}
-    i = 0
     for reg in hmm_dict.values():       
         """ Create a dictionary for key = feature type -> value = location """
         locs[region] = reg.split(":")
@@ -171,7 +169,7 @@ def writeHMMToImage(hmm_dict, region, seq_record):
         # TODO - Could likely turn this into a for loop in so
         
         
-        """ Add the features from dictionary to the seq_record features """
+    """ Add the features from dictionary to the seq_record features """
     svals = []
     endvals = []        
     for location in locs:
@@ -190,6 +188,7 @@ def writeHMMToImage(hmm_dict, region, seq_record):
     gd_track_for_features = gd_diagram.new_track(1, name = 
     seq_record.name, greytrack = True, start = 0, end = len(seq_record))
     gd_feature_set = gd_track_for_features.new_set()
+    
     # Add Features
     for feature in seq_record.features:
         if feature.type in locs.keys():
@@ -210,4 +209,4 @@ def writeHMMToImage(hmm_dict, region, seq_record):
     """ Draw and Write the Diagram to file """
     gd_diagram.draw(format="linear", pagesize = "A2", fragments = 0, start = start, end = len(seq_record))
     gd_diagram.write(output_path, "PNG")
-    print("Genome Diagram has been added to file %s ", output_path)
+    print("Genome Diagram has been added to file %s ", %output_path)

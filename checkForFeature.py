@@ -87,6 +87,7 @@ def get_feature_location_with_profile(ids, reference, recordName, recordLocation
     query = models.GenomeRecords.query.filter(models.GenomeRecords.uid.in_(ids))
     for record in query.all():
         seq_record = servers.bio_db.lookup(primary_id=record.name)
+        species = seq_record.name
 
         # Create a path to write the translated genomic sequence to
         random_id = phyloisland.randstring(5)
@@ -96,9 +97,9 @@ def get_feature_location_with_profile(ids, reference, recordName, recordLocation
 
         # Get the nucleotide sequence of the genome
         nuc_seq = Bio.Seq.Seq(str(seq_record.seq).replace("b'", "").replace("'", ""))
-        outpath = reference
+        outpath = reference + "/" + species + "/" + region
         # Check three forward reading frames
-        if not os.path.exists(reference):
+        if not os.path.exists(outpath):
             os.makedirs(outpath)
         
         for forward in [True, False]:
@@ -137,7 +138,7 @@ def get_feature_location_with_profile(ids, reference, recordName, recordLocation
                     #     print (x)
         print("Creating a diagram of % region hits" %region)
         hmmerout = resultread.HMMread(outpath)
-        ToxinGraphicsMain.writeHMMToImage(hmmerout, region, seq_record)
+        ToxinGraphicsMain.writeHMMToImage(hmmerout, reference, region, seq_record)
         print("WIP Diagram not created")
                     
                 # utilities.removeFile(reference, cleaned_path)
