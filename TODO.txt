@@ -1,0 +1,5 @@
+Rowan TODO:
+Iteratively update images with HMMER runs
+	- can be done iteratively or create a separate function to concatenate
+	  whole files
+Sequence File handling (with iterative updating)

@@ -97,7 +97,7 @@ def get_feature_location_with_profile(ids, reference, recordName, recordLocation
 
         # Get the nucleotide sequence of the genome
         nuc_seq = Bio.Seq.Seq(str(seq_record.seq).replace("b'", "").replace("'", ""))
-        outpath = reference + "/" + species + "/" + region
+        outpath = reference + "/" + species
         # Check three forward reading frames
         if not os.path.exists(outpath):
             os.makedirs(outpath)
@@ -136,10 +136,16 @@ def get_feature_location_with_profile(ids, reference, recordName, recordLocation
                     # result = subprocess.call(["hmmsearch", 'files/output.txt', reference, cleaned_path], stdout=subprocess.PIPE)
                     # for x in result:
                     #     print (x)
-        print("Creating a diagram of % region hits" %region)
-        hmmerout = resultread.HMMread(outpath)
-        ToxinGraphicsMain.writeHMMToImage(hmmerout, reference, region, seq_record)
-        print("WIP Diagram not created")
+        print("Creating a diagram of %s region hits" % (region))
+        all_reg = ["a1", "a2", "chi", "a3", "TcB", "TcC"]
+        hmmerout = []
+        for reg in all_reg:
+            hmmerout.append(resultread.HMMread(outpath))
+        ToxinGraphicsMain.writeHMMToImage(hmmerout, reference, all_reg, seq_record)
+        print("Diagram has been written to %s directory" %(reference))
+        print("Creating a Sequence file containing all %s region hits" % (region))
+        ToxinGraphicsMain.writeHmmToSeq(hmmerout, reference, all_reg, seq_record)
+        print("WIP Seq may not work")
                     
                 # utilities.removeFile(reference, cleaned_path)
 # def read_hmmer_results(filepath):

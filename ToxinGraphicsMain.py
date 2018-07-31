@@ -12,6 +12,7 @@ from Bio.Graphics import GenomeDiagram
 from Bio.SeqFeature import SeqFeature, FeatureLocation
 import phyloisland
 from Bio.Seq import Seq
+from Bio.SeqRecord import SeqRecord
 from Bio.Alphabet import generic_dna
 
 def writeImageToFile(ids):
@@ -149,7 +150,7 @@ def writeSeqToFile(ids):
 def writeHMMToImage(hmm_dict, reference, region, seq_record):
     # Currently taking region to be run simultaneously with hmmer, will need to manipulate some stuff for later
     # Initiation of GenomeDiagram assets"
-    name = "GenomeDiagram_"+phyloisland.randstring(5)
+    name = reference + "_" + seq_record.name + "_GenomeDiagram"
     gd_diagram = GenomeDiagram.Diagram(name)
     max_len = 0
     output_path = reference +"/"+seq_record.name + "/" + seq_record.name + ".png"
@@ -159,16 +160,21 @@ def writeHMMToImage(hmm_dict, reference, region, seq_record):
     region_colours = {"a1":"orange", "a2":"red", "chi":"green", "a3":"yellow",
                       "TcB":"blue", "TcC":"magenta", "pore":"grey", "region4":"pink"}
     locs = {}
-    for reg in hmm_dict.values():       
-        """ Create a dictionary for key = feature type -> value = location """
-        locs[region] = reg.split(":")
-        # Prepare for literally the worst code in existence
-        """ We have to pull the features from location data in database
-        instead of directly from database because of current limitations """
-        # Brute force if statements to pull from database
-        # TODO - Could likely turn this into a for loop in so
-        
-        
+    j = 0
+    for result in hmm_dict:
+        i = 0
+        print(result)
+        for reg in result.values():       
+            """ Create a dictionary for key = feature type -> value = location """
+            locs[region[j] + "_" + str(i)] = reg.split(":")
+            i += 1
+            # Prepare for literally the worst code in existence
+            """ We have to pull the features from location data in database
+            instead of directly from database because of current limitations """
+            # Brute force if statements to pull from database
+            # TODO - Could likely turn this into a for loop in so
+        j += 1
+    print(locs)
     """ Add the features from dictionary to the seq_record features """
     svals = []
     endvals = []        
@@ -179,7 +185,7 @@ def writeHMMToImage(hmm_dict, reference, region, seq_record):
         svals.append(sval)
         endvals.append(endval)
         """ create and add features based on locations """
-        feature = SeqFeature(location = FeatureLocation(int(locs[location][0]), int(locs[location][1]), strand=1), type = location)
+        feature = SeqFeature(location = FeatureLocation(int(locs[location][0]), int(locs[location][1]), strand=1), type = location[0:-2])
         seq_record.features.append(feature)
 
     """ Set up the Genome Diagram """
@@ -191,7 +197,8 @@ def writeHMMToImage(hmm_dict, reference, region, seq_record):
     
     # Add Features
     for feature in seq_record.features:
-        if feature.type in locs.keys():
+        if feature.type in region_colours.keys():
+            print(feature.type)
             gd_feature_set.add_feature(feature, label = True, name
             = feature.type, color = region_colours[feature.type], label_position = "start", label_size = 6, label_angle = 0)
         elif feature.type == "CDS":
@@ -209,4 +216,37 @@ def writeHMMToImage(hmm_dict, reference, region, seq_record):
     """ Draw and Write the Diagram to file """
     gd_diagram.draw(format="linear", pagesize = "A2", fragments = 0, start = start, end = len(seq_record))
     gd_diagram.write(output_path, "PNG")
-    print("Genome Diagram has been added to file %s ", %output_path)
+    print("Genome Diagram has been added to file " + output_path)
+    
+def writeHmmToSeq(hmm_dict, reference, region, seqrecord):
+    name = seqrecord.name + "_sequence"
+    output_path = reference +"/"+ seqrecord.name + "/" + name + ".gb"
+
+    # Write Annotated Sequences to Genbank files to allow easy movement to Artemis
+    print("writing sequences to GenBank File")       
+    """ Create a dictionary for key = feature type -> value = location """
+    locs = {}
+    colour_dict = {"a1":"255 165 0", "a2":"255 0 0", "a3":"255 255 0", "TcB":"0 0 255", "TcC":"255 0 255", "chi":"0 255 0"}
+    # Prepare for literally the worst code in existence
+    """ We have to pull the features from location data in database
+    instead of directly from database because of current limitations """
+    j = 0
+    for result in hmm_dict:
+        i = 0
+        for reg in result.values():       
+            """ Create a dictionary for key = feature type -> value = location """
+            locs[region[j] + "_" + str(i)] = reg.split(":")
+            i += 1
+        
+    print("adding %s genome to diagram" % (seqrecord.name))      
+    
+    seqrecord.features = []
+    for location in locs:
+        """ create and add features based on locations """
+        color = {'color':colour_dict[location[0:-2]]}
+        feature = SeqFeature(location = FeatureLocation(int(locs[location][0]), int(locs[location][1]), strand=1), type = "misc_feature", qualifiers = color)
+        seqrecord.features.append(feature)
+        
+    sequence = str(seqrecord.seq)
+    seqrecord.seq = Seq(sequence, generic_dna)
+    SeqIO.write(seqrecord, output_path, "genbank")
