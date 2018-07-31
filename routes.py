@@ -28,6 +28,7 @@ import utilities
 import time
 from urllib.error import HTTPError
 import ToxinGraphicsMain
+import resultread
 
 try:
     from wtforms.fields.core import _unset_value as unset_value
@@ -1229,10 +1230,9 @@ def setProfileAsReference(ids, region):
     else:
         query = models.Profile.query.filter(models.Profile.uid.in_(ids))
         for record in query.all():
-
             # Check for a previous reference profile
             old_profile_reference = eval("models.Profile.query.filter_by(" + region + "_profile_ref=1).first()")
-
+            
             if (old_profile_reference):
                 # Remove the previous reference profile
                 setattr(old_profile_reference, region + "_profile_ref", 0)
@@ -1246,8 +1246,9 @@ def setProfileAsReference(ids, region):
             servers.db.session.commit()
 
             # Write the new profile to the tmp folder ready to be used
-
-            with open("tmp/" + region + "_profile.hmm", 'w') as profile_path:
+            if not os.path.exists("hmm_outputs/" + "/"+ record.name +"/" + region):
+                os.makedirs("hmm_outputs/"+"/"+ record.name + "/" + region)
+            with open("hmm_outputs/" +"/"+ record.name +"/"+ region + "profile.hmm", 'w') as profile_path:
                 profile_path.write(record.profile.decode('utf-8'))
 
             flash("The profile named %s has been set as the reference profile for %s" % (record.name, region))
@@ -1276,11 +1277,11 @@ def checkForRegion(ids, region, closest_to=-1):
 def checkWithProfile(ids, region):
     # Check if a reference profile for A1 exists
     profile_reference = eval("models.Profile.query.filter_by(" + region + "_profile_ref=1).first()")
-
+    profile_name = profile_reference.name
     if (profile_reference):
-        print("Using the %s profile named %s to check for %s regions" % (region, profile_reference.name, region))
+        print("Using the %s profile named %s to check for %s regions" % (region, profile_name, region))
         eval(
-            'checkForFeature.get_feature_location_with_profile(ids, "tmp/' + region + '_profile.hmm", "' + region + '", "' + region + ' _loc")')
+            'checkForFeature.get_feature_location_with_profile(ids, "hmm_outputs/' + profile_name + '", "' + region + '", "' + region + ' _loc' + '","' + region  + '")')
     else:
         flash("Please set a profile as the %s reference profile first" % (region), "error")
 

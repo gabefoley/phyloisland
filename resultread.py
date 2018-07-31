@@ -32,4 +32,23 @@ def resultRead(paths):
             for key, value in sorted(hmm_dict.items()):
                     file.write(str(key) +'\t' + str(value) + '\n')
                                     
-resultRead(paths)
+def HMMread(path):
+    hmm_dict = {}
+    for infile in glob.glob( os.path.join(path, '*.fasta')):
+        print(infile)
+        try:
+            qresult = SearchIO.read(infile, 'hmmer3-text')
+            for i in range(len(qresult.hsps)):
+                try:
+                    hsp = qresult[0][i]
+                    hmm_dict[infile[21:-28]] = str(3*hsp.env_start)+ ':' + str(3*hsp.env_end)
+                except:
+                    continue
+        except:
+            continue
+    return(hmm_dict)
+    
+#test = HMMread('hmm_outputs/DDQSY/a2')
+#print(test)
+
+test = HMMread('hmm_outputs/DDQSY/a2')

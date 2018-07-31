@@ -9,6 +9,8 @@ import subprocess
 import Bio
 from Bio import SeqIO
 import phyloisland
+import resultread
+import ToxinGraphicsMain
 
 def getFeatureLocation(ids, reference, query_name, query_location, query_length, closest_to=-1):
 
@@ -72,7 +74,7 @@ def getFeatureLocation(ids, reference, query_name, query_location, query_length,
             raise ValueError("%s isn't a file!" % "files/temp_blastfiles.fasta")
 
 
-def get_feature_location_with_profile(ids, reference, recordName, recordLocation):
+def get_feature_location_with_profile(ids, reference, recordName, recordLocation, region):
     """
     Annotate a genome sequence with a feature location based on a profile
     :param ids: Genome sequences to annotate
@@ -85,6 +87,7 @@ def get_feature_location_with_profile(ids, reference, recordName, recordLocation
     query = models.GenomeRecords.query.filter(models.GenomeRecords.uid.in_(ids))
     for record in query.all():
         seq_record = servers.bio_db.lookup(primary_id=record.name)
+        species = seq_record.name
 
         # Create a path to write the translated genomic sequence to
         random_id = phyloisland.randstring(5)
@@ -94,8 +97,11 @@ def get_feature_location_with_profile(ids, reference, recordName, recordLocation
 
         # Get the nucleotide sequence of the genome
         nuc_seq = Bio.Seq.Seq(str(seq_record.seq).replace("b'", "").replace("'", ""))
-
+        outpath = reference + "/" + species + "/" + region
         # Check three forward reading frames
+        if not os.path.exists(outpath):
+            os.makedirs(outpath)
+        
         for forward in [True, False]:
             for i in list(range(0, 3)):
 
@@ -104,6 +110,7 @@ def get_feature_location_with_profile(ids, reference, recordName, recordLocation
 
                 cleaned_path = "tmp/" + seq_record.id + "_" + seq_record.annotations.get('organism') + "_" + random_id + strand + "_translated_genome.fasta"
                 hmmsearch_results = "tmp/" + seq_record.id + "_" + seq_record.annotations.get('organism') + "_" + random_id + strand + "_hmmsearch_results.fasta"
+
 
                 cleaned_path = cleaned_path.replace(" ", "_")
                 hmmsearch_results = hmmsearch_results.replace(" ", "_")
@@ -127,7 +134,7 @@ def get_feature_location_with_profile(ids, reference, recordName, recordLocation
 
                 if os.path.isfile(cleaned_path):
 
-                    stdoutdata = subprocess.getoutput("hmmsearch -o %s %s %s" % (hmmsearch_results, reference, cleaned_path))
+                    stdoutdata = subprocess.getoutput("hmmsearch -o %s %s %s" % (hmmsearch_results, 'tmp/' +recordName +"_profile.hmm", cleaned_path))
 
                     print (stdoutdata)
                     # result = subprocess.call(["hmmsearch -o %s %s %s" % (hmmsearch_results, reference, cleaned_path)])
@@ -137,7 +144,11 @@ def get_feature_location_with_profile(ids, reference, recordName, recordLocation
                     # result = subprocess.call(["hmmsearch", 'files/output.txt', reference, cleaned_path], stdout=subprocess.PIPE)
                     # for x in result:
                     #     print (x)
-
+        print("Creating a diagram of % region hits" %region)
+        hmmerout = resultread.HMMread(outpath)
+        ToxinGraphicsMain.writeHMMToImage(hmmerout, reference, region, seq_record)
+        print("WIP Diagram not created")
+                    
                 # utilities.removeFile(reference, cleaned_path)
 # def read_hmmer_results(filepath):
 #     with open(filepath) as hmmsearch_results:

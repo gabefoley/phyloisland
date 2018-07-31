@@ -3,12 +3,12 @@
 # Copyright (C) 2015 Howard Hughes Medical Institute.
 # Freely distributed under the GNU General Public License (GPLv3).
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# query HMM file:                  tmp/a2_profile.hmm
-# target sequence database:        tmp/CP010029.1EIJTJ_backward_0_translated_genome.fasta
-# output directed to file:         tmp/CP010029.1EIJTJ_backward_0_hmmsearch_results.fasta
+# query HMM file:                  tmp/a1_profile.hmm
+# target sequence database:        hmm_outputs/TSYNW/ECU68703/a1/U68703.1ABKYM_backward_2_translated_genome.fasta
+# output directed to file:         hmm_outputs/TSYNW/ECU68703/a1/U68703.1ABKYM_backward_2_hmmsearch_results.fasta
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-Query:       align  [M=2538]
+Query:       align  [M=814]
 Scores for complete sequences (score includes all domains):
    --- full sequence ---   --- best 1 domain ---    -#dom-
     E-value  score  bias    E-value  score  bias    exp  N  Sequence Description
@@ -24,15 +24,15 @@ Domain annotation for each sequence (and alignments):
 
 Internal pipeline statistics summary:
 -------------------------------------
-Query model(s):                              1  (2538 nodes)
-Target sequences:                            1  (1425135 residues searched)
-Passed MSV filter:                         0  (0); expected 0.0 (0.02)
+Query model(s):                              1  (814 nodes)
+Target sequences:                            1  (4866 residues searched)
+Passed MSV filter:                         1  (1); expected 0.0 (0.02)
 Passed bias filter:                        0  (0); expected 0.0 (0.02)
 Passed Vit filter:                         0  (0); expected 0.0 (0.001)
 Passed Fwd filter:                         0  (0); expected 0.0 (1e-05)
 Initial search space (Z):                  1  [actual number of targets]
 Domain search space  (domZ):               0  [number of targets reported over threshold]
-# CPU time: 0.24u 0.01s 00:00:00.25 Elapsed: 00:00:00.24
-# Mc/sec: 15070.80
+# CPU time: 0.00u 0.00s 00:00:00.00 Elapsed: 00:00:00.00
+# Mc/sec: inf
 //
 [ok]
