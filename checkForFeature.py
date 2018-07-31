@@ -108,8 +108,9 @@ def get_feature_location_with_profile(ids, reference, recordName, recordLocation
                 strand = "_forward_" +str(i) if forward else "_backward_" + str(i)
                 sequence = nuc_seq[i:] if forward else nuc_seq.reverse_complement()[i:]
 
-                cleaned_path = outpath+"/" + seq_record.id + random_id + strand + "_translated_genome.fasta"
-                hmmsearch_results = outpath+ "/" + seq_record.id + random_id + strand + "_hmmsearch_results.fasta"
+                cleaned_path = "tmp/" + seq_record.id + "_" + seq_record.annotations.get('organism') + "_" + random_id + strand + "_translated_genome.fasta"
+                hmmsearch_results = "tmp/" + seq_record.id + "_" + seq_record.annotations.get('organism') + "_" + random_id + strand + "_hmmsearch_results.fasta"
+
 
                 cleaned_path = cleaned_path.replace(" ", "_")
                 hmmsearch_results = hmmsearch_results.replace(" ", "_")
@@ -117,7 +118,14 @@ def get_feature_location_with_profile(ids, reference, recordName, recordLocation
 
                 # Translate the nucleotide genome sequence to a protein sequence
                 with open(cleaned_path, 'w') as handle:
-                    handle.write(">" + seq_record.name + " " + seq_record.description + "\n" + str(sequence.translate(stop_symbol="M")))
+
+
+                    if seq_record.name == "<unknown name>":
+                        handle.write(">" + seq_record.id + " " + seq_record.annotations.get('organism') + "\n" + str(
+                            sequence.translate(stop_symbol="M")))
+                    else:
+
+                        handle.write(">" + seq_record.name + " " + seq_record.description + "\n" + str(sequence.translate(stop_symbol="M")))
 
                 print ("Writing the %s sequence with the species %s to %s" % (seq_record.id, seq_record.annotations.get('organism'), cleaned_path))
 
