@@ -14,6 +14,7 @@ import phyloisland
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 from Bio.Alphabet import generic_dna
+import glob 
 
 def writeImageToFile(ids):
 
@@ -153,33 +154,30 @@ def writeHMMToImage(hmm_dict, reference, region, seq_record):
     name = reference + "_" + seq_record.name + "_GenomeDiagram"
     gd_diagram = GenomeDiagram.Diagram(name)
     max_len = 0
-    output_path = reference +"/"+seq_record.name + "/" + seq_record.name + ".png"
+    output_path = reference + "/" + seq_record.name + ".png"
     start = 0
     # For my work I was considering changing 'region1, 2, and 3' to a3, TcB, and TcC for convenience
     # Up to others though if I fully change that (is just a UI thing tbh)
     region_colours = {"a1":"orange", "a2":"red", "chi":"green", "a3":"yellow",
                       "TcB":"blue", "TcC":"magenta", "pore":"grey", "region4":"pink"}
     locs = {}
-    j = 0
     for result in hmm_dict:
         i = 0
-        print(result)
-        for reg in result.values():       
+        for reg in result:       
             """ Create a dictionary for key = feature type -> value = location """
-            locs[region[j] + "_" + str(i)] = reg.split(":")
+            locs[reg.split("/")[2] + "_" + str(i)] = result[reg].split(":")
             i += 1
             # Prepare for literally the worst code in existence
             """ We have to pull the features from location data in database
             instead of directly from database because of current limitations """
             # Brute force if statements to pull from database
             # TODO - Could likely turn this into a for loop in so
-        j += 1
-    print(locs)
+            
     """ Add the features from dictionary to the seq_record features """
     svals = []
     endvals = []        
     for location in locs:
-        """ Extract start and end values ffrom each location, and add to independent lists """
+        """ Extract start and end values from each location, and add to independent lists """
         sval = int(locs[location][0])
         endval = int(locs[location][1])
         svals.append(sval)
@@ -220,22 +218,18 @@ def writeHMMToImage(hmm_dict, reference, region, seq_record):
     
 def writeHmmToSeq(hmm_dict, reference, region, seqrecord):
     name = seqrecord.name + "_sequence"
-    output_path = reference +"/"+ seqrecord.name + "/" + name + ".gb"
+    output_path = reference +"/"+ name + ".gb"
 
     # Write Annotated Sequences to Genbank files to allow easy movement to Artemis
     print("writing sequences to GenBank File")       
     """ Create a dictionary for key = feature type -> value = location """
     locs = {}
     colour_dict = {"a1":"255 165 0", "a2":"255 0 0", "a3":"255 255 0", "TcB":"0 0 255", "TcC":"255 0 255", "chi":"0 255 0"}
-    # Prepare for literally the worst code in existence
-    """ We have to pull the features from location data in database
-    instead of directly from database because of current limitations """
-    j = 0
     for result in hmm_dict:
         i = 0
-        for reg in result.values():       
+        for reg in result:       
             """ Create a dictionary for key = feature type -> value = location """
-            locs[region[j] + "_" + str(i)] = reg.split(":")
+            locs[reg.split("/")[2] + "_" + str(i)] = result[reg].split(":")
             i += 1
         
     print("adding %s genome to diagram" % (seqrecord.name))      

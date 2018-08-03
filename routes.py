@@ -1281,7 +1281,7 @@ def checkWithProfile(ids, region):
     if (profile_reference):
         print("Using the %s profile named %s to check for %s regions" % (region, profile_name, region))
         eval(
-            'checkForFeature.get_feature_location_with_profile(ids, "hmm_outputs/' + profile_name + '", "' + region + '", "' + region + ' _loc' + '","' + region  + '")')
+            'checkForFeature.get_feature_location_with_profile(ids, "hmm_outputs' + '", "' + profile_name + '", "' + region + '", "' + region + '_loc' + '","' + region +'")')
     else:
         flash("Please set a profile as the %s reference profile first" % (region), "error")
 
