@@ -88,7 +88,7 @@ def get_feature_location_with_profile(ids, reference, profile_name, recordName, 
     query = models.GenomeRecords.query.filter(models.GenomeRecords.uid.in_(ids))
     for record in query.all():
         seq_record = servers.bio_db.lookup(primary_id=record.name)
-        species = seq_record.name
+        species = record.name
 
         # Create a path to write the translated genomic sequence to
         random_id = phyloisland.randstring(5)
@@ -109,7 +109,7 @@ def get_feature_location_with_profile(ids, reference, profile_name, recordName, 
                 strand = "_forward_" +str(i) if forward else "_backward_" + str(i)
                 sequence = nuc_seq[i:] if forward else nuc_seq.reverse_complement()[i:]
 
-                cleaned_path = outpath + seq_record.id + "_" + seq_record.annotations.get('organism') + "_" + random_id + strand + "_translated_genome.fasta"
+                cleaned_path = outpath.replace(" ", "_") + seq_record.id + "_" + seq_record.annotations.get('organism') + "_" + random_id + strand + "_translated_genome.fasta"
                 hmmsearch_results = outpath + seq_record.id + "_" + seq_record.annotations.get('organism') + "_" + random_id + strand + "_hmmsearch_results.fasta"
 
 

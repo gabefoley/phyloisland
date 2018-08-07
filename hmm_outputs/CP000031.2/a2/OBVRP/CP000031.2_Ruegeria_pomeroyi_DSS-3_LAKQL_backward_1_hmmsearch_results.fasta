@@ -1,0 +1,96 @@
+# hmmsearch :: search profile(s) against a sequence database
+# HMMER 3.1b2 (February 2015); http://hmmer.org/
+# Copyright (C) 2015 Howard Hughes Medical Institute.
+# Freely distributed under the GNU General Public License (GPLv3).
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# query HMM file:                  tmp/a2_profile.hmm
+# target sequence database:        hmm_outputs/CP000031.2/a2/OBVRP/CP000031.2_Ruegeria_pomeroyi_DSS-3_LAKQL_backward_1_translated_genome.fasta
+# output directed to file:         hmm_outputs/CP000031.2/a2/OBVRP/CP000031.2_Ruegeria_pomeroyi_DSS-3_LAKQL_backward_1_hmmsearch_results.fasta
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Query:       align  [M=814]
+Scores for complete sequences (score includes all domains):
+   --- full sequence ---   --- best 1 domain ---    -#dom-
+    E-value  score  bias    E-value  score  bias    exp  N  Sequence Description
+    ------- ------ -----    ------- ------ -----   ---- --  -------- -----------
+    3.1e-39  120.6   2.1    9.7e-30   89.1   3.4    3.6  3  CP000031  Ruegeria pomeroyi DSS-3, complete genome
+
+
+Domain annotation for each sequence (and alignments):
+>> CP000031  Ruegeria pomeroyi DSS-3, complete genome
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !   20.1   0.0   7.1e-09   7.1e-09      96     417 ..  714629  714922 ..  714612  714935 .. 0.81
+   2 !    5.0   0.0   0.00026   0.00026     704     773 ..  715171  715241 ..  715145  715280 .. 0.73
+   3 !   89.1   3.4   9.7e-30   9.7e-30      10     420 ..  731507  731874 ..  731499  731882 .. 0.79
+
+  Alignments for each domain:
+  == domain 1  score: 20.1 bits;  conditional E-value: 7.1e-09
+     align     96 dglhqvraclrgrsmrrrvynpdrlkypmkrvgargegkferisweeaydiiatnmqrlikeygnesiylnygtgtlggtmtrswppgntlvarl 190   
+                  d l + + c +  +++    +pdr+  p+ + g      fe iswe a+d  a  ++ +   +  +++ +       g   ++ +   n l    
+  CP000031 714629 DPLSRGHICPKAVALQDFRTDPDRVTRPLLKRG----TDFEEISWEAAFDHAAERIRAVQAAHDRDAVGVYL-----GNPNAHKF--ANLLNLPA 714712
+                  556666777777888888889999999998765....47************999998888888877775544.....44444444..45554444 PP
+
+     align    191 mnccggylnhygdyssaqiaeglnyty.ggwadgnspsdiensklvvlfgnnpgetr...msgggvtyyleqarqksnarmiiidprytdtgagr 281   
+                  +  + g  n+y   ++ qi   +   +  g        di+ + +++++g np  +    m+  g    ++ a +    r+++idpr t+t a r
+  CP000031 714713 LVKAIGTSNRYSSATADQIPHHVASIHmLGHPMLMPIPDIDRTDFLLIIGGNPVVSNgsmMTAPGYGRRID-AIKARGGRVVVIDPRRTET-AER 714805
+                  44556778***********9998765415777777778***************765411155556555555.4455678**********98.789 PP
+
+     align    282 edewipirpgtdaalvnglayvmitenlvdqafldkycvgydektlpasapknghykayilgegpdgvaktpewasqitgvpadkiiklareigs 376   
+                    e   irp +da l+  + yv++++       l+    g d     a ap                   tpe a+q tg+ a  i +lar+  +
+  CP000031 714806 AGEHHFIRPESDAWLLMAMLYVILSDGPARLRHLEPLIDGLDRLN-AAVAP------------------FTPERAAQATGIGAHSIRQLARDFAA 714881
+                  999***************************9****9999999643.34444..................59************************ PP
+
+     align    377 tkpafisqgwgpqrhangeiatraismlailtgnvginggn 417   
+                  +  a      g   ++ g ++  a + l i+tgn   +gg 
+  CP000031 714882 APRAACYARMGASTQSFGTLCQWATNALNIVTGNFDREGGA 714922
+                  *99999999**************************999986 PP
+
+  == domain 2  score: 5.0 bits;  conditional E-value: 0.00026
+     align    704 srvhstyg..nvdvlkaacrqemwinpldaqkrgihngdkvrifndrgevhieakvtprmmpgvvalgegaw 773   
+                  +r h+++      ++k   r  + +np da + g+ +gd  r+    g v +  ++t  m pgv+++ +g w
+  CP000031 715171 ARSHNSWTqnSPRLVKGRNRCTLEVNPADAARLGLGEGDPARVTSAAGTVTLPVEITDAMAPGVLSMPQG-W 715241
+                  4555544310446789999999*******************************************99887.3 PP
+
+  == domain 3  score: 89.1 bits;  conditional E-value: 9.7e-30
+     align     10 laaevsrrglvktt..aigglamassa.ltlpfsriahavdsaiptksdekviwsactvncgsrcplrmhvvdgeikyvetdntgddnydglhqv 101   
+                    + v rr +++ +  aiggla  s++  t+  +    a  sa+ t      + s ct  c   c +   v +g   ++  +   d  ++     
+  CP000031 731507 GDSHVDRRAFLRGSglAIGGLAAISATgGTVTQASAQTAAGSAVET------VKSVCT-HCSVGCTVVAEVKNGV--WIGQEPGWDSPFN---LG 731589
+                  5567889988875433999998776541466666666666666655......445565.4666666666666664..3333333333332...23 PP
+
+     align    102 raclrgrsmrrrvynpdrlkypmkrvgargegkferisweeaydiiatnmqrlikeygnesiylnygtgtlggtmtrswppgntlvarlmnccg. 195   
+                    c +g s+r + +   rlkypmk+ g    g++++iswe+a d i   m ++  e g +s+y       lg +          l  ++    g 
+  CP000031 731590 AHCAKGASVREHAHGERRLKYPMKKEG----GEWKQISWEQAIDEIGDGMMKIRAESGPDSVYW------LGSAK--HNNEQAYLFRKFAAYWGt 731672
+                  459*********************987....7789***************************96......44332..223334455555554441 PP
+
+     align    196 gylnhygdyssaqiaeglnytyggwadgnspsdiensklvvlfgnnpgetrmsgggvtyyleqarqksnarmiiidprytdtgagredewipirp 290   
+                    ++h      +    g+  t+g  a  ns +di nsk + ++g np e++        ++ +a++++na +i+ dpr+t t a + de++  rp
+  CP000031 731673 NNVDHQARICHSTTVAGVANTWGYGAMTNSYNDIHNSKAIFIIGGNPAEAHPV---SLLHVLKAKEQNNAPLIVCDPRFTRTAA-HADEYVRFRP 731763
+                  4688999999999999*********************************8754...34566789999*************9976.689******* PP
+
+     align    291 gtdaalvnglayvmitenlvdqafldkycvgydektlpasapknghykayilgegpdgvaktpewasqitgvpadkiiklareigstkpafisqg 385   
+                  gtd al+ g+ + +  +   d+ f+   + g d+             ka +          tpe + ++tgvp  ++ ++ar + + +p  +   
+  CP000031 731764 GTDVALIWGILWHIFENGWEDKEFIRTRVWGMDQI------------KAEV-------ANWTPEETERVTGVPGSQLKRVARTMANNRPGTVIWC 731839
+                  ************99999999*****9999999963............3322.......3469********************************* PP
+
+     align    386 wgpqrhangeiatraismlailtgnvginggnsga 420   
+                   g  +h+ng+  tra  +l +  gn+g  gg +  
+  CP000031 731840 MGGTQHTNGNNNTRAYCVLQLALGNMGTSGGGTNI 731874
+                  ******************************98765 PP
+
+
+
+Internal pipeline statistics summary:
+-------------------------------------
+Query model(s):                              1  (814 nodes)
+Target sequences:                            1  (1369812 residues searched)
+Passed MSV filter:                         1  (1); expected 0.0 (0.02)
+Passed bias filter:                        1  (1); expected 0.0 (0.02)
+Passed Vit filter:                         1  (1); expected 0.0 (0.001)
+Passed Fwd filter:                         1  (1); expected 0.0 (1e-05)
+Initial search space (Z):                  1  [actual number of targets]
+Domain search space  (domZ):               1  [number of targets reported over threshold]
+# CPU time: 8.91u 0.04s 00:00:08.94 Elapsed: 00:00:08.94
+# Mc/sec: 124.72
+//
+[ok]
