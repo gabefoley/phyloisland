@@ -109,7 +109,7 @@ def writeSeqToFile(ids):
     for record in query.all():       
         """ Create a dictionary for key = feature type -> value = location """
         locs = {}
-        colour_dict = {"a1":"255 165 0", "a2":"255 0 0", "a3":"255 255 0", "TcB":"0 0 255", "TcC":"255 0 255", "chi":"0 255 0"}
+        colour_dict = {"a1":"255 165 0", "a2":"255 0 0", "a3":"255 255 0", "TcB":"0 0 255", "TcC":"255 0 255", "chitinase":"0 255 0"}
         # Prepare for literally the worst code in existence
         """ We have to pull the features from location data in database
         instead of directly from database because of current limitations """
@@ -224,7 +224,7 @@ def writeHmmToSeq(hmm_dict, reference, region, seqrecord, species):
     print("writing sequences to GenBank File")       
     """ Create a dictionary for key = feature type -> value = location """
     locs = {}
-    colour_dict = {"a1":"255 165 0", "a2":"255 0 0", "a3":"255 255 0", "TcB":"0 0 255", "TcC":"255 0 255", "chi":"0 255 0"}
+    colour_dict = {"a1":"255 165 0", "a2":"255 0 0", "a3":"255 255 0", "TcB":"0 0 255", "TcC":"255 0 255", "chitinase":"0 255 0"}
     for result in hmm_dict:
         i = 0
         for reg in result:       
