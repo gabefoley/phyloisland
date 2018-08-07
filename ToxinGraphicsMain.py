@@ -216,10 +216,10 @@ def writeHMMToImage(hmm_dict, reference, region, seq_record):
     gd_diagram.write(output_path, "PNG")
     print("Genome Diagram has been added to file " + output_path)
     
-def writeHmmToSeq(hmm_dict, reference, region, seqrecord):
-    name = seqrecord.name + "_sequence"
+def writeHmmToSeq(hmm_dict, reference, region, seqrecord, species):
+    name = species + "_sequence"
     output_path = reference +"/"+ name + ".gb"
-
+    seqrecord.name = species
     # Write Annotated Sequences to Genbank files to allow easy movement to Artemis
     print("writing sequences to GenBank File")       
     """ Create a dictionary for key = feature type -> value = location """

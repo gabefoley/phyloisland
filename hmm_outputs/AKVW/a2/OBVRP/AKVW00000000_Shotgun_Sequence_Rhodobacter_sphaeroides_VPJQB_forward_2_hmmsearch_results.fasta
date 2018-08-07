@@ -1,0 +1,87 @@
+# hmmsearch :: search profile(s) against a sequence database
+# HMMER 3.1b2 (February 2015); http://hmmer.org/
+# Copyright (C) 2015 Howard Hughes Medical Institute.
+# Freely distributed under the GNU General Public License (GPLv3).
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# query HMM file:                  tmp/a2_profile.hmm
+# target sequence database:        hmm_outputs/AKVW/a2/OBVRP/AKVW00000000_Shotgun_Sequence_Rhodobacter_sphaeroides_VPJQB_forward_2_translated_genome.fasta
+# output directed to file:         hmm_outputs/AKVW/a2/OBVRP/AKVW00000000_Shotgun_Sequence_Rhodobacter_sphaeroides_VPJQB_forward_2_hmmsearch_results.fasta
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Query:       align  [M=814]
+Scores for complete sequences (score includes all domains):
+   --- full sequence ---   --- best 1 domain ---    -#dom-
+    E-value  score  bias    E-value  score  bias    exp  N  Sequence     Description
+    ------- ------ -----    ------- ------ -----   ---- --  --------     -----------
+    5.5e-82  261.9   0.0    8.3e-82  261.4   0.0    1.2  1  AKVW00000000  Shotgun Sequence Rhodobacter sphaeroides
+
+
+Domain annotation for each sequence (and alignments):
+>> AKVW00000000  Shotgun Sequence Rhodobacter sphaeroides
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  261.4   0.0   8.3e-82   8.3e-82     113     813 .. 1090768 1091483 .. 1090764 1091484 .. 0.81
+
+  Alignments for each domain:
+  == domain 1  score: 261.4 bits;  conditional E-value: 8.3e-82
+         align     113 rvynpdrlkypmkr.......v....gargegkferisweeaydiiatnmqrlikeygnesiylnygtgtlggtmtrswp....pgntl 186    
+                        +y p r+kypm r       v     +rg+g f r++w+ea d++a +++r+ + yg         tgt+gg+     p      + l
+  AKVW00000000 1090768 SIYSPTRIKYPMVRreflekgVnadrSTRGNGDFVRVTWDEALDLVAKELKRVQESYGP--------TGTFGGSYGWKSPgrlhNCQVL 1090848
+                       58**********77444443332222469**************************9997........5555555544333111156789 PP
+
+         align     187 varlmnccggylnhygdyss..aqiae.glnytyggwa.dgnspsdiensklvvlfgnnpgetrmsgggv....tyyleqarqksnarm 267    
+                       + r +n +gg++n  gdys+  aqi    +  t   +  +   p  ++n++l+v++  +p +t   g  v    ++   qa ++  +++
+  AKVW00000000 1090849 MRRALNLAGGFVNSSGDYSTgaAQIIMpHVMGTLEVYEqQTAWPVVVDNTELMVFWAADPVKTNQIGWVVpdhgAFAGMQAMKEKGTKV 1090937
+                       9*****************963367654144455555651456799*******************9998873333466789999999*** PP
+
+         align     268 iiidprytdtgagredewipirpgtdaalvnglayvmitenlvdqafldkycvgydektlpasapknghykayilgegpdgvaktpewa 356    
+                       i i+p  t+t      e +  rp td al+ g+a+ + +e+l d+ f+++   g+d             + ay+ ge  dg  kt ewa
+  AKVW00000000 1090938 ICINPVRTETADYFGAELVSPRPQTDVALMLGMAHTLYSEDLHDKDFIENCTSGFDI------------FAAYLTGE-SDGTPKTAEWA 1091013
+                       ******************************************************994............789*9999.59********* PP
+
+         align     357 sqitgvpadkiiklareigstkpafisqgwgpqrhangeiatraismlailtgnvginggnsgaregsyslpfvrmptlenpiqtsis. 444    
+                       ++i g+pa++i +lar     + ++++ gw  qr   ge a   +  la + g++g+ gg  g    sy       pt + p    is 
+  AKVW00000000 1091014 AEICGLPAEQIKELARRFVGGR-TMLAAGWSIQRMHHGEQAHWMLVTLASMIGQIGLPGGGFGL---SYHYSNGGSPTSDGPALGGISd 1091098
+                       ****************987765.57899********************************9986...4555555556666665555542 PP
+
+         align     445 ......mfmwtda.....i..ergpemtalrdg...vrgkdkldvpikmiwnyagnclinqhseinrtheilqddkkcelivvidchmt 517    
+                                w  a     i   r  +m     g     g       +k+ +   gn +  +h + nr   +l+  +k e  +v d + t
+  AKVW00000000 1091099 ggkpveGAAWLSAsgaasIpcARVVDMLLNPGGefqFNGATATYPDVKLAYWVGGNPF-AHHQDRNR---MLKAWEKLETFIVQDFQWT 1091183
+                       2211113455544111122113444444333332224566666667888888888875.67888887...688999************* PP
+
+         align     518 ssakyadillpdctaseqmdfaldascgnmsyvifndqvikprfecktiyemtselakrlgveqqftegrtqeewmrhlya....qsre 602    
+                       ++a++adi+lp  t+ e+ d+       n + ++   +v+ p +e+++ y++ + l++rlg  ++ftegr +  w+  +y     q+  
+  AKVW00000000 1091184 ATARHADIVLPATTSYERNDIESVGDYSNRA-ILAMKKVVDPLYEARSDYDIFAALTERLGKGKEFTEGRDEMGWISSFYEaavkQAEF 1091271
+                       ********************98666666655.455679****************************************99522213333 PP
+
+         align     603 aipelptfeefrkqgifkkrdpqg.hhvaykafredpqanplttpsgkieiysqaladiaatwelpegdvidplpiytpgfesyqdpln 690    
+                          e+p+fe+f  +gi++    +g  +v y  fredp  npl tpsg ieiys+ +  +         d     p +    e    p  
+  AKVW00000000 1091272 KQMEMPSFEDFWSEGIVEFPITEGaNFVRYADFREDPLFNPLGTPSGLIEIYSKNIEKMG-------YDDCPAHPTWMEPAERLGGPGA 1091353
+                       4689*************998888735799************************9987654.......3555667888888999999976 PP
+
+         align     691 kqyplqltgfhyksrvhstygnv...dvlkaacrqemwinpldaqkrgihngdkvrifndrgevhieakvtprmmpgvvalgegawydp 776    
+                        +ypl++   h +sr+hs        d+   a ++   inp da  rgi +gd +r+fndrg++ + akv+  +mpg + + eg wydp
+  AKVW00000000 1091354 -KYPLHVVASHPNSRLHSQLNGTslrDLYAVAGHEPCLINPDDAAARGIADGDVLRVFNDRGQILVGAKVSDAVMPGAIQVYEGGWYDP 1091441
+                       .5****************8754323377778888999***************************************************9 PP
+
+         align     777 ....dakrvdkggcinvlttqr.psplakgnpshtnlvqvek 813    
+                           +   +dk g +nvl+ +   s la+gn  +t l +vek
+  AKVW00000000 1091442 ldpsEEGTLDKYGDVNVLSLDVgTSKLAQGNCGQTILADVEK 1091483
+                       643345679*********98752799**************98 PP
+
+
+
+Internal pipeline statistics summary:
+-------------------------------------
+Query model(s):                              1  (814 nodes)
+Target sequences:                            1  (1542723 residues searched)
+Passed MSV filter:                         1  (1); expected 0.0 (0.02)
+Passed bias filter:                        1  (1); expected 0.0 (0.02)
+Passed Vit filter:                         1  (1); expected 0.0 (0.001)
+Passed Fwd filter:                         1  (1); expected 0.0 (1e-05)
+Initial search space (Z):                  1  [actual number of targets]
+Domain search space  (domZ):               1  [number of targets reported over threshold]
+# CPU time: 10.10u 0.05s 00:00:10.15 Elapsed: 00:00:10.15
+# Mc/sec: 123.72
+//
+[ok]

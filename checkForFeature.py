@@ -88,7 +88,7 @@ def get_feature_location_with_profile(ids, reference, profile_name, recordName, 
     query = models.GenomeRecords.query.filter(models.GenomeRecords.uid.in_(ids))
     for record in query.all():
         seq_record = servers.bio_db.lookup(primary_id=record.name)
-        species = record.name
+        species = record.name.replace(" ", "_")[0:4]
 
         # Create a path to write the translated genomic sequence to
         random_id = phyloisland.randstring(5)
@@ -99,9 +99,10 @@ def get_feature_location_with_profile(ids, reference, profile_name, recordName, 
         # Get the nucleotide sequence of the genome
         nuc_seq = Bio.Seq.Seq(str(seq_record.seq).replace("b'", "").replace("'", ""))
         outpath = reference + "/" + species + "/" + region +"/" + profile_name + "/"
+        outpath.replace(" ", "_")
         # Check three forward reading frames
         if not os.path.exists(outpath):
-            os.makedirs(outpath)
+            os.makedirs(outpath.replace(" ", "_"))
         
         for forward in [True, False]:
             for i in list(range(0, 3)):
@@ -109,7 +110,7 @@ def get_feature_location_with_profile(ids, reference, profile_name, recordName, 
                 strand = "_forward_" +str(i) if forward else "_backward_" + str(i)
                 sequence = nuc_seq[i:] if forward else nuc_seq.reverse_complement()[i:]
 
-                cleaned_path = outpath.replace(" ", "_") + seq_record.id + "_" + seq_record.annotations.get('organism') + "_" + random_id + strand + "_translated_genome.fasta"
+                cleaned_path = outpath + seq_record.id + "_" + seq_record.annotations.get('organism') + "_" + random_id + strand + "_translated_genome.fasta"
                 hmmsearch_results = outpath + seq_record.id + "_" + seq_record.annotations.get('organism') + "_" + random_id + strand + "_hmmsearch_results.fasta"
 
 
@@ -159,10 +160,10 @@ def get_feature_location_with_profile(ids, reference, profile_name, recordName, 
             hmmerout.append(resultread.HMMread(reg))
         print(hmmerout)
         # all_reg handling should be in HMMread not writeHMMtoImage
-        ToxinGraphicsMain.writeHMMToImage(hmmerout, reference + "/" +species , all_reg, seq_record)
+        ToxinGraphicsMain.writeHMMToImage(hmmerout, reference + "/" +species.replace(" ", "_") , all_reg, seq_record)
         print("Diagram has been written to %s directory" %(reference))
         print("Creating a Sequence file containing all %s region hits" % (region))
-        ToxinGraphicsMain.writeHmmToSeq(hmmerout, reference +"/" + species, all_reg, seq_record)
+        ToxinGraphicsMain.writeHmmToSeq(hmmerout, reference +"/" + species.replace(" ", "_"), all_reg, seq_record, species)
         print("WIP Seq may not work")
                     
                 # utilities.removeFile(reference, cleaned_path)
