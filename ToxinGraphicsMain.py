@@ -159,7 +159,7 @@ def writeHMMToImage(hmm_dict, reference, region, seq_record, species):
     # For my work I was considering changing 'region1, 2, and 3' to a3, TcB, and TcC for convenience
     # Up to others though if I fully change that (is just a UI thing tbh)
     region_colours = {"a1":"orange", "a2":"red", "chitinase":"green", "a3":"yellow",
-                      "TcB":"blue", "TcC":"magenta", "pore":"grey", "region4":"pink"}
+                      "TcB":"blue", "TcC":"magenta", "pore":"grey", "region1":"light blue", "region2":"pink", "region3":"purple", "region4":"black"}
     locs = {}
     for result in hmm_dict:
         i = 0
@@ -224,7 +224,8 @@ def writeHmmToSeq(hmm_dict, reference, region, seqrecord, species):
     print("writing sequences to GenBank File")       
     """ Create a dictionary for key = feature type -> value = location """
     locs = {}
-    colour_dict = {"a1":"255 165 0", "a2":"255 0 0", "a3":"255 255 0", "TcB":"0 0 255", "TcC":"255 0 255", "chitinase":"0 255 0"}
+    colour_dict = {"a1":"255 165 0", "a2":"255 0 0", "a3":"255 255 0", "TcB":"0 0 255", "TcC":"255 0 255",
+                   "chitinase":"0 255 0", "region1":"0 255 255", "region2":"255 153 255", "region3":"204 0 102", "region4":"0 0 0"}
     for result in hmm_dict:
         i = 0
         for reg in result:       
