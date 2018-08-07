@@ -160,7 +160,7 @@ def get_feature_location_with_profile(ids, reference, profile_name, recordName, 
             hmmerout.append(resultread.HMMread(reg))
         print(hmmerout)
         # all_reg handling should be in HMMread not writeHMMtoImage
-        ToxinGraphicsMain.writeHMMToImage(hmmerout, reference + "/" +species.replace(" ", "_") , all_reg, seq_record)
+        ToxinGraphicsMain.writeHMMToImage(hmmerout, reference + "/" +species.replace(" ", "_") , all_reg, seq_record, species)
         print("Diagram has been written to %s directory" %(reference))
         print("Creating a Sequence file containing all %s region hits" % (region))
         ToxinGraphicsMain.writeHmmToSeq(hmmerout, reference +"/" + species.replace(" ", "_"), all_reg, seq_record, species)

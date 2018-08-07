@@ -148,13 +148,13 @@ def writeSeqToFile(ids):
         out_path = "tmp/"+ name + ".gb"
         SeqIO.write(seq_record, out_path, "genbank")
 
-def writeHMMToImage(hmm_dict, reference, region, seq_record):
+def writeHMMToImage(hmm_dict, reference, region, seq_record, species):
     # Currently taking region to be run simultaneously with hmmer, will need to manipulate some stuff for later
     # Initiation of GenomeDiagram assets"
-    name = reference + "_" + seq_record.name + "_GenomeDiagram"
+    name = reference + "_" + species + "_GenomeDiagram"
     gd_diagram = GenomeDiagram.Diagram(name)
     max_len = 0
-    output_path = reference + "/" + seq_record.name + ".png"
+    output_path = reference + "/" + species + ".png"
     start = 0
     # For my work I was considering changing 'region1, 2, and 3' to a3, TcB, and TcC for convenience
     # Up to others though if I fully change that (is just a UI thing tbh)
@@ -241,6 +241,6 @@ def writeHmmToSeq(hmm_dict, reference, region, seqrecord, species):
         feature = SeqFeature(location = FeatureLocation(int(locs[location][0]), int(locs[location][1]), strand=1), type = "misc_feature", qualifiers = color)
         seqrecord.features.append(feature)
         
-    sequence = str(seqrecord.seq)
+    sequence = str(seqrecord.seq)[2:-1]
     seqrecord.seq = Seq(sequence, generic_dna)
     SeqIO.write(seqrecord, output_path, "genbank")

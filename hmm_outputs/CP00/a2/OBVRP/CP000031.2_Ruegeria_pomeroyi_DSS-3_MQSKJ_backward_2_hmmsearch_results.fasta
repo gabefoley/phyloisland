@@ -1,0 +1,57 @@
+# hmmsearch :: search profile(s) against a sequence database
+# HMMER 3.1b2 (February 2015); http://hmmer.org/
+# Copyright (C) 2015 Howard Hughes Medical Institute.
+# Freely distributed under the GNU General Public License (GPLv3).
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# query HMM file:                  tmp/a2_profile.hmm
+# target sequence database:        hmm_outputs/CP00/a2/OBVRP/CP000031.2_Ruegeria_pomeroyi_DSS-3_MQSKJ_backward_2_translated_genome.fasta
+# output directed to file:         hmm_outputs/CP00/a2/OBVRP/CP000031.2_Ruegeria_pomeroyi_DSS-3_MQSKJ_backward_2_hmmsearch_results.fasta
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Query:       align  [M=814]
+Scores for complete sequences (score includes all domains):
+   --- full sequence ---   --- best 1 domain ---    -#dom-
+    E-value  score  bias    E-value  score  bias    exp  N  Sequence Description
+    ------- ------ -----    ------- ------ -----   ---- --  -------- -----------
+    3.3e-16   44.4   0.0    5.4e-16   43.7   0.0    1.2  1  CP000031  Ruegeria pomeroyi DSS-3, complete genome
+
+
+Domain annotation for each sequence (and alignments):
+>> CP000031  Ruegeria pomeroyi DSS-3, complete genome
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !   43.7   0.0   5.4e-16   5.4e-16      54     319 ..  112340  112587 ..  112324  112595 .. 0.78
+
+  Alignments for each domain:
+  == domain 1  score: 43.7 bits;  conditional E-value: 5.4e-16
+     align     54 sdekviwsactvncgsrcplrmhvvdgeikyvetdntgddnydglhqvraclrgrsmrrrvynpdrlkypmkrvgargegkferisweeaydiia 148   
+                  sde v  ++c   c  rc + +h+ dg            +    + +   c +g +   +v  p rl+ p+krvg rg g+f+ i+w+ea +i a
+  CP000031 112340 SDE-VRKTTC-YMCACRCGINVHMKDGPDGKKRVAYIEGNREHPVNKGVLCAKGSAGIMQVNAPSRLRAPLKRVGPRGSGEFQEITWDEALEI-A 112431
+                  444.444455.569************976555555555555667777789*****************************************96.7 PP
+
+     align    149 tnmqrlikeygnesiylnygtgtlgg.tmtrswppgntlvarlmnccggylnhygdyssaqiaeglnytyggwadgnspsdiensklvvlfgnnp 242   
+                  t   + i+e  n+   l + tg     ++t  w   n            y  h g + s ++a    yt gg        d + +kl +l+g   
+  CP000031 112432 TGWLKPIRE--NDPSKLAFFTGRDQSqSFTSFWA-QNF-------GTPNYAAH-GGFCSVNMAAAGIYTMGGAFWEFGQPDWDHTKLFILLGVAE 112515
+                  778888988..66677888888765504455554.332.......34456666.6678888888888*****887888889***********865 PP
+
+     align    243 getrmsgggvtyyleqarqksnarmiiidprytdtgagredewipirpgtdaalvnglayvmitenlvdqafldkyc 319   
+                           +   + + +    ar++ ++p  t   a   d+w  i pgtd  l+  l +v++    vd  +l +y 
+  CP000031 112516 DHD---SNPIKMGIGKIKA-RGARVVGVNPIRTGYNAV-ADDWYGITPGTDGLLILSLIHVLMKAGKVDLDYLARYT 112587
+                  432...2344444444443.369*******99988875.688*******************************9996 PP
+
+
+
+Internal pipeline statistics summary:
+-------------------------------------
+Query model(s):                              1  (814 nodes)
+Target sequences:                            1  (1369811 residues searched)
+Passed MSV filter:                         1  (1); expected 0.0 (0.02)
+Passed bias filter:                        1  (1); expected 0.0 (0.02)
+Passed Vit filter:                         1  (1); expected 0.0 (0.001)
+Passed Fwd filter:                         1  (1); expected 0.0 (1e-05)
+Initial search space (Z):                  1  [actual number of targets]
+Domain search space  (domZ):               1  [number of targets reported over threshold]
+# CPU time: 10.56u 0.07s 00:00:10.63 Elapsed: 00:00:10.63
+# Mc/sec: 104.89
+//
+[ok]
