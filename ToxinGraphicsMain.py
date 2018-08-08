@@ -159,7 +159,7 @@ def writeHMMToImage(hmm_dict, reference, region, seq_record, species):
     # For my work I was considering changing 'region1, 2, and 3' to a3, TcB, and TcC for convenience
     # Up to others though if I fully change that (is just a UI thing tbh)
     region_colours = {"a1":"orange", "a2":"red", "chitinase":"green", "a3":"yellow",
-                      "TcB":"blue", "TcC":"magenta", "pore":"grey", "region1":"light blue", "region2":"pink", "region3":"purple", "region4":"black"}
+                      "TcB":"blue", "TcC":"magenta", "pore":"grey", "region1":"lightblue", "region2":"pink", "region3":"purple", "region4":"black"}
     locs = {}
     for result in hmm_dict:
         i = 0
