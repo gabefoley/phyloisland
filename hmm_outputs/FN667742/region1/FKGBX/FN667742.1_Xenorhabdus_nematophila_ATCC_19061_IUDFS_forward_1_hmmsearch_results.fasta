@@ -1,0 +1,177 @@
+# hmmsearch :: search profile(s) against a sequence database
+# HMMER 3.1b2 (February 2015); http://hmmer.org/
+# Copyright (C) 2015 Howard Hughes Medical Institute.
+# Freely distributed under the GNU General Public License (GPLv3).
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# query HMM file:                  tmp/region1_profile.hmm
+# target sequence database:        hmm_outputs/FN667742/region1/FKGBX/FN667742.1_Xenorhabdus_nematophila_ATCC_19061_IUDFS_forward_1_translated_genome.fasta
+# output directed to file:         hmm_outputs/FN667742/region1/FKGBX/FN667742.1_Xenorhabdus_nematophila_ATCC_19061_IUDFS_forward_1_hmmsearch_results.fasta
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Query:       align  [M=2516]
+Scores for complete sequences (score includes all domains):
+   --- full sequence ---   --- best 1 domain ---    -#dom-
+    E-value  score  bias    E-value  score  bias    exp  N  Sequence Description
+    ------- ------ -----    ------- ------ -----   ---- --  -------- -----------
+          0 1677.6  46.7   8.3e-232  758.7  15.2    6.9  6  FN667742  Xenorhabdus nematophila ATCC 19061 chromosome, comp
+
+
+Domain annotation for each sequence (and alignments):
+>> FN667742  Xenorhabdus nematophila ATCC 19061 chromosome, complete genome
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !   16.6   0.0   4.1e-08   4.1e-08      24     169 ..  839595  839738 ..  839577  839745 .. 0.71
+   2 !  305.7   0.9     3e-95     3e-95     938    1343 ..  840716  841113 ..  840695  841131 .. 0.84
+   3 !   17.6   0.0   2.1e-08   2.1e-08    1580    1641 ..  841258  841316 ..  841242  841318 .. 0.81
+   4 !  758.7  15.2  8.3e-232  8.3e-232    1756    2515 ..  841318  842066 ..  841314  842067 .. 0.93
+   5 !  311.3   8.8     6e-97     6e-97    1289    1694 ..  998325  998739 ..  998319  998752 .. 0.82
+   6 !  278.7   0.1     4e-87     4e-87    2300    2515 ..  999303  999514 ..  999287  999515 .. 0.94
+
+  Alignments for each domain:
+  == domain 1  score: 16.6 bits;  conditional E-value: 4.1e-08
+     align     24 ishssfnefrqqvsehlswsethdlyhdaqqaqkdnrlyearilkranp.qlqna..vhlaila.pnaeligynnqfsgrasqyvapgtvssmfs 114   
+                  i +     fr++   h++  ++  ly++a         y +++++ a    l++a  +++a +a  + el  y + f     ++  pg++ ++ s
+  FN667742 839595 IVKVGPSRFRRRHRHHFN-GQAETLYQNAL-------SYATQLIHSARErGLRDAetLRMARVAsGQPELPNYADLFPEPWDNFCKPGALEALNS 839681
+                  555555555555444443.33344554443.......2333333333321233331144454441567999************************ PP
+
+     align    115 paayltelyrearnl..hasdsvyyldtrrpdlksmalsqqnmdielstlslsnell 169   
+                  paayl ely+ ar+l   a++    +  rrpd+  + l ++n + el +l + ne+l
+  FN667742 839682 PAAYLLELYQFARQLelDATEGAIGFAQRRPDIPELLLDRDNTNQELPALQIVNEIL 839738
+                  *************752269999999******************************97 PP
+
+  == domain 2  score: 305.7 bits;  conditional E-value: 3e-95
+     align    938 ldesrsaalstyyirqvak.......aaaaiksrddlydyllldnqvsaavkttrlaeviasvqlyvnrilenveenlnsgvisreeiidwdkya 1025  
+                  l es+  al  +y+ qv             ik+ dd  dyllld   sa+vk+trl+ +++s+q++vnr+ +n+e++l    ++ ee  +w+++a
+  FN667742 840716 LLESQRDALLDFYLGQVVAyspdmtsQRDKIKDIDDACDYLLLDLLTSAKVKATRLSLATNSLQQFVNRVSLNIEPGL---FMTAEESENWQEFA 840807
+                  567777777777777765411111113467************************************************...************** PP
+
+     align   1026 krystwaavsqlvlyPeiyvdPtlrlgktklldallqsvsqsklnadavedavlsyltsfeevanlkvlsayednidvdqdktyfialsetdage 1120  
+                  +ry +w+a + l+ yPe y++P lrl kt+++++l+++++q+k+++d+v++avl+yl++fe+v+nlkv+++yed+++ ++dk +f+++++t++++
+  FN667742 840808 NRYNYWSADRLLRTYPESYLEPLLRLNKTEFFFQLESALNQGKITEDSVQQAVLGYLNNFEDVSNLKVIAGYEDGVNIKRDKFFFVGRTRTQPYQ 840902
+                  *********************************************************************************************** PP
+
+     align   1121 yywrsvdhskfn.da.klaanawsewkkidvPl.narksivrPviyksrlyllwlevkei..tkqtg....ekkdkeqte......idyryelkl 1200  
+                  yywrs++ s +  d+  l +nawsewk+id Pl      ++rP+ +++rly+ w ev+e   tk+t     ++++ e ++      + + +++k+
+  FN667742 840903 YYWRSLNLSIRHpDTdALSPNAWSEWKPIDLPLgSVDPNLIRPIFLNNRLYIAWTEVEEQseTKDTTalslHNQNVEPSAgdwvppTPFLTRIKI 840997
+                  *******8766424459****************7777899**************987764226666522221222222222222337789***** PP
+
+     align   1201 ahlrydGtwstpitfdvrkkvselkleknrapglycagyqgedtllvmfynqqdvldsykkeerlalvifadlaskdmtpeqsnvyrdnsyqdfd 1295  
+                  a+ +ydG+wstp+   +r++ +++++ +++a               vm   qqd      ++  lalv f +l++ d         ++++ +d+d
+  FN667742 840998 AYAKYDGSWSTPTI--LREDNLQYRMAQMVA---------------VM-DIQQD-----PHNPFLALVPFVRLQGTD---------KKGKDYDYD 841060
+                  **************..9**************...............44.33555.....46779*************.........999999*** PP
+
+     align   1296 evnvrrvdnrlaedyelPss..vsdrk.dyG....wgdyylsevdnGdieeinyk 1343  
+                  e + +++d  l+e  +lP       rk  y     w  yy +e ++ + + i+y+
+  FN667742 841061 EAFGYVCDTLLVEITDLPDDeyADGRKgKYVgnlvW--YYSREHKDAEGNPIDYR 841113
+                  ******************986433333144358888..99888888777777776 PP
+
+  == domain 3  score: 17.6 bits;  conditional E-value: 2.1e-08
+     align   1580 tdnaltlqfnengakyvqyqskrtrlntlfarelvakatkkldlvlsmetqnlqeeqlskGf 1641  
+                   d+ ++l f+ +++       +++rlntlfa++l+a a++++  vls++tq + e+ + + f
+  FN667742 841258 QDQVQFLSFPADETG---NAPQNIRLNTLFAKKLIAIASQGIPQVLSWNTQLITEQPIPGSF 841316
+                  566777777755544...45689********************************9998765 PP
+
+  == domain 4  score: 758.7 bits;  conditional E-value: 8.3e-232
+     align   1756 ePidleGanslyfwelfyytPllvaqrllveqrfdeasrwlkyvfdPseyivegalknyk...wnvrPlledtkensd.lldsvdPdavaqhdPi 1846  
+                   Pidl+Gan++yfwelf+++P+lva+rl+ eqr++ea+ wl y+f+P e +   a +++k   wn+rP+++ +   +  l++++dPda+a  +Pi
+  FN667742 841318 TPIDLNGANGIYFWELFFHMPFLVAWRLNIEQRLKEATEWLHYIFNPLEDELVQASNQGKpryWNSRPIIDPPPTVYRmLIEPTDPDAIAASEPI 841412
+                  69**************************************************9999**999**********99988862679************* PP
+
+     align   1847 hykvsiflrlldlliarGdheyrklerdalneaklsyaqalsllGdkPdlqlsttwsdlrldraldittqnaydsaivalren..istPlP.lsl 1938  
+                  hy+++if + +++l+++Gd+eyrkl   a+++ak  y     llG  Pd+ l++ w++ +l++ +       y++++ + +e       +P l++
+  FN667742 841413 HYRKAIFRFYVKNLLDQGDMEYRKLTSSARTVAKQIYDSVNMLLGTSPDILLAANWQPRTLQDVA------LYENSEARAQELmlTVSSVPlLPV 841501
+                  **************************************************************999......566666665554114567888999 PP
+
+     align   1939 rsantl....tdlflkqinevltalwdrleqrvynlrhnlsldGkelylalyaekidPkalls...aavvtsrgasklPesfmslwrfehmlera 2026  
+                    + ++    +dlf+k+++ + ++lw+ l+qr+ynlrhnl+ldGke+   ly+e+i+P+ ll    ++vv+ r a+      +  +rf +++ ra
+  FN667742 841502 TYDTSVsaapSDLFVKPVDTEYLKLWQMLDQRLYNLRHNLTLDGKEFPAGLYDEPISPQDLLRqryQRVVANRMAGMK-RRAIPNYRFTPIMSRA 841595
+                  99999999999***************************************************9888999999999854.3333555********* PP
+
+     align   2027 kGmvdqliqfGstllsllerkdaealeallqlqaaeliltsldlqdkeieeldaekevlekskaaaqdrfdsykklydenisagenqvielrasa 2121  
+                  k + ++liq+Gstllslle+kd   +e+++++q+  l+ ++ +lq++ i++++a++++l +s++aaq+r ++yk+lydenis +e+ vi l+++a
+  FN667742 841596 KEAAETLIQYGSTLLSLLEKKDNTDFEHFRMQQQLGLYSFTRNLQQQAIDMQQASLDALTISRRAAQERQQHYKSLYDENISITEQEVIALQSRA 841690
+                  *********************************************************************************************** PP
+
+     align   2122 aslllavqasrlaaaaldlvPnifGlavGGsrwGaileaaaevieikanvdsieadklsvsetyrrrrqeweiqrknaeaelkqidaqlkslavr 2216  
+                  a  ++a+q++ +aaa +d+vPnifGlavGG  +G +l a +e i i  ++++ +a +lsvse yrrr+qewe+q+k+a+ ++++idaq+  ++ +
+  FN667742 841691 AEGVIAAQSAATAAAVADMVPNIFGLAVGGMVFGGMLRAIGEGIRIDVESKNAKATSLSVSENYRRRQQEWELQYKQADINIEEIDAQIGIQQRQ 841785
+                  *********************************************************************************************** PP
+
+     align   2217 reaavkrktslkaeqektlellaflqrkfsnealynwlrsrlaalylqaydlvvarclsaeaalryeldddsarfikpsawqdtyaGllaGetlk 2311  
+                   + ++ ++++l+a+ e+ + ll++++++f+n+aly w++s+++ lylqayd+v ++cl aea+++ye  + +  f++++ w+d+y+Gll Ge lk
+  FN667742 841786 LNISTTQLAQLEAQHEQDQVLLEYYSNRFTNDALYMWMISQISGLYLQAYDAVNSLCLLAEASWQYETGQYDMNFVQSGLWNDLYQGLLVGEHLK 841880
+                  *********************************************************************************************** PP
+
+     align   2312 lslarmedaylkrdkrllevektvslaevraelpkdngpfslakeldklvsqgsgsagsgnnnlafgagtdtktslaisvsladlkiredyPasl 2406  
+                  l+l+rm++ayl+++ r le+ kt+s++ +             + e+ k                            + ++ l+   + +dyP + 
+  FN667742 841881 LALQRMDQAYLQHNTRRLEIIKTISVKSLLTSS---------QWEIGKS-------------------------TGSFTFLLSAEMFLRDYP-TH 841940
+                  *************************99987655.........4455554.........................3456888989999*****.56 PP
+
+     align   2407 skirrikqvsvtlPallGPyedvqailslGdkar...........lanGlea...............lavssGmndsGqfqldfddekflPfeGi 2475  
+                  +  rrik v+++lPallGPyedv a l    ++            l n le                + +s  m+dsG+f+l+fdde flPfeG+
+  FN667742 841941 AD-RRIKTVALSLPALLGPYEDVRASLVQLSNTLystadlktidyLLNPLEYtkpenvllnvqanqgVVISTAMEDSGMFRLNFDDELFLPFEGT 842034
+                  66.9*********************987776666667778888885555555677777777777888**************************** PP
+
+     align   2476 avdqstltlsftnasmpekgkqatnlktlndvilhvryti 2515  
+                  +   s + l f          q + l++l+d+ilh+ryt+
+  FN667742 842035 GAI-SQWKLEFGS-------DQDQLLESLSDIILHLRYTA 842066
+                  987.9******99.......89*****************8 PP
+
+  == domain 5  score: 311.3 bits;  conditional E-value: 6e-97
+     align   1289 nsyqdfdevnvrrvdnrlaedyelPssvsdrkdyGwgdyylsevdnGdieeinykaassdlklyisrklriihngyeGqkrnecnlmnkyGklGd 1383  
+                  nsy +fd++n+rrv+nr+aedye+Pssv + +  Gwgdy ls    G i++i y+++ss+l++ i+++lri h gy  ++  ++nlmn++Gk+Gd
+  FN667742 998325 NSYIQFDTNNIRRVNNRYAEDYEIPSSVMSGETSGWGDYNLSYLAYGKIPNISYQTSSSNLIVTIKPQLRIYHTGYADERGTQVNLMNQFGKVGD 998419
+                  89********************************************************************************************* PP
+
+     align   1384 kfivyeslgvsadnsed...kldly.....svykydgsksglnqkrllfhrdltdeskveawlpgakrsltne.daaigddkltdslkksddlkd 1469  
+                  kfi+y+  ++s+ ++++   +l++      + +    + sg  +     + + +d ++++ + p +     +  ++  ++++   sl     l  
+  FN667742 998420 KFIIYD-AKLSTGYAHKlipTLKFGktnndNDFILVNNSSGSANYPYGSCWEFQDAKGNKLF-PKDITGYPESiNIGTSNKEFFRSLATVSALSG 998512
+                  *****6.6999999875122334433222222222233443333333334444444444333.33333332221334444444445544444444 PP
+
+     align   1470 iivvtdsketaddvsGrveinlavspakvqiivkaggkeqtftadkdvsiqpspsfdemnyqfnaleidgsglnfinnsasidvtftafaedgrk 1564  
+                        s  +  ++s ++ei++ v p+++ + + a   ++ +ta+  v   p   f + +y fn + i+gs l+f+nn a i++ f a+a++ r 
+  FN667742 998513 GKTGIYSIYSIYNISNPIEIDTGVNPSNITVTIDARDGKKIYTANDYVKPLPQFVFGQTDYPFNDIVINGSKLQFVNNKAEIEINFQAYANNNRY 998607
+                  3333336677889***********************99********************************************************* PP
+
+     align   1565 llrekfsikvtlkvstdnaltlqfnengakyvqyqskrtrlntlfarelvakatkkldlvlsmetqnlqeeqlskGfyatfvippynlsthgder 1659  
+                  l+ e+f i+vt kv+td altl +++nga+y+q+  +r+rlntlfar+lv++at+++d++lsmetqn+qe+ql+kGfyatf ippyn s hgd+ 
+  FN667742 998608 LGSERFIIPVTRKVETDTALTLYHDDNGAQYMQWGVYRVRLNTLFARQLVSRATTGIDTILSMETQNIQEPQLGKGFYATFKIPPYNPSIHGDKC 998702
+                  *********************************************************************************************** PP
+
+     align   1660 wfklyik..hvvdnnshiiysgqltdtninitlfipl 1694  
+                  wfk  +       n   +i    +t++n+ i+l + l
+  FN667742 998703 WFKHVVVgsNSTSNTLMMIILILFTQANLAISLSVSL 998739
+                  **97764113344555667777888999998887766 PP
+
+  == domain 6  score: 278.7 bits;  conditional E-value: 4e-87
+     align   2300 tyaGllaGetlklslarmedaylkrdkrllevektvslaevraelpkdngpfslakeldklvsqgsgsagsgnnnlafgagtdtktslaisvsla 2394  
+                  + +G+   + + l   +meda+lk+d+r+leve+tvsl  v+a+l      f+l  ++ +lv +g gsag g n l+fg+g+dt+tsl++s+sla
+  FN667742 999303 LMQGMWQANPMCLIWHNMEDAHLKQDQRALEVERTVSLSAVYAGL--SSKNFNLPMKVAELVKDGKGSAGDGLNSLTFGTGADTRTSLQASISLA 999395
+                  567888888899999******************************..666799****************************************** PP
+
+     align   2395 dlkiredyPaslskirrikqvsvtlPallGPyedvqailslG.dkarlanGlealavssGmndsGqfqldfddekflPfeGiavd.qstltlsft 2487  
+                  dlki+edyPasl+k+rrikq+svtlPallGPy+d+qa+ls+G d+ rla G++ala+s GmndsGqfqldf+d+kflPfeGi +d +++l lsf+
+  FN667742 999396 DLKINEDYPASLGKVRRIKQISVTLPALLGPYQDIQAVLSYGgDNNRLARGCKALAISRGMNDSGQFQLDFNDGKFLPFEGIVIDdKGALVLSFP 999490
+                  *****************************************64999**************************************7369******* PP
+
+     align   2488 nasmpekgkqatnlktlndvilhvryti 2515  
+                  n       kqa +l+tlnd+ilh+ryti
+  FN667742 999491 N----ATTKQALMLQTLNDIILHIRYTI 999514
+                  *....5689******************8 PP
+
+
+
+Internal pipeline statistics summary:
+-------------------------------------
+Query model(s):                              1  (2516 nodes)
+Target sequences:                            1  (1477529 residues searched)
+Passed MSV filter:                         1  (1); expected 0.0 (0.02)
+Passed bias filter:                        1  (1); expected 0.0 (0.02)
+Passed Vit filter:                         1  (1); expected 0.0 (0.001)
+Passed Fwd filter:                         1  (1); expected 0.0 (1e-05)
+Initial search space (Z):                  1  [actual number of targets]
+Domain search space  (domZ):               1  [number of targets reported over threshold]
+# CPU time: 22.95u 0.19s 00:00:23.14 Elapsed: 00:00:23.31
+# Mc/sec: 159.48
+//
+[ok]

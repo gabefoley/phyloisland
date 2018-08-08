@@ -1275,8 +1275,9 @@ def checkForRegion(ids, region, closest_to=-1):
 def checkWithProfile(ids, region):
     # Check if a reference profile for A1 exists
     profile_reference = eval("models.Profile.query.filter_by(" + region + "_profile_ref=1).first()")
-    profile_name = profile_reference.name
     if (profile_reference):
+        profile_name = profile_reference.name
+
         print("Using the %s profile named %s to check for %s regions" % (region, profile_name, region))
         eval(
             'checkForFeature.get_feature_location_with_profile(ids, "hmm_outputs' + '", "' + profile_name + '", "' + region + '", "' + region + '_loc' + '","' + region +'")')
