@@ -165,7 +165,7 @@ def writeHMMToImage(hmm_dict, reference, region, seq_record, species):
         i = 0
         for reg in result:       
             """ Create a dictionary for key = feature type -> value = location """
-            locs[reg.split("/")[2] + "_" + str(i)] = result[reg].split(":")
+            locs[reg.split("/")[2] + phyloisland.randstring(5)] = result[reg].split(":")
             i += 1
             # Prepare for literally the worst code in existence
             """ We have to pull the features from location data in database
@@ -183,7 +183,7 @@ def writeHMMToImage(hmm_dict, reference, region, seq_record, species):
         svals.append(sval)
         endvals.append(endval)
         """ create and add features based on locations """
-        feature = SeqFeature(location = FeatureLocation(int(locs[location][0]), int(locs[location][1]), strand=1), type = location[0:-2])
+        feature = SeqFeature(location = FeatureLocation(int(locs[location][0]), int(locs[location][1]), strand=1), type = location[0:-5])
         seq_record.features.append(feature)
 
     """ Set up the Genome Diagram """
@@ -230,7 +230,7 @@ def writeHmmToSeq(hmm_dict, reference, region, seqrecord, species):
         i = 0
         for reg in result:       
             """ Create a dictionary for key = feature type -> value = location """
-            locs[reg.split("/")[2] + "_" + str(i)] = result[reg].split(":")
+            locs[reg.split("/")[2] + phyloisland.randstring(5)] = result[reg].split(":")
             i += 1
         
     print("adding %s genome to diagram" % (seqrecord.name))      
@@ -238,7 +238,7 @@ def writeHmmToSeq(hmm_dict, reference, region, seqrecord, species):
     seqrecord.features = []
     for location in locs:
         """ create and add features based on locations """
-        color = {'color':colour_dict[location[0:-2]]}
+        color = {'color':colour_dict[location[0:-5]]}
         feature = SeqFeature(location = FeatureLocation(int(locs[location][0]), int(locs[location][1]), strand=1), type = "misc_feature", qualifiers = color)
         seqrecord.features.append(feature)
         
