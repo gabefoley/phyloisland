@@ -84,7 +84,7 @@ def get_full_genome(genome_ids):
 
             print ('here is the species')
 
-            species = models.GenomeRecords.query.filter_by(name=genome_id).first().species
+            species = " ".join(models.GenomeRecords.query.filter_by(name=genome_id).first().species.split(" ")[0:2])
 
             print ("\n This genome record is already in the database %s" % (genome_id))
             seqDict[species] = "in_database"
@@ -116,7 +116,7 @@ def get_full_genome(genome_ids):
                         else:
 
                             non_ref_seq_ids.append(record.id)
-                            seqDict[record.annotations.get('organism')] = record
+                            seqDict[" ".join(record.annotations.get('organism').split(" ")[0:2])] = record
 
                     # Join all the found species together so we can quickly search to see if we didn't find something
                     combined_species = '\t'.join(found_species)

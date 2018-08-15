@@ -1024,9 +1024,13 @@ class UploadView(BaseView):
                     species_names = readLinesFromFile("static/uploads/" + filename)
 
                     for species_name in species_names:
-                        genome_ids = {}
-                        genome_results = {}
+
+
                         genome_ids = mapToGenome.getGenomeIDs(species_name)
+                        print ('Here are the species names')
+                        print (species_names)
+                        print ('Here are the genome ids')
+                        print (genome_ids)
                         genome_results = mapToGenome.get_full_genome(genome_ids)
                         if species_name in genome_results.keys() and type(genome_results[species_name]) == SeqRecord:
                             addGenome(genome_results)
