@@ -11,7 +11,7 @@ import models
 
 Entrez.email = "gabriel.foley@uqconnect.edu.au"
 
-seqDict = {}
+# seqDict = {}
 
 
 def getSpeciesNames(seq_records, type):
@@ -82,8 +82,12 @@ def get_full_genome(genome_ids):
 
         if check :
 
+            print ('here is the species')
+
+            species = models.GenomeRecords.query.filter_by(name=genome_id).first().species
+
             print ("\n This genome record is already in the database %s" % (genome_id))
-            return "in_database"
+            seqDict[species] = "in_database"
         else:
 
             try:
@@ -112,7 +116,7 @@ def get_full_genome(genome_ids):
                         else:
 
                             non_ref_seq_ids.append(record.id)
-                            seqDict[record.description] = record
+                            seqDict[record.annotations.get('organism')] = record
 
                     # Join all the found species together so we can quickly search to see if we didn't find something
                     combined_species = '\t'.join(found_species)
@@ -121,27 +125,27 @@ def get_full_genome(genome_ids):
                 # return seqDict
 
             except HTTPError as ex:
-                for genome_id in genome_ids:
-                    # print (ex)
-                    print("Couldn't find an appropriate genome record for %s" % (genome_id))
-                    flash("Couldn't find an appropriate genome record for %s" % (genome_id))
-                return
+                pass
+                # for genome_id in genome_ids:
+                #     print (ex)
+                #     print("Couldn't find an appropriate genome record for %s" % (genome_id))
+                #     flash("Couldn't find an appropriate genome record for %s" % (genome_id))
 
-        # Check if there were any genome IDs we couldn't find
-        for genome_id in genome_ids:
-            if genome_id not in found_ids:
-                print("\nCouldn't find an appropriate genome record for %s" % (genome_id))
-                flash("Couldn't find an appropriate genome record for %s" % (genome_id))
-            if genome_id not in correct_alphabet_ids:
-                print("\nThis genome record had all N characters - %s" % (genome_id))
-                # flash("This genome record had all N characters - %s" % (genome_id))
-            elif genome_id not in non_ref_seq_ids:
-                print("\nThis genome record was omitted because another RefSeq genome for the species exists - %s" % (
-                genome_id))
-                flash("This genome record was omitted because another RefSeq genome for the species exists - %s" % (
-                genome_id))
+    # Check if there were any genome IDs we couldn't find
+    for genome_id in genome_ids:
+        if genome_id not in found_ids:
+            print("\nCouldn't find an appropriate genome record for %s" % (genome_id))
+            flash("Couldn't find an appropriate genome record for %s" % (genome_id))
+        if genome_id not in correct_alphabet_ids:
+            print("\nThis genome record had all N characters - %s" % (genome_id))
+            # flash("This genome record had all N characters - %s" % (genome_id))
+        elif genome_id not in non_ref_seq_ids:
+            print("\nThis genome record was omitted because another RefSeq genome for the species exists - %s" % (
+            genome_id))
+            flash("This genome record was omitted because another RefSeq genome for the species exists - %s" % (
+            genome_id))
 
-        return seqDict
+    return seqDict
 
 
 def update_shotgun_id_dict(species_names, shotgun_id_dict):
@@ -229,6 +233,7 @@ def get_shotgun_id_dict_from_id(genome_record):
 
 
 def get_shotgun_genome(shotgun_id_dict):
+    seqDict = {}
 
     try:
         for genome_id, genome_info in shotgun_id_dict.items():
