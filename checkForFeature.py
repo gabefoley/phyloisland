@@ -88,7 +88,8 @@ def get_feature_location_with_profile(ids, reference, profile_name, recordName, 
     query = models.GenomeRecords.query.filter(models.GenomeRecords.uid.in_(ids))
     for record in query.all():
         seq_record = servers.bio_db.lookup(primary_id=record.name)
-        species = record.name.replace(" ", "_")[0:4]
+        species = record.name.replace(" ", "_")
+        species = species.replace(".", "_")
 
         # Create a path to write the translated genomic sequence to
         random_id = phyloisland.randstring(5)
@@ -156,7 +157,6 @@ def get_feature_location_with_profile(ids, reference, profile_name, recordName, 
         hmmerout = []
         # add handler to HMMread for output paths 
         for reg in all_reg:
-            print(reg)
             hmmerout.append(resultread.HMMread(reg))
         print(hmmerout)
         # all_reg handling should be in HMMread not writeHMMtoImage
