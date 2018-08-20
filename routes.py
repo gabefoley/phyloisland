@@ -1101,47 +1101,48 @@ def addGenome(genome_results):
     for record in genome_results:
 
         current = genome_results[record]
-        name = current.id
+        if current != "in_database":
+            name = current.id
 
-        species = " ".join(current.annotations.get('organism').split()[0:2])
-        strain = current.annotations['source']
-        sequence = str(current.seq)
+            species = " ".join(current.annotations.get('organism').split()[0:2])
+            strain = current.annotations['source']
+            sequence = str(current.seq)
 
-        description = current.description
-        a1 = current.annotations["A1"] if "A1" in current.annotations.keys() else ""
-        a1_length = None
-        a1_loc = current.annotations["A1_location"] if "A1_location" in current.annotations.keys() else ""
-        a2 = current.annotations["A2"] if "A2" in current.annotations.keys() else ""
-        a2_length = None
-        a2_loc = current.annotations["A2_location"] if "A2_location" in current.annotations.keys() else ""
-        overlap = current.annotations["Overlap"] if "Overlap" in current.annotations.keys() else ""
-        distance = ""
+            description = current.description
+            a1 = current.annotations["A1"] if "A1" in current.annotations.keys() else ""
+            a1_length = None
+            a1_loc = current.annotations["A1_location"] if "A1_location" in current.annotations.keys() else ""
+            a2 = current.annotations["A2"] if "A2" in current.annotations.keys() else ""
+            a2_length = None
+            a2_loc = current.annotations["A2_location"] if "A2_location" in current.annotations.keys() else ""
+            overlap = current.annotations["Overlap"] if "Overlap" in current.annotations.keys() else ""
+            distance = ""
 
-        entry = models.GenomeRecords(name, species, strain, description, a1, a1_length, a1_loc, a2, a2_length, a2_loc,
-                                     overlap, distance, sequence, 0, 0)
-        check = models.GenomeRecords.query.filter_by(name=name).first()
+            entry = models.GenomeRecords(name, species, strain, description, a1, a1_length, a1_loc, a2, a2_length, a2_loc,
+                                         overlap, distance, sequence, 0, 0)
+            check = models.GenomeRecords.query.filter_by(name=name).first()
 
-        # Check to see if the genome record already exists
-        if check:
-            print("The genome record - %s from species - %s already exists in the database" % (name, species))
+            # Check to see if the genome record already exists
+            if check:
+                print("The genome record - %s from species - %s already exists in the database" % (name, species))
 
-            continue
-        # # if region in current.annotations.keys():
-        #     #     continue
-        #     # else:
-        #     #     setattr(check, region.lower(), current.annotations[region] if region in current.annotations.keys() else "")
-        #     #     setattr(check, region.lower() + "_loc", current.annotations[region + "_location"] if region + "_location" in current.annotations.keys() else "")
-        #     #     servers.db.session.add(check)
+                continue
+            # # if region in current.annotations.keys():
+            #     #     continue
+            #     # else:
+            #     #     setattr(check, region.lower(), current.annotations[region] if region in current.annotations.keys() else "")
+            #     #     setattr(check, region.lower() + "_loc", current.annotations[region + "_location"] if region + "_location" in current.annotations.keys() else "")
+            #     #     servers.db.session.add(check)
 
-        else:
-            print("Adding the genome record - %s from species - %s to the genome database" % (name, species))
+            else:
+                print("Adding the genome record - %s from species - %s to the genome database" % (name, species))
 
-            seq_list = []
-            servers.db.session.add(entry)
-            seq_list.append(current)
-            servers.bio_db.load(seq_list)
-            servers.bio_server.commit()
-            servers.db.session.commit()
+                seq_list = []
+                servers.db.session.add(entry)
+                seq_list.append(current)
+                servers.bio_db.load(seq_list)
+                servers.bio_server.commit()
+                servers.db.session.commit()
 
 
 def addSequence(seq_records):
