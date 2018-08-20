@@ -1101,7 +1101,7 @@ def addGenome(genome_results):
     for record in genome_results:
 
         current = genome_results[record]
-        if current != "in_database":
+        if type(current) == SeqRecord:
             name = current.id
 
             species = " ".join(current.annotations.get('organism').split()[0:2])
