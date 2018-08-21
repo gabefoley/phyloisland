@@ -1,0 +1,143 @@
+# hmmsearch :: search profile(s) against a sequence database
+# HMMER 3.1b2 (February 2015); http://hmmer.org/
+# Copyright (C) 2015 Howard Hughes Medical Institute.
+# Freely distributed under the GNU General Public License (GPLv3).
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# query HMM file:                  tmp/a2_profile.hmm
+# target sequence database:        hmm_outputs/LN681227_1/a2/A2_Profile/LN681227.1_YXRVZ_forward_0_translated_genome.fasta
+# output directed to file:         hmm_outputs/LN681227_1/a2/A2_Profile/LN681227.1_YXRVZ_forward_0_hmmsearch_results.fasta
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Query:       align  [M=1020]
+Scores for complete sequences (score includes all domains):
+   --- full sequence ---   --- best 1 domain ---    -#dom-
+    E-value  score  bias    E-value  score  bias    exp  N  Sequence Description
+    ------- ------ -----    ------- ------ -----   ---- --  -------- -----------
+          0 1079.9  28.2   6.6e-262  857.6  14.6    4.3  4  LN681227  Xenorhabdus nematophila AN6/1 genome assembly XNC2,
+
+
+Domain annotation for each sequence (and alignments):
+>> LN681227  Xenorhabdus nematophila AN6/1 genome assembly XNC2, chromosome : I
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !   43.1   1.5   7.4e-16   7.4e-16      25     250 ..  844778  845302 ..  844648  845309 .. 0.84
+   2 !  857.6  14.6  6.6e-262  6.6e-262     248    1011 ..  845429  846185 ..  845424  846190 .. 0.92
+   3 !   27.4   0.0   4.1e-11   4.1e-11     194     249 ..  998524  998572 ..  998439  998579 .. 0.70
+   4 !  157.8   0.0   1.6e-50   1.6e-50     803    1010 ..  999194  999408 ..  999190  999416 .. 0.87
+
+  Alignments for each domain:
+  == domain 1  score: 43.1 bits;  conditional E-value: 7.4e-16
+     align     25 dtdelsptawsewklidv.........................feveeekedkdntryrtkiklaylkfdGswssgttlr.edvldeam...... 87    
+                  +  ++  +aw ewk i++                          e+++e+ed + +     +kl ++++dGswss+     +d++++ +      
+  LN681227 844778 QHGQFAANAWGEWKKIEIpinvwqenirpviyksrlyllwleqKELKNESEDGKIDITDYILKLSHIRYDGSWSSPFNFNvTDKIENLInkkasi 844872
+                  3678999*******************************997666666666666555555568889**********987652566665557779** PP
+
+     align     88 ............................................................................................... 87    
+                                                                                                                 
+  LN681227 844873 gmycssdyekdviivyfhekkdnysfnslparegmtinpdmtlsiltendldaivkstlseldtrteykvnnqfatdylaeykesittknklasf 844967
+                  *********************************************************************************************** PP
+
+     align     88 ............................................................................................... 87    
+                                                                                                                 
+  LN681227 844968 tgnifdlsyispgnghinltfnpsmeinfskgniyndevkyllsmvedetvilfdydrhdemlgkeeevfhygtldfiisidlknaeyfrvlmhl 845062
+                  *********************************************************************************************** PP
+
+     align     88 ...............................................................................tkddfklkanyvedtl 103   
+                                                                                                    d+k++++ +e+ +
+  LN681227 845063 rtkekiprkseigvginydyesndaefkldtnivldwkdntgvwhticesftndvsiinnmgniaalflredpcvylcsIATDIKIASSMIEQIQ 845157
+                  **********************8888888888888888888888888888888888888777777777777777777766667777777776666 PP
+
+     align    104 dl.lesvstykydfsksknilylikledkkeercvldekllveedkepkdvkvvlgf..slekggvddakakikvelkv.gkklrekiqlkqqd. 193   
+                  d  ++ + +   d+    n +   +++ ++e++ ++ +   v+ d+e  d+  v +f  + ++gg +d+  ++ +++k+ +k   ++i l++   
+  LN681227 845158 DKnISFLLKNGSDILVELNAEDHVASKPSHESDPMVYDFNQVKVDIEGYDIPLVSEFiiKQPDGGYNDIVIESPIHIKLkSKDTSNVISLHKMPs 845252
+                  65444444444455444455444444444444444444455555666688888888822556788888777766666642567888999988754 PP
+
+     align    194 qvqyLdfpeeekwystkaiRLntlfakeLiakasqsidkvLswdtqnikeepltgsa 250   
+                   +qy+++          + RLntlf+++L  +a+ +id+vLs +tqn+ e++l +++
+  LN681227 845253 GTQYMQIGPY-------RTRLNTLFSRKLAERANIGIDNVLSMETQNLPEPQLGEGF 845302
+                  89****9877.......89********************************998765 PP
+
+  == domain 2  score: 857.6 bits;  conditional E-value: 6.6e-262
+     align    248 gsasepidlnGangiYfWELFfhmPflvawRlnvEqryeeaerWlkylfnpyededeqalkqgkpryWnsrPlidepkkeysslieptDPDaiaa 342   
+                   +++ep+d+nGan+iYfWELF+++P++v +Rl +Eq+++e++rWl+y++np    ++q     +  yWn+rPl ++++++ +  ++++DPDa+a+
+  LN681227 845429 KNNTEPMDFNGANAIYFWELFYYTPMMVFQRLLQEQNFTESTRWLRYIWNPA-GYSVQGEM--QDYYWNVRPLEEDTSWNAN-PLDSVDPDAVAQ 845519
+                  5679***********************************************5.33344333..578**************88.99********** PP
+
+     align    343 sePihYrkaiFafyvknlidqgDmeYRklerdalteAkliYaqassLLGarPdlqlasqWqpltLedaskkense.leelelqseslpllpvvsd 436   
+                  ++P+hY++a+F+ ++++li +gD +YR+lerd+l+eAk++Y qa++LLG++P+ +l ++W+  +Le+a++++  + +++ +lq ++   lp+   
+  LN681227 845520 HDPMHYKVATFMKMLDLLITRGDSAYRQLERDTLNEAKMWYVQALTLLGDEPYFSLDNDWSEPRLEEAASQTMRHhYQHKMLQLRQRAALPT--- 845611
+                  *********************************************************************99665547777888777766665... PP
+
+     align    437 ktisaldndlFlkpvneellelwdklesRlyNLRhnltldGkelslpLydekidpkdLlkqryqrvvtarnaskana.kipnyRFeplleraksa 530   
+                  k ++++ ++lFl+++n++l  +w++l +RlyNLRhnlt+dG++lsl Ly++++dp+ Ll+   ++ ++++  +      +p yRF+++le+ak +
+  LN681227 845612 KRTANSLTALFLPQINKKLQGYWQTLTQRLYNLRHNLTIDGQPLSLSLYATPADPSMLLS---AAITASQGGGDLPHaVMPMYRFPVILENAKWG 845703
+                  55667899***************************************************7...56666676666554389*************** PP
+
+     align    531 vetliqfGstllsllErkdsasleelqqqqaldlyrftidlQqqaidiaqaslealevskkaaqeRyehyksLydenisstEqevielqsqaaal 625   
+                  v++liqfG+tlls+ Er+d+++l e+ q+q ++l   +i++Q++ + + +a++ al++s++ aq+R++++++Lyde++++ E+++++l+ +++ l
+  LN681227 845704 VSQLIQFGNTLLSITERQDAEALAEILQTQGSELALQSIKMQDKVMAEIDADKLALQESRHGAQSRFDSFNTLYDEDVNAGEKQAMDLYLSSSVL 845798
+                  *********************************************************************************************** PP
+
+     align    626 llaaqaartaaaaldlvpnifglAvGGskwgailraaaeilqikaesketkadslsvsesYrRRrqEWelqykqAeaeiesidqQinvqqlqlea 720   
+                   ++ +a+++aaaa+dlvpni+g+AvGGs++ga+ +a a +++i+a++++++ad++s+se YrRRrqEWe+q+++Aeaei++id+Q+++++++ ea
+  LN681227 845799 STSGTALHMAAAAADLVPNIYGFAVGGSRFGALFNASAIGIEISASATRIAADKISQSEIYRRRRQEWEIQRNNAEAEIKQIDAQLATLAVRREA 845893
+                  *********************************************************************************************** PP
+
+     align    721 aqkqlaqveaqqeqaqalleylstrftneslYtWlisqlsalYlqaYdavsslcLsaeaslqyElgdaetnFiksgaWndlYqGLlaGetLkLal 815   
+                  a  q++ +e+qq q+qa+l++l+++f+n++lY+Wl ++lsa+Y+q+Yd ++slcL+ae ++qyEl++a ++Fik+gaW+ +Y+GLlaGetL+L+l
+  LN681227 845894 AVLQKNYLETQQAQTQAQLAFLQSKFSNAALYNWLRGRLSAIYYQFYDLAVSLCLMAEQTYQYELNNAAAHFIKPGAWHGTYAGLLAGETLMLNL 845988
+                  *********************************************************************************************** PP
+
+     align    816 qrmeraylerneRrleivkTvslkellkes..........weeelkelkskssi........................tfslkeklfvedYpell 876   
+                  ++me+ yle++eR+le+++Tvsl+e+++            +          +++                        +++l++ ++++dYp+ l
+  LN681227 845989 AQMEKSYLEKDERALEVTRTVSLAEVYAGLtensfilkdkV----------TELvnagegsagttlnglnvegtqlqaSLKLSDLNIATDYPDGL 846073
+                  ***************************99933333332221..........22224444444445566666666666688************998 PP
+
+     align    877 e..RriksvsvsLpallGpyedvrAkLsqgssstlakaDlktvekllkkrekadtknvvrniranqqialStglnDsGlftLnfdDerfLPFEGt 969   
+                     Rrik++sv+LpallGpy+dvrA Ls+g s+++ ++                          +++ia+S g+nDsG+f+++f+D ++LPFEG 
+  LN681227 846074 GntRRIKQISVTLPALLGPYQDVRAILSYGGSTMMPRG--------------------------CKAIAISHGMNDSGQFQMDFNDAKYLPFEGL 846142
+                  778*******************************9999..........................9****************************** PP
+
+     align    970 gveskwklefpeknatdk.kqlLesLsDiilhvrYTakdgsse 1011  
+                   v ++++l+++++  + k k+lL sLsDiilh+rYT ++ s++
+  LN681227 846143 PVADTGTLTLSFPGISGKqKSLLLSLSDIILHIRYTIRSMSKN 846185
+                  *************988775999**************9988776 PP
+
+  == domain 3  score: 27.4 bits;  conditional E-value: 4.1e-11
+     align    194 qvqyLdfpeeekwystkaiRLntlfakeLiakasqsidkvLswdtqnikeepltgs 249   
+                   +qy+++          ++RLntlfa++L+++a+++id++Ls +tqni+e++l  +
+  LN681227 998524 GAQYMQWGV-------YRVRLNTLFARQLVSRATTGIDTILSMETQNIQEPQLGKG 998572
+                  456666544.......48*********************************99765 PP
+
+  == domain 4  score: 157.8 bits;  conditional E-value: 1.6e-50
+     align    803 qGLlaGetLkLalqrmeraylerneRrleivkTvslkellkes..........weeelkelksk.....ssitf..............slkeklf 868   
+                  qG+   + + L    me+a+l++++R+le+++Tvsl+++++            ++e +k++k +     +s+tf              sl++ ++
+  LN681227 999194 QGMWQANPMCLIWHNMEDAHLKQDQRALEVERTVSLSAVYAGLssknfnlpmkVAELVKDGKGSagdglNSLTFgtgadtrtslqasiSLADLKI 999288
+                  666666677788889************************9987667766664433566666666788888888888888888888888******* PP
+
+     align    869 vedYpelle..RriksvsvsLpallGpyedvrAkLsq.gssstlakaDlktvekllkkrekadtknvvrniranqqialStglnDsGlftLnfdD 960   
+                  +edYp++l   Rrik++sv+LpallGpy+d++A+Ls+ g++++la++                          ++++a+S+g+nDsG+f+L+f+D
+  LN681227 999289 NEDYPASLGkvRRIKQISVTLPALLGPYQDIQAVLSYgGDNNRLARG--------------------------CKALAISRGMNDSGQFQLDFND 999357
+                  *******9889**************************9999999999..........................9********************* PP
+
+     align    961 erfLPFEGtgveskwklefpeknatdk.kqlLesLsDiilhvrYTakdgss 1010  
+                  ++fLPFEG+ +++k++l ++++nat+k + +L++L+Diilh+rYT  d s+
+  LN681227 999358 GKFLPFEGIVIDDKGALVLSFPNATTKqALMLQTLNDIILHIRYTILDMST 999408
+                  ***********************99885779**************988665 PP
+
+
+
+Internal pipeline statistics summary:
+-------------------------------------
+Query model(s):                              1  (1020 nodes)
+Target sequences:                            1  (1477367 residues searched)
+Passed MSV filter:                         1  (1); expected 0.0 (0.02)
+Passed bias filter:                        1  (1); expected 0.0 (0.02)
+Passed Vit filter:                         1  (1); expected 0.0 (0.001)
+Passed Fwd filter:                         1  (1); expected 0.0 (1e-05)
+Initial search space (Z):                  1  [actual number of targets]
+Domain search space  (domZ):               1  [number of targets reported over threshold]
+# CPU time: 7.99u 0.11s 00:00:08.10 Elapsed: 00:00:08.30
+# Mc/sec: 181.56
+//
+[ok]

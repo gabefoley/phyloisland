@@ -1,0 +1,361 @@
+# hmmsearch :: search profile(s) against a sequence database
+# HMMER 3.1b2 (February 2015); http://hmmer.org/
+# Copyright (C) 2015 Howard Hughes Medical Institute.
+# Freely distributed under the GNU General Public License (GPLv3).
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# query HMM file:                  tmp/a2_profile.hmm
+# target sequence database:        hmm_outputs/CP024900_1/a2/A2_Profile/CP024900.1_Photorhabdus_laumondii_subsp._laumondii_CAQKO_backward_2_translated_genome.fasta
+# output directed to file:         hmm_outputs/CP024900_1/a2/A2_Profile/CP024900.1_Photorhabdus_laumondii_subsp._laumondii_CAQKO_backward_2_hmmsearch_results.fasta
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Query:       align  [M=1020]
+Scores for complete sequences (score includes all domains):
+   --- full sequence ---   --- best 1 domain ---    -#dom-
+    E-value  score  bias    E-value  score  bias    exp  N  Sequence Description
+    ------- ------ -----    ------- ------ -----   ---- --  -------- -----------
+          0 3710.3 115.4   1.6e-307 1008.6  12.8    8.5  8  CP024900  Photorhabdus laumondii subsp. laumondii strain DJC 
+
+
+Domain annotation for each sequence (and alignments):
+>> CP024900  Photorhabdus laumondii subsp. laumondii strain DJC chromosome, complete genome
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 ! 1008.6  12.8  1.6e-307  1.6e-307      26    1020 .]  283153  284506 ..  283004  284506 .. 0.88
+   2 !   47.8   2.2   2.8e-17   2.8e-17      25     248 .. 1468209 1468746 .. 1468121 1468753 .. 0.84
+   3 !  855.2  16.1  3.6e-261  3.6e-261     246    1007 .. 1468857 1469617 .. 1468841 1469626 .. 0.90
+   4 !   50.8   3.6   3.5e-18   3.5e-18      22     247 .. 1473805 1474307 .. 1473712 1474328 .. 0.84
+   5 !  851.4  15.8  4.9e-260  4.9e-260     248    1006 .. 1474422 1475179 .. 1474415 1475187 .. 0.93
+   6 !   55.2   3.0   1.6e-19   1.6e-19      26     249 .. 1477907 1478417 .. 1477796 1478426 .. 0.79
+   7 !  866.6  13.0  1.3e-264  1.3e-264     246    1010 .. 1478535 1479303 .. 1478526 1479308 .. 0.90
+   8 !   10.7   0.0   4.4e-06   4.4e-06     952    1007 .. 1662183 1662240 .. 1662144 1662247 .. 0.81
+
+  Alignments for each domain:
+  == domain 1  score: 1008.6 bits;  conditional E-value: 1.6e-307
+     align     26 tdelsptawsewklidv.............................feveeekedkdnt.ryrtkiklaylkfdGswssg..ttlredvldeam. 87    
+                  ++ ++p++w +w+ i +                               v+++ + k+ +  +  +ik  y ++d +w+++  ttl +++ de+  
+  CP024900 283153 GNPVTPNCWNDWQEITLplsgdtvlehtvrpvfyndrlyvawverdPAVQKDADGKNIGkTHAYSIKFGYKRYDDTWTAPntTTLMTQQADESSe 283247
+                  677899**********99*******************99988665444444444444435677789999********975337788888887778 PP
+
+     align     88 ............................................................................................... 87    
+                                                                                                                 
+  CP024900 283248 tqrssllideskttlrkvnllattdfsidpteetdsnpygrlmlgvfvrnftgtphqnrpavygylycdsafnhhilrplskdflfstyrdetnd 283342
+                  99********************************************************************************************* PP
+
+     align     88 ............................................................................................... 87    
+                                                                                                                 
+  CP024900 283343 qnclqfavydkkyvitkvisgkptedpentgwvgkvddlklgttgayvyidqdgltlhiqtttngdfvnrhifgyndivydsksgygftwsgneg 283437
+                  *********************************************************************************************** PP
+
+     align     88 ............................................................................................... 87    
+                                                                                                                 
+  CP024900 283438 fyldyhdgnyytfhnaainyypagygggsvpngtwaleqrvnegwaisplldahhtitvqgsyiawegetpasyylpipdgtmlldwsdkinfai 283532
+                  *********************************************************************************************99 PP
+
+     align     88 .......................................tkddfklkanyvedtldllesvstykydfsksknilylikledkkeercvldekl. 142   
+                                                         t d  +l  +y+e+t +l  s +ty   ++        ++ ++++ ++++l+  l 
+  CP024900 283533 slnklesvftspdwptlttiknfskiadnrkfyqeinaeTADGRNLFKHYSEQTFQL-ASGATYPTTYTL------SEADFSTDPDKNYLQVCLn 283620
+                  999999999999888888888888888766655555555444455555555554333.222222221111......1222333344444444331 PP
+
+     align    143 lveedkep......kdvkvvlgfslekggvddakakikvelkvgkklrekiqlkqqdqvqyLdfpeeekwystkaiRLntlfakeLiakasqsid 231   
+                  +v +++++          v   f++  +  d+++     +      l  +    +   vqyLdf ++   +   + RLnt f + Li ka+ ++d
+  CP024900 283621 VVWDHYDRpsgrkgAYSWVSKWFNVYVELQDSKAPDAIPR------LISRYD-SKRGLVQYLDFWTS---SLPAKTRLNTTFVRTLIEKANLGLD 283705
+                  4444444455554433333344444444333333322222......122222.234579*****988...78999******************** PP
+
+     align    232 kvLswdtqnik..eep.ltgsasepidlnGangiYfWELFfhmPflvawRlnvEqryeeaerWlkylfnpyededeqalkqgkpryWnsrPlide 323   
+                  ++L +  q     e + +t+++sep+d++G+ng+YfWELFfh+Pflva R+ +Eq+++ a++ l+y+f+p   ++++    + p yWn+rPl++ 
+  CP024900 283706 SLLDYTLQADPslEADlVTDGKSEPMDFDGSNGLYFWELFFHLPFLVATRFANEQQFSPAQKSLHYIFDPA-MKNKPH---NAPAYWNVRPLVEV 283796
+                  ********87655655157777************************************************5.444444...569*********** PP
+
+     align    324 pkkeysslieptDPDaiaasePihYrkaiFafyvknlidqgDmeYRklerdalteAkliYaqassLLGarPdlqlasqWqpltLedaskkense. 417   
+                   +   ++l +p DPD+ a+  P+ Y+ka+F  yv nli+qgDm YR+l+rd lt+A++ Y+ a +LLG+rPd++l+s+W p+tL+  ++ ++++ 
+  CP024900 283797 HSDLSRHLGDPIDPDTQAYAHPVIYQKAVFIAYVSNLIAQGDMWYRQLTRDGLTQARVYYNLAAELLGPRPDVSLSSTWTPQTLDTLAAGQKTAl 283891
+                  **************************************************************************************999988884 PP
+
+     align    418 ...leelelqseslpllpvvsdktisaldndlFlkpvneellelwdklesRlyNLRhnltldGkelslpLydekidpkdLlkqryqrvvtarnas 509   
+                      ++l  + + lp lp  + + ++ +dn  F +p+n  +l+ wd+l+ RlyNLRhnlt+dGk+lslpLy+ ++dp +Ll qr+q  ++a+  s
+  CP024900 283892 rdfEHQLANSNTVLPALPGNNISHLKLADNGYFNEPLNVLMLSHWDTLDARLYNLRHNLTVDGKPLSLPLYAAPADPVALLAQRAQSGTLANGVS 283986
+                  4533344445566788899999999999******************************************************************* PP
+
+     align    510 kanakipnyRFeplleraksavetliqfGstllsllErkdsasleelqqqqaldlyrftidlQqqaidiaqaslealevskkaaqeRyehyksLy 604   
+                   a  ++p+yRF+++l+ra+sav tl+ fG++llsllEr ++a +eel qqq ld+++++i+lQqqa+d + a++ al +s+++aq+R++hy +Ly
+  CP024900 283987 GAILTVPPYRFSAMLPRAYSAVGTLTSFGQNLLSLLERSERAGQEELAQQQLLDMSSYAITLQQQALDGLAADRLALLASQATAQQRHDHYYTLY 284081
+                  *********************************************************************************************** PP
+
+     align    605 denisstEqevielqsqaaalllaaqaartaaaaldlvpnifglAvGGskwgailraaaeilqikaesketkadslsvsesYrRRrqEWelqykq 699   
+                  ++niss Eq v++ q++a +l+ +++ ++ta++al ++pnifglA GGs++ ++++a+a +l+ + ++++  a++l ++e+YrRRr+EW++qy+q
+  CP024900 284082 QNNISSAEQLVMDTQTSAQSLISSSTGVQTASGALKVIPNIFGLADGGSRYEGVTEAIAIGLMAAGQATSVVAERLATTENYRRRREEWQIQYQQ 284176
+                  *********************************************************************************************** PP
+
+     align    700 AeaeiesidqQinvqqlqleaaqkqlaqveaqqeqaqalleylstrftneslYtWlisqlsalYlqaYdavsslcLsaeaslqyElgdaetnFik 794   
+                  A++e++++++Q++ ++++ +aaq++l+q++aqq q +++l+yl+trft++ lY+Wl +qlsalY+qaYdav+slcLsa+a++qyElgd+ t+Fi+
+  CP024900 284177 AQSEVDALQKQLDALAVREKAAQTSLQQAKAQQVQIRTMLTYLTTRFTQATLYQWLSGQLSALYYQAYDAVVSLCLSAQACWQYELGDYATTFIQ 284271
+                  *********************************************************************************************** PP
+
+     align    795 sgaWndlYqGLlaGetLkLalqrmeraylerneRrleivkTvslkellkesweeelkelkskssitfslkeklfvedYpelleRriksvsvsLpa 889   
+                  +g+Wnd Y+GL +GetL+L+l++me+ayl r+eRrl++++Tvslk+ll+++      +lk +++++f l+eklf++dYp+++ R+ik+vsv+Lp+
+  CP024900 284272 TGTWNDHYRGLQVGETLQLNLLQMEAAYLVRHERRLNVIRTVSLKSLLGDD---GFGKLKTEGKVDFPLSEKLFDNDYPGHYLRQIKTVSVTLPT 284363
+                  *************************************************99...34699999********************************* PP
+
+     align    890 llGpyedvrAkLsqgssstlakaDlktvekllkk.rekadtknvvrniranqqialStglnDsGlftLnfdDerfLPFEGtgveskwklefpek. 982   
+                  l+Gpy++v+A+L+q+ssstl++aD+++v+ l ++ ++++d +++v+n+ra+qq+alS+g+nD+G f+L ++Der+L FEGtg+ skw+l+fp + 
+  CP024900 284364 LIGPYQNVKATLTQTSSSTLLTADINGVKRLNDPtGKEGDATHIVTNLRASQQVALSSGINDAGSFELRLEDERYLSFEGTGAVSKWTLTFPRSv 284458
+                  **********************************99*******************************************************8642 PP
+
+     align    983 .natdk.........kqlLesLsDiilhvrYTakdgssefskavkkll 1020  
+                   +++d          ++lL  ++D+ ++v+YTa dg+++f+++vkk+l
+  CP024900 284459 dEHIDDktlkademqAALLANMDDVLVQVHYTACDGGASFANQVKKTL 284506
+                  22222223334445478999*************************987 PP
+
+  == domain 2  score: 47.8 bits;  conditional E-value: 2.8e-17
+     align      25 dtdelsptawsewklidv...........................................feveeeked.kdntryrtkiklaylkfdGsws 73     
+                   +  ++  +awsew+ id                                             e++ +k+  k +t y  ++kla++++d +w+
+  CP024900 1468209 SEGKFPANAWSEWHKIDCpinpyedtirpvifqsrlyitwleqkkvthrsegetlpkvealSEIKTDKQGsKTTTSYYYELKLAHIRYDATWN 1468301
+                   4667889**************************************************9999899877775145569***************** PP
+
+     align      74 sgttlredvldeam............................................................................... 87     
+                   ++ t   d+  +                                                                                 
+  CP024900 1468302 TPITFDVDKKISDLnleankvlglycasyqgkdkllvmfyqkgpeqasyinapmqglyissnmsqeemnpndyklnihkqldthtatnsvirv 1468394
+                   **99987765444458999************************************************************************** PP
+
+     align      88 ............................................................................................. 87     
+                                                                                                                
+  CP024900 1468395 nnryaesyeipssvnnnngydwgegylsmvyggsilitrnqsdnskiqispklriihngyegrqrnqcnlmkkygkpkdkfiiyttlginqnn 1468487
+                   ********************************************************************************************* PP
+
+     align      88 ............................................................................................. 87     
+                                                                                                                
+  CP024900 1468488 lsnkkfiypvyqyegnasqlsqgrllfyrdsatnfvrawlpnlpsgsqemsittggnisgnygyidnkhsnnnpfkeyfymddhggidtdvsg 1468580
+                   *********************************************************************999999999999999999999999 PP
+
+     align      88 ........tkddfklkanyvedtldllesvstykydfsksknilylikledkkeercvldekllveedkep.kdvkvvl...gfslekggvdd 168    
+                           +  ++k++++ v+++ +l +s   + +d  + k  l ++ +  + +  + +d ++lv ++ e  +d++ +     f+  +++ + 
+  CP024900 1468581 pmfintniQPSNVKITVKTVKEDGKL-TSEPYTANDKVSVKPPLNFEEMCYQFNGLKEIDVSKLVFKNNEAsIDITFTAfadAFESGQKERNL 1468672
+                   99999977777888888866666554.555555555555555555555556666666666666665555542454433211133333333333 PP
+
+     align     169 akakikvelkvgkklrekiqlkqqd.qvqyLdfpeeekwystkaiRLntlfakeLiakasqsidkvLswdtqnikeepltg 248    
+                    +++ ++++   ++  +++ l+ ++  +qy+++ +        + RLntlfa++Li++a+++id++L  +tqni+e +l  
+  CP024900 1468673 GEEHFSIRIIKKSETNNVLSLHSNSsGAQYMQWGAY-------RTRLNTLFARKLISRANAGIDTILNMETQNIQELQLGK 1468746
+                   334444444455556677777665546777777665.......89******************************988765 PP
+
+  == domain 3  score: 855.2 bits;  conditional E-value: 3.6e-261
+     align     246 ltgsasepidlnGangiYfWELFfhmPflvawRlnvEqryeeaerWlkylfnpyededeqalkqgkpryWnsrPlidepkkeysslieptDPD 338    
+                   l++ +sep+d+nGan++YfWELF+++P+l+a+Rl +Eq+++ea+rWlky++np+  +  +  +++ p+ Wn+rPl+++++++ +  + + DPD
+  CP024900 1468857 LNNVSSEPMDFNGANSLYFWELFYYTPMLIAQRLLHEQNFDEANRWLKYVWNPS-GHIAN-GQKQYPHTWNVRPLQEDTSWNDD-PLGSFDPD 1468946
+                   566679***********************************************6.33333.44478****************66.9******* PP
+
+     align     339 aiaasePihYrkaiFafyvknlidqgDmeYRklerdalteAkliYaqassLLGarPdlqlasqWqpltLedaskkenseleelelqseslpll 431    
+                   aia+ +P+hY++a F++++++li+qgD++YR+lerd+l+eAk++Y qa++LLG++P+l+l+s+W+  +Le+a++ e++++++     +   ++
+  CP024900 1468947 AIAQYDPMHYKVASFMRTLDLLIEQGDYAYRQLERDTLAEAKMWYMQALHLLGDKPHLSLSSTWNDPELEEAADLEKQKTHA-----KA--VA 1469032
+                   ************************************************************************9995554433.....33..34 PP
+
+     align     432 pvvsdktisaldndlFlkpvneellelwdklesRlyNLRhnltldGkelslpLydekidpkdLlkqryqrvvtarnaskanakipnyRFepll 524    
+                      + +++  +++dlFl++vne +l++w+kle+RlyNLRhnl++d ++l+lp++++++dpk+Ll++  ++++ +  ++  +a i+ +RF+ +l
+  CP024900 1469033 DLRQGQSTGGSNTDLFLPQVNEVMLSYWQKLEQRLYNLRHNLSIDSQPLHLPIFATPADPKALLSA--AAASSQGGNNLPSAFISVWRFPHML 1469123
+                   55678888999*****************************************************73..444444455556678********** PP
+
+     align     525 eraksavetliqfGstllsllErkdsasleelqqqqaldlyrftidlQqqaidiaqaslealevskkaaqeRyehyksLydenisstEqevie 617    
+                   e+a+s+v++l+qfGstl+ ++Er+d+++l++l q+qa++l+ ++ ++Q+++i++++ ++ +le+ ++ aq+R+++y++ y+e+i++ E+++++
+  CP024900 1469124 ENARSMVNQLTQFGSTLQNIIERQDAEALNTLLQNQAAELVLTNLSIQDKTIEELDVEKTVLEKTRAGAQSRFDSYSKFYNEDINTGEKQAMA 1469216
+                   ********************************************************************************************* PP
+
+     align     618 lqsqaaalllaaqaartaaaaldlvpnifglAvGGskwgailraaaeilqikaesketkadslsvsesYrRRrqEWelqykqAeaeiesidqQ 710    
+                   l+++ a + +a qa+++a+aaldl+pnifg+A GGs+wgai++a++++++++a++++t+ad++s+se+YrRRrqEWe+q+++Ae+e+++id+Q
+  CP024900 1469217 LRASVAGISTALQASHLAGAALDLAPNIFGFADGGSHWGAIAQATGNVMEFSASVMNTEADKISQSEAYRRRRQEWEIQRNNAETELKQIDAQ 1469309
+                   ********************************************************************************************* PP
+
+     align     711 invqqlqleaaqkqlaqveaqqeqaqalleylstrftneslYtWlisqlsalYlqaYdavsslcLsaeaslqyElgdaetnFiksgaWndlYq 803    
+                   + ++ ++ eaa  q++++++qqeq++a+l++l+++f+n++lY+Wl ++lsa+Y+q+Yd ++++cL+ae+++++E++da ++Fik+gaW+ +++
+  CP024900 1469310 LGSLVVRREAAVLQKTSLKTQQEQTHAQLTFLQHKFSNQALYNWLRGRLSAIYFQFYDLTVARCLMAEMAYRWETNDAAARFIKPGAWQGTHA 1469402
+                   ********************************************************************************************* PP
+
+     align     804 GLlaGetLkLalqrmeraylerneRrleivkTvslkellkes.....weeelkelksk.........ssitf.............slkeklfv 869    
+                   GLlaGetL+L+l++me+a+l++++R le+++Tvsl++++ke+       e+++el ++         ++++f             sl++ ++ 
+  CP024900 1469403 GLLAGETLMLNLAQMEDAHLKQEQRVLEVERTVSLANIYKEKgqfslT-EKIAELMKNklvtagsgnNTLKFgtgnaqtslqasiSLADLQIR 1469494
+                   ******************************************887751.444444443122222222555445566666666666******** PP
+
+     align     870 edYpelle....RriksvsvsLpallGpyedvrAkLsqgssstlakaDlktvekllkkrekadtknvvrniranqqialStglnDsGlftLnf 958    
+                   +dYpe+      Rrik++sv+LpallGpy+dv+A Ls++ + t +                          ++++++a+S g+nDsG+f+L+f
+  CP024900 1469495 HDYPENSGvgnvRRIKQISVTLPALLGPYQDVQAILSYSGDVTGLA-------------------------ESCKSLAVSHGMNDSGQFQLDF 1469562
+                   ******988999*************************965443322.........................259******************* PP
+
+     align     959 dDerfLPFEGtgveskwklefpeknatdk.......kqlLesLsDiilhvrYTakd 1007   
+                   +D++fLPFEG++++ k++l+++++na+ +       k++LesLsDiilh+rYT ++
+  CP024900 1469563 NDGKFLPFEGIDID-KGTLTLSFPNAIGEgskegkqKTMLESLSDIILHIRYTIRQ 1469617
+                   ************85.67777777766543333454599***************876 PP
+
+  == domain 4  score: 50.8 bits;  conditional E-value: 3.5e-18
+     align      22 dGidtdelsptawsewklidv.........................feveeekedkd.ntryrtkiklaylkfdGswssgttlredvldeam. 87     
+                      +  ++  +awsew+ id                           e++++ +d++  t y  ++kla++++dG+w+++     +   +a  
+  CP024900 1473805 SKFNDGKFAANAWSEWHKIDCainpyqstirpviyksrlyliwleqKEIAKQDKDNKvITDYYYELKLAHIRYDGTWNTPIAFDVNSKISALe 1473897
+                   4444678999*********************************877777766544331459******************99876655444446 PP
+
+     align      88 ............................................................................................. 87     
+                                                                                                                
+  CP024900 1473898 laksqapglycagyqgedtllvmfyrkkeklddyktapmqgfyifsdmsskemtneqcnsyrdngythfdtnsdtnsvirinnryaedyeips 1473990
+                   78899**************************************************************************************** PP
+
+     align      88 ............................................................................................. 87     
+                                                                                                                
+  CP024900 1473991 linhsnshdwgeynlsqvyggnivinyevassdlkikispklriihegkegreriqcdlmkkygklgdkfiiytninknpnhsknekliypvy 1474083
+                   ********************************************************************************************* PP
+
+     align      88 .............................................tkddfklkanyvedtldllesvstykydfsksknilylikledkkeer 135    
+                                                                t+++++l   y   ++    +  ++  d+s + +i+  i +e+ +   
+  CP024900 1474084 qyrnndkgcllfyrsnttgtirawfpttkeeitattssnqdciidTINNIDLFKAYFYMED----KEGQIATDISGATDINTGISSEKVQIII 1474172
+                   *****************************************99999999999888877664....4578888999999999999999988888 PP
+
+     align     136 cvldekllveedkep............................kdvkvvlgfslekggvddakakikvelkvgkklre..kiql.kqqdqvqy 197    
+                   +  +e +l+ ++ +                             +  ++ ++f    +   + + +i  +++v +k++    ++l + ++ +qy
+  CP024900 1474173 NAGKEYSLTANKDVSvqpspsfeemcyqfnaleidgsslnftnNSASIDVTFIALADDGRKLGYEIF-NIPVIQKVKTdnALTLfHDKNGAQY 1474264
+                   8888888888776666889999999999988776666666665444555555433333333333332.2333333332002222123335566 PP
+
+     align     198 LdfpeeekwystkaiRLntlfakeLiakasqsidkvLswdtqnikeeplt 247    
+                   +++ +        ++RLntlfa++L+ +a+++id++Ls +tqni+e+ + 
+  CP024900 1474265 MQWGAY-------RVRLNTLFARQLVERATTGIDTILSMETQNIQEPMMG 1474307
+                   665554.......9*******************************99875 PP
+
+  == domain 5  score: 851.4 bits;  conditional E-value: 4.9e-260
+     align     248 gsasepidlnGangiYfWELFfhmPflvawRlnvEqryeeaerWlkylfnpyededeqalkqgkpryWnsrPlidepkkeysslieptDPDai 340    
+                   +++sep+d++Gan++YfWELF+++P+lva+Rl +Eq+++e++rWlky+++p+    +    q k   Wn+rP +++++++ +  ++++DPDa+
+  CP024900 1474422 QTFSEPMDFSGANSLYFWELFYYTPMLVAQRLLHEQNFDETNRWLKYVWSPSGYIVR---GQIKNYRWNVRPFLENTSWNSD-PLDSVDPDAV 1474510
+                   6789***********************************************633222...2345677*************66.9********* PP
+
+     align     341 aasePihYrkaiFafyvknlidqgDmeYRklerdalteAkliYaqassLLGarPdlqlasqWqpltLedaskkense.leelelqseslpllp 432    
+                   a+++P+hY++a+F++++++l+++gD +YR+lerd+l+eAk++Y qa++LLG++P+l l+s W++ +L++a++++ ++ ++ + ++ ++ + +p
+  CP024900 1474511 AQHDPMHYKVATFMRTLDLLMARGDHAYRQLERDTLNEAKMWYMQALHLLGDKPYLPLSSAWNNPRLDNAADTTIQKaYSYAITTLRQGTQTP 1474603
+                   ************************************************************************976663555555555555555 PP
+
+     align     433 vvsdktisaldndlFlkpvneellelwdklesRlyNLRhnltldGkelslpLydekidpkdLlkqryqrvvtarnaskana.kipnyRFepll 524    
+                   +   ++ +++ +dlFl+++n+ +l++w+kle RlyNLRhnl++dG++l lp+y++++dpk+Ll+   ++v+t++  +   +  ++ + F+ +l
+  CP024900 1474604 ALLLRS-ANTLTDLFLPQINDVMLSYWNKLELRLYNLRHNLSIDGQPLYLPMYATPADPKALLS---AAVATSQGGGSLPQpFMSLWHFPHML 1474692
+                   555444.46779***************************************************6...89999999988887589********* PP
+
+     align     525 eraksavetliqfGstllsllErkdsasleelqqqqaldlyrftidlQqqaidiaqaslealevskkaaqeRyehyksLydenisstEqevie 617    
+                   e+a+s+v +l+qfGstl+ ++Er+d+++l++l q+qa++l+ +t ++Q+++i++ +a++ +le+sk+ aq+R++ y++Lyde++++ E+++++
+  CP024900 1474693 ENARSMVAQLTQFGSTLQNIIERQDAEALNALLQNQAKELILTTLSIQDKTIEEIDAEKTVLEKSKAGAQSRFDNYSKLYDEDVNAGERQALD 1474785
+                   ********************************************************************************************* PP
+
+     align     618 lqsqaaalllaaqaartaaaaldlvpnifglAvGGskwgailraaaeilqikaesketkadslsvsesYrRRrqEWelqykqAeaeiesidqQ 710    
+                   +++++ +++   + +++aaaal++vpni+g+AvGG+++gai++a+a +  i+ae   ++a+++s+se +rRRrqEWe+q+++Aeae+++id+Q
+  CP024900 1474786 MRIASQSITSGLKGLHMAAAALEMVPNIYGFAVGGTRFGAIANAIAIGGGIAAEGLLIEAEKVSQSEIWRRRRQEWEIQRNNAEAEMKQIDAQ 1474878
+                   ********************************************************************************************* PP
+
+     align     711 invqqlqleaaqkqlaqveaqqeqaqalleylstrftneslYtWlisqlsalYlqaYdavsslcLsaeaslqyElgdaetnFiksgaWndlYq 803    
+                   ++++ ++ eaa  q++++++qqeq+qa+l++l+++f+n++lY+Wl ++l+a+Y+q+Yd v+++cL+ae ++++E++d++++Fik+gaW+ +Y+
+  CP024900 1474879 LQSLTVRREAAVLQKTSLKTQQEQTQAQLAFLQRKFSNQALYNWLRGRLAAIYFQFYDLVVARCLMAEQAYRWETNDTSARFIKPGAWQGTYA 1474971
+                   ********************************************************************************************* PP
+
+     align     804 GLlaGetLkLalqrmeraylerneRrleivkTvslkellkes..........weeelkelksk......ssi.........tfslkeklfved 871    
+                   GLlaGetL+L+l++me+a+l++++R+le+++Tvsl++++++           +e+ l+e+k++      +++         t++l++ ++++d
+  CP024900 1474972 GLLAGETLMLNLAQMEDAHLKQEQRALEVERTVSLAQVYQSLegksftlkdkIEALLQEDKETsvgnngNQLkltnntlsaTLTLQDLKLKDD 1475064
+                   *****************************************988888776664455566665544444423366666667789********** PP
+
+     align     872 Ypelle....RriksvsvsLpallGpyedvrAkLsq.gssstlakaDlktvekllkkrekadtknvvrniranqqialStglnDsGlftLnfd 959    
+                   Ype+++    Rrik++svsLp llGpy+dv+A+Ls+ g+ + lak+                          ++++a+S glnD+G+f+L+f+
+  CP024900 1475065 YPEEMQlgktRRIKQISVSLPSLLGPYQDVQAVLSYgGDATGLAKG--------------------------CKALAVSHGLNDNGQFQLDFN 1475131
+                   *****999****************************5666666666..........................9******************** PP
+
+     align     960 DerfLPFEGtgveskwklefpeknatdk.kqlLesLsDiilhvrYTak 1006   
+                   D++fLPFEG+++++k++l+++++nat+k k+ L+ L+Diilh+rYT  
+  CP024900 1475132 DGKFLPFEGIDINDKGTLTLSFPNATSKqKTILQMLTDIILHIRYTIL 1475179
+                   *************************9986899**************65 PP
+
+  == domain 6  score: 55.2 bits;  conditional E-value: 1.6e-19
+     align      26 tdelsptawsewklidv.........................feveeekedkdnt.....ryrtkiklaylkfdGswssgttlre.dvldeam 87     
+                     ++  +awsew+ id                           e+++++ + +++      yr ++kla++++dG+w+++ t    ++++e  
+  CP024900 1477907 DGKFAANAWSEWHKIDCpinpyrstirpvmyksrlyllwleqKEITKQTGNSKDGyqtetDYRYELKLAHIRYDGTWNTPITFDVnEKISELK 1477999
+                   568999*******************************998887777777666655788889*******************9876404444444 PP
+
+     align      88 ............................................................................................. 87     
+                                                                                                                
+  CP024900 1478000 lvknkapglycagyqgedtllvmfynqqdtldsyktaamqglyifadmaskdmtlgqsnvyrdnsykqfdtnsvrrvnnryaenyeipssvns 1478092
+                   7999***************************************************************************************** PP
+
+     align      88 ............................................................................................. 87     
+                                                                                                                
+  CP024900 1478093 nnsygrgeynlsmvhggdipiiryqasssdlkihispklrityegadertrnqcnlikkygklgdkfiiytnlsvntqwtsnkkliypvyqyr 1478185
+                   ********************************************************************************************* PP
+
+     align      88 ...............................................................tkddfklkanyvedtldllesvstykydfs 117    
+                                                                                  +              ++  ++++t  y+  
+  CP024900 1478186 gnttnnsqgrllfyrdnqigkvsvflpnwgqslysevtnsnngyiidtsnqeplfkqylymedK--------------NNGFRIIATDVYNAV 1478264
+                   ***********************************************88555555555555544..............444555555555555 PP
+
+     align     118 ksknilylikledkkeercvldekllveedkep............................kdvkvvlgfslekgg...vddakakikvelkv 179    
+                   +++  +   k + +   ++  +ek+++ ++ +                             +  ++ ++f+   +    ++ ++ +i v+ kv
+  CP024900 1478265 EINTAISPAKIQVTV--KAGSKEKTFTADKDVSvqpspsfdemyyqfntleiegtglnfnnNLASIDVTFTALAEDgrkLGYESFSIPVTRKV 1478355
+                   444443332222211..1222233333322222233444555555555544577777777633445555543333300033333333333333 PP
+
+     align     180 gkklrekiqlkqqd.qvqyLdfpeeekwystkaiRLntlfakeLiakasqsidkvLswdtqnikeepltgs 249    
+                   +    + ++l++++  +qy+++++        + RLntlfa++L+a+a+++id++Ls +tqni+e+ l + 
+  CP024900 1478356 S--TDNALTLHHNEnGAQYMQWQAY-------RTRLNTLFARQLVARATTGIDTILSMETQNIQEPVLWSD 1478417
+                   3..4566677666536888888776.......89*******************************998665 PP
+
+  == domain 7  score: 866.6 bits;  conditional E-value: 1.3e-264
+     align     246 ltgsasepidlnGangiYfWELFfhmPflvawRlnvEqryeeaerWlkylfnpyededeqalkqgkpryWnsrPlidepkkeysslieptDPD 338    
+                   ++++++ep+d++Gan++YfWELF+++P+lva+Rl +Eq+++ea+rWlky+++p+       + q +   Wn+rPl+++++++ +  ++++DPD
+  CP024900 1478535 IENQKTEPMDFSGANSLYFWELFYYTPMLVAQRLLHEQNFDEANRWLKYVWSPSGY---IVHGQIQNYQWNVRPLLEDTSWNSD-PLDSVDPD 1478623
+                   56778************************************************522...2223344567*************66.9******* PP
+
+     align     339 aiaasePihYrkaiFafyvknlidqgDmeYRklerdalteAkliYaqassLLGarPdlqlasqWqpltLedaskkenseleele.lqseslpl 430    
+                   a+a+++P+hY++++F++++++li++gD++YR+lerd+l+eAk++Y qa++LLG++P+l l+++W++ +L+ a++ +++++++   ++ ++ + 
+  CP024900 1478624 AVAQHDPMHYKVSTFMRTLDLLIARGDQAYRQLERDTLNEAKMWYMQALHLLGDKPYLPLSTTWNNPRLDRAADITTQNAHASSiVALRQSTP 1478716
+                   *************************************************************************99766644444044444444 PP
+
+     align     431 lpvvsdktisaldndlFlkpvneellelwdklesRlyNLRhnltldGkelslpLydekidpkdLlkqryqrvvtarnaskana.kipnyRFep 522    
+                   +p +     +++ +dlFl+++ne ++++w++l++R+yNLRhnl++dG++l lp+y++++dpk+Ll+   ++v+t+++ +k     ++ +RF+ 
+  CP024900 1478717 APLA--LRSANTLTDLFLPQINEVMMNYWQTLAQRVYNLRHNLSIDGQPLYLPIYATPADPKALLS---AAVATSQSGGKLPEsFMSLWRFPH 1478804
+                   4444..34456789***************************************************7...88999999888776479******* PP
+
+     align     523 lleraksavetliqfGstllsllErkdsasleelqqqqaldlyrftidlQqqaidiaqaslealevskkaaqeRyehyksLydenisstEqev 615    
+                   +le+a+ +v++liqfGstl+ ++Er+d+++l++l q+qa++l+ ++ ++Q+++i++++ ++ +le+sk+ aq+R+++y++Lydeni++ E+++
+  CP024900 1478805 MLENARGMVSQLIQFGSTLQNIIERQDAEALNALLQNQAAELILTNLSIQDKTIEELDVEKTVLEKSKAGAQSRFDSYSKLYDENINAGENQA 1478897
+                   ********************************************************************************************* PP
+
+     align     616 ielqsqaaalllaaqaartaaaaldlvpnifglAvGGskwgailraaaeilqikaesketkadslsvsesYrRRrqEWelqykqAeaeiesid 708    
+                   + l+++aa l++a+qa+r+a+aa+dlvpnifg+A GGs+wgai++a++++++++a++++t+ad++s+se YrRRrqEWe+q+++Aeae++++d
+  CP024900 1478898 MMLRASAAGLTTAVQASRLAGAAADLVPNIFGFAGGGSRWGAIAEATGYVMEFSANVMNTEADKISQSETYRRRRQEWEIQRNNAEAELKQLD 1478990
+                   ********************************************************************************************* PP
+
+     align     709 qQinvqqlqleaaqkqlaqveaqqeqaqalleylstrftneslYtWlisqlsalYlqaYdavsslcLsaeaslqyElgdaetnFiksgaWndl 801    
+                   +Q++++ ++ eaa  q++++++qqeq+q++l++l+++f+n++lY+Wl ++l+a+Y+q+Yd ++++cL+ae ++++E++da+++Fik+gaW+ +
+  CP024900 1478991 SQLKSLVVRREAAVLQKTSLKTQQEQTQSQLAFLQRKFSNQALYNWLRGRLAAIYFQFYDLAVARCLMAEQAYRWEINDASASFIKPGAWQGT 1479083
+                   ********************************************************************************************* PP
+
+     align     802 YqGLlaGetLkLalqrmeraylerneRrleivkTvslkellkes............weeelkelksk.........ssitf............ 861    
+                   Y+GLlaGetL+L l +me+a+l+r++R+le+++Tvsl+e+++              +    ++l sk         +++ f            
+  CP024900 1479084 YAGLLAGETLMLSLTQMEDAHLKRDKRALEVERTVSLAEVYAGLpqdkgpfslaqeI----EKLVSKgsgsagsdnNNLAFgagtdtktslqa 1479172
+                   *****************************************9987778887754331....44333333334444455544555555555555 PP
+
+     align     862 ..slkeklfvedYpelle..RriksvsvsLpallGpyedvrAkLsqgssstlakaDlktvekllkkrekadtknvvrniranqqialStglnD 950    
+                     sl++ ++ edYp++l   Rrik++sv+LpallGpy+dv+A Ls+g+ + la++                          ++++a+S g+nD
+  CP024900 1479173 siSLADLKIREDYPTSLGkiRRIKQISVTLPALLGPYQDVQAILSYGDKTGLANG--------------------------CEALAVSHGMND 1479239
+                   55**************9999*******************************9999..........................99********** PP
+
+     align     951 sGlftLnfdDerfLPFEGtgveskwklefpeknat..dk...kqlLesLsDiilhvrYTakdgss 1010   
+                   sG+f+L+f+D++fLPFEG++++ +++l+++++na+  +k   +++L++L+Diilh+rYT k  s+
+  CP024900 1479240 SGQFQLDFNDGKFLPFEGIAID-QGTLTLSFPNASmpKKgkqATMLKTLNDIILHIRYTIKMPSK 1479303
+                   *******************875.5666665555442133433899**************987765 PP
+
+  == domain 8  score: 10.7 bits;  conditional E-value: 4.4e-06
+     align     952 GlftLnfdDerfLPFEGtgveskwklefp.eknatdk..kqlLesLsDiilhvrYTakd 1007   
+                   G  tL+  D rfLPFEG  ++  ++le++ ++++ ++  + l+  LsDii+h++Y  +d
+  CP024900 1662183 GSTTLSNLDSRFLPFEGRKATT-GTLELNiFHAGKERtqRGLVANLSDIIVHLNYIIRD 1662240
+                   66678888*********99864.555554144444443367899***********8776 PP
+
+
+
+Internal pipeline statistics summary:
+-------------------------------------
+Query model(s):                              1  (1020 nodes)
+Target sequences:                            1  (1845512 residues searched)
+Passed MSV filter:                         1  (1); expected 0.0 (0.02)
+Passed bias filter:                        1  (1); expected 0.0 (0.02)
+Passed Vit filter:                         1  (1); expected 0.0 (0.001)
+Passed Fwd filter:                         1  (1); expected 0.0 (1e-05)
+Initial search space (Z):                  1  [actual number of targets]
+Domain search space  (domZ):               1  [number of targets reported over threshold]
+# CPU time: 10.24u 0.14s 00:00:10.38 Elapsed: 00:00:10.47
+# Mc/sec: 179.79
+//
+[ok]

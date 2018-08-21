@@ -1,0 +1,117 @@
+# hmmsearch :: search profile(s) against a sequence database
+# HMMER 3.1b2 (February 2015); http://hmmer.org/
+# Copyright (C) 2015 Howard Hughes Medical Institute.
+# Freely distributed under the GNU General Public License (GPLv3).
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# query HMM file:                  tmp/a2_profile.hmm
+# target sequence database:        hmm_outputs/FN667741_1/a2/A2_Profile/FN667741.1_Xenorhabdus_bovienii_SS-2004_CONLQ_backward_0_translated_genome.fasta
+# output directed to file:         hmm_outputs/FN667741_1/a2/A2_Profile/FN667741.1_Xenorhabdus_bovienii_SS-2004_CONLQ_backward_0_hmmsearch_results.fasta
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Query:       align  [M=1020]
+Scores for complete sequences (score includes all domains):
+   --- full sequence ---   --- best 1 domain ---    -#dom-
+    E-value  score  bias    E-value  score  bias    exp  N  Sequence Description
+    ------- ------ -----    ------- ------ -----   ---- --  -------- -----------
+          0 1649.3  26.2          0 1648.8  26.2    1.2  1  FN667741  Xenorhabdus bovienii SS-2004 chromosome, complete g
+
+
+Domain annotation for each sequence (and alignments):
+>> FN667741  Xenorhabdus bovienii SS-2004 chromosome, complete genome
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 ! 1648.8  26.2         0         0       1    1020 [] 1215130 1216490 .. 1215130 1216490 .. 0.99
+
+  Alignments for each domain:
+  == domain 1  score: 1648.8 bits;  conditional E-value: 0
+     align       1 vsnsieaklle.........ylGqvv..................lyd.............................................. 20     
+                   +snsieakl+e         ylGq+v                  lyd                                              
+  FN667741 1215130 MSNSIEAKLQEdlrdalvdyYLGQIVpkgkdfqfyrdkiknvddLYDfllldtqvsskvitsrvshvtqsiqqyinrivlnlepglsmtqeet 1215222
+                   79************************99999999888888888866699999***************************************** PP
+
+     align      21 ...............................................................................edGid......... 25     
+                                                                                                  edGid         
+  FN667741 1215223 ydwqefanrygywsanqqlrlypeiyvdptlrltktefffqlesvlnqgkltdnvaqkavlgylnnfeevsnleiisgyEDGIDlandktyfi 1215315
+                   ********************************************************************************************* PP
+
+     align      26 .......................tdelsptawsewklidv.......................feveeekedkdnt......ryrtkiklayl 66     
+                                          ++el+ptawsewk+i+v                       fev++e+e+++n+      ryrtk++la+l
+  FN667741 1215316 aktrtqpyryfwrtldmkqrntdSNELYPTAWSEWKPISVplenarngvvrpvimnnrlyiswFEVSKEEEKNKNDesktiiRYRTKLNLAHL 1215408
+                   *********************99*******************************************9998888887889************** PP
+
+     align      67 kfdGswssgttlredvldeam........................................................................ 87     
+                   +fdG+wssgtt+re+vld+am                                                                        
+  FN667741 1215409 GFDGTWSSGTTVREEVLDDAMdkmiavldrtgkedrlvlvaftrrhgienkvpydydvvfsyicdnmlmastdlppsstklsdqddygdklvw 1215501
+                   ********************************************************************************************* PP
+
+     align      88 .........................................tkddfklkanyvedtldl.lesvstykydfsksknilylikledkkeercvl 138    
+                                                            +++df+lka+yved+ld+ l+++stykydfs sknily+i+ledk+++rc+l
+  FN667741 1215502 fffrdpqnggmdefkqlilypvhinrqwpiekerkfegklgDEQDFDLKADYVEDSLDMyLTAISTYKYDFSLSKNILYCIWLEDKNKNRCWL 1215594
+                   ********************************************************************************************* PP
+
+     align     139 dekllveedkep.................kdvkvvlgfslekggvddakakikvelkvgkklrekiqlkqqdqvqyLdfpee...ekwystka 211    
+                   ++++l++ed+e+                 +d+++v+gfsl+k ++dd++++i+v l+vgk +rek+q+kq++q+qyL+fpe+   ++wy++k+
+  FN667741 1215595 NYQVLTKEDFERgeiklstrvkrchsddlSDITIVTGFSLPKANADDIGGRIRVILSVGKLVREKFQIKQTKQTQYLQFPENpptPVWYTDKQ 1215687
+                   **********************************************************************************9999******* PP
+
+     align     212 iRLntlfakeLiakasqsidkvLswdtqnikeepltgsasepidlnGangiYfWELFfhmPflvawRlnvEqryeeaerWlkylfnpyedede 304    
+                   iRLntlfakeL++kasq++d vLswdtqn+ ee+++gs +epidl+GangiYfWELFfhmPf+vawR+nvEqryeea+rWlky+f+pye+ed+
+  FN667741 1215688 IRLNTLFAKELVSKASQKLDLVLSWDTQNLPEESISGSGTEPIDLKGANGIYFWELFFHMPFMVAWRFNVEQRYEEANRWLKYIFDPYENEDQ 1215780
+                   ********************************************************************************************* PP
+
+     align     305 qalkqgkpryWnsrPlidepkkeysslieptDPDaiaasePihYrkaiFafyvknlidqgDmeYRklerdalteAkliYaqassLLGarPdlq 397    
+                   +alkqgkpryWnsrPlidepkk+ys l++p+DPDaia+ ePihYrkaiF+f+v+nlid+gDmeYRkl+++a+t+A+l+Ya+assLLG+rPd+q
+  FN667741 1215781 PALKQGKPRYWNSRPLIDEPKKNYS-LMQPSDPDAIASGEPIHYRKAIFYFLVRNLIDDGDMEYRKLQPTARTIARLSYATASSLLGRRPDVQ 1215872
+                   *************************.******************************************************************* PP
+
+     align     398 lasqWqpltLedaskk.enseleelelqseslpllpvvsdktisaldndlFlkpvneellelwdklesRlyNLRhnltldGkelslpLydeki 489    
+                   las+Wqpl+Leda ++ +nsel++le+qs++lp++pvv+d+ti+aldndlF+kp+n+el+++wd++e+R+yNLRhnltldGke++++Lyd ki
+  FN667741 1215873 LASFWQPLSLEDALYRyDNSELRQLEMQSQPLPHIPVVHDNTIRALDNDLFMKPINNELTAIWDRMENRIYNLRHNLTLDGKEINMALYDGKI 1215965
+                   **************99899************************************************************************** PP
+
+     align     490 dpkdLlkqryqrvvtarnaskanakipnyRFeplleraksavetliqfGstllsllErkdsasleelqqqqaldlyrftidlQqqaidiaqas 582    
+                   +p+dL++ ryqrvvtarnas++n+k+pnyRFep+l+ra+ +vetliqfG tllsllErkds+s+e++q+ q++dlyrf+idlQqq+i+i+qas
+  FN667741 1215966 SPRDLMNLRYQRVVTARNASRMNFKTPNYRFEPMLARARAGVETLIQFGGTLLSLLERKDSLSFEKFQMLQNSDLYRFSIDLQQQEININQAS 1216058
+                   ********************************************************************************************* PP
+
+     align     583 lealevskkaaqeRyehyksLydenisstEqevielqsqaaalllaaqaartaaaaldlvpnifglAvGGskwgailraaaeilqikaesket 675    
+                   le+l+vskk+aqeR+eh+k LydenisstEq+vielqsq+a++llaaq++rt+aaald++pni+glAvGGs+wga+l aaae+++ik++s+++
+  FN667741 1216059 LEVLQVSKKSAQERHEHFKGLYDENISSTEQQVIELQSQSASALLAAQTLRTGAAALDMLPNIYGLAVGGSRWGAALSAAAEMVMIKHQSDSI 1216151
+                   ********************************************************************************************* PP
+
+     align     676 kadslsvsesYrRRrqEWelqykqAeaeiesidqQinvqqlqleaaqkqlaqveaqqeqaqalleylstrftneslYtWlisqlsalYlqaYd 768    
+                   kadsl+vsesYrRRrqEWe+qykqAe+e++sidqQinvq+lql+a++k+laqvea+q+++ all+y+s+rftneslYtW+isqls+lYlqaYd
+  FN667741 1216152 KADSLNVSESYRRRRQEWEMQYKQAEWEVNSIDQQINVQNLQLTASMKRLAQVEAEQQKSLALLDYFSSRFTNESLYTWMISQLSNLYLQAYD 1216244
+                   ********************************************************************************************* PP
+
+     align     769 avsslcLsaeaslqyElgdaetnFiksgaWndlYqGLlaGetLkLalqrmeraylerneRrleivkTvslkellkesweeelkelkskssitf 861    
+                   avsslcLsaeaslqyEl+ +e++Fi++++WndlYqGL++GetLkLalqrmeray+e+n+R +ei+kT+slk+l k++we++l++l+++s+itf
+  FN667741 1216245 AVSSLCLSAEASLQYELD-SEQTFIEGSSWNDLYQGLMSGETLKLALQRMERAYVEQNSRLQEITKTISLKALRKTAWENDLATLRQHSPITF 1216336
+                   *****************9.899*********************************************************************** PP
+
+     align     862 slkeklfvedYpelleRriksvsvsLpallGpyedvrAkLsqgssstlakaDlktvekllkkrekadtknvvrniranqqialStglnDsGlf 954    
+                   +l+e++f++dYp+l++RriksvsvsLp+l+Gpyed++A+Ls+g++++++kaD++t+ekl+k++ +ad++++ r+i++nqqi+lStg+nDsG+f
+  FN667741 1216337 NLQESDFAKDYPNLANRRIKSVSVSLPMLIGPYEDICAQLSLGVNTRMVKADIQTMEKLVKEGINADSPYLARSIHPNQQISLSTGINDSGMF 1216429
+                   ********************************************************************************************* PP
+
+     align     955 tLnfdDerfLPFEGtgveskwklefpeknatdkkqlLesLsDiilhvrYTakdgssefskavkkll 1020   
+                   tLnfdDerfLPFEG+gves+w++ f     t+++q+L+sL+D+ilhvrYTak gss+f+kav+kll
+  FN667741 1216430 TLNFDDERFLPFEGAGVESSWTFGF-----TNNSQNLDSLTDVILHVRYTAKIGSSAFGKAVQKLL 1216490
+                   *************************.....********************************9986 PP
+
+
+
+Internal pipeline statistics summary:
+-------------------------------------
+Query model(s):                              1  (1020 nodes)
+Target sequences:                            1  (1408499 residues searched)
+Passed MSV filter:                         1  (1); expected 0.0 (0.02)
+Passed bias filter:                        1  (1); expected 0.0 (0.02)
+Passed Vit filter:                         1  (1); expected 0.0 (0.001)
+Passed Fwd filter:                         1  (1); expected 0.0 (1e-05)
+Initial search space (Z):                  1  [actual number of targets]
+Domain search space  (domZ):               1  [number of targets reported over threshold]
+# CPU time: 7.88u 0.06s 00:00:07.94 Elapsed: 00:00:07.93
+# Mc/sec: 181.17
+//
+[ok]

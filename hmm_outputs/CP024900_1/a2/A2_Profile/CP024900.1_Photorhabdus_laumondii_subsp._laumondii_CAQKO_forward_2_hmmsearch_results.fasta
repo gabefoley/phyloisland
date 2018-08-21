@@ -1,0 +1,122 @@
+# hmmsearch :: search profile(s) against a sequence database
+# HMMER 3.1b2 (February 2015); http://hmmer.org/
+# Copyright (C) 2015 Howard Hughes Medical Institute.
+# Freely distributed under the GNU General Public License (GPLv3).
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# query HMM file:                  tmp/a2_profile.hmm
+# target sequence database:        hmm_outputs/CP024900_1/a2/A2_Profile/CP024900.1_Photorhabdus_laumondii_subsp._laumondii_CAQKO_forward_2_translated_genome.fasta
+# output directed to file:         hmm_outputs/CP024900_1/a2/A2_Profile/CP024900.1_Photorhabdus_laumondii_subsp._laumondii_CAQKO_forward_2_hmmsearch_results.fasta
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Query:       align  [M=1020]
+Scores for complete sequences (score includes all domains):
+   --- full sequence ---   --- best 1 domain ---    -#dom-
+    E-value  score  bias    E-value  score  bias    exp  N  Sequence Description
+    ------- ------ -----    ------- ------ -----   ---- --  -------- -----------
+          0 1029.9  19.4          0 1029.1  19.4    1.4  1  CP024900  Photorhabdus laumondii subsp. laumondii strain DJC 
+
+
+Domain annotation for each sequence (and alignments):
+>> CP024900  Photorhabdus laumondii subsp. laumondii strain DJC chromosome, complete genome
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 ! 1029.1  19.4         0         0       7    1020 .]  308698  310161 ..  308692  310161 .. 0.89
+
+  Alignments for each domain:
+  == domain 1  score: 1029.1 bits;  conditional E-value: 0
+     align      7 aklle.........ylGqvvlyd........................................................................ 20    
+                  +kl e         ylG++   d                                                                        
+  CP024900 308698 KKLAEsvrdglvgyYLGHISKTDnvpdlktpddlyqyllidnqvssqvntsvvaqaissvqqyingimlnmepgydyqyedkvktwnnvlsqyni 308792
+                  55555666666666777777555555566666666666666777777777777777777777777777777777777776777777777777777 PP
+
+     align     21 ............................................edGid.............................................. 25    
+                                                              +   +                                              
+  CP024900 308793 wagfqqlsnypenyispilrhgktsdfkelednlnkgklsdevvQ---Evilnylnkfeeisnlelmsgyinatkelapaqaeyyfigkmnitpg 308884
+                  777777777776666666666666666666444444444444440...04444444444444444444444455555555555555555555555 PP
+
+     align     26 ..............tdelsptawsewklidv....................feveeekedkdntryrtkiklaylkfdGswssgttlredvldea 86    
+                                 d ++ptaw ew+ i +                    + +++e ++ ++++y  +i+l+y kf+G+ws + +lr+ + d++
+  CP024900 308885 qyywrslnmanrnvQDVINPTAWKEWEKIGIpatgevikirpvvingrlhiVWLAHEADNSKEENYY-SINLIYRKFNGEWSLPNKLRTFTGDKS 308978
+                  5555555566666568999*****************************9986666666666666664.69******************9998888 PP
+
+     align     87 m.............................................................................................. 87    
+                                                                                                                 
+  CP024900 308979 Kindsfelialmdlraepvlvisaickpvktenntsgeknypyscnllfnevpvplvgeksldlyiyqqiksnptqdltqsnmlsayfgdayklv 309073
+                  88999****************************************************************************************** PP
+
+     align     88 ............................................................................................... 87    
+                                                                                                                 
+  CP024900 309074 dkpvylesgsypglatkkmtlfaemgsgklrlsgnnslsigkeiirsvacdinlksksseagkvnisladgakenngkitvsvavtindnsyasg 309168
+                  *********************************************************************************************** PP
+
+     align     88 ..............................................tkddfklkanyvedtldl.lesvstykydfsksknilylikledkkeer 135   
+                                                                + + f+ + n + ++l    e + +++ d s s++  ++ ++ +  +++
+  CP024900 309169 dyfyimfnssqsgypelnvnfsewgqkqgnvyhftkemevplsglqEAKVFSSELNKSGGKLVAsGEGTPKIDIDHSGSREADFCLWHTNGGSDS 309263
+                  *******************************************9886666666777778887776788999****************99988888 PP
+
+     align    136 cvldekllveedkep..............kdvkvvlgfslekggvddakakikvelkvgkklrekiqlkqqdqvqyLdfpeeekwystkaiRLnt 216   
+                     +e++l + +                 + v  +lg++ e + +d   ++ +v+l+ ++    +++ +++ q+qyLd++e     + ++iRLnt
+  CP024900 309264 LLYSERQLLNGKSIIstveldldkingkdSSVFLKLGYKKEGEDADLGYNHYEVKLSKTSYPNLLLTYNKKTQAQYLDITEL--QFKYRSIRLNT 309356
+                  777777766655544588888999*99666666677777666666666677888888888888889999999********99..667799***** PP
+
+     align    217 lfakeLiakasqsidkvLswdtqnikeepltgsa.sepidlnGangiYfWELFfhmPflvawRlnvEqryeeaerWlkylfnpyededeqalkqg 310   
+                  lf+keLi++a++si  vLsw+ qnike+ ++g+   +   lnGan+iYfWELFfh+P+lva+ ln  q+y++a++Wl+y+fnp      + + +g
+  CP024900 309357 LFGKELISRANNSIADVLSWEAQNIKEPLIPGGGeNNDSALNGANSIYFWELFFHVPYLVAYQLNASQQYQDAQNWLHYIFNPGV----KNKANG 309447
+                  *******************************99978999********************************************53....333458 PP
+
+     align    311 kpryWnsrPlidepkkeysslieptDPDaiaasePihYrkaiFafyvknlidqgDmeYRklerdalteAkliYaqassLLGarPdlqlasqWqpl 405   
+                  +p+yWn   l   ++++ + l + +DPDaia+ +P+hY+kaiF++yv+nlid gD +YR l++d l++Akl Y qa++LLG+rPd  l+s+W pl
+  CP024900 309448 SPSYWNCSLLEVSQDNSVQ-LKRLQDPDAIAYADPVHYKKAIFQMYVQNLIDFGDSFYRFLTNDGLNNAKLRYLQAQQLLGQRPDFDLVSHWLPL 309541
+                  99****9877776666666.9************************************************************************** PP
+
+     align    406 tLedaskkenseleelelq..seslpllpvvsdktisaldndlFlkpvneellelwdklesRlyNLRhnltldGkelslpLydekidpkdLlkqr 498   
+                  +L+d+++++n++l+e e +     l  lp+++ ++ +++dn++F+ p+n++ll +wd l sR yNLRhnltldGk+lslpLy++++dpk+Ll   
+  CP024900 309542 ELADVTSSKNNKLREFESNidLDILIDLPATKVSAYTVVDNAIFRVPLNNDLLWYWDILSSRFYNLRHNLTLDGKPLSLPLYATPVDPKNLLALL 309636
+                  ************99877551155677789999999999********************************************************* PP
+
+     align    499 yqrvvtarnaskanakipnyRFeplleraksavetliqfGstllsllErkdsasleelqqqqaldlyrftidlQqqaidiaqaslealevskkaa 593   
+                  +++ ++    s+   +ip+yRF++ll+++++av+tl +fG+ lls++Erkd a++eel+q + ++l  f+i+lQ++a+ ia+ ++eal +s+++ 
+  CP024900 309637 ANGGSLLAAGSTGILNIPPYRFRALLPSVYHAVDTLSHFGDLLLSAQERKDCAEQEELNQLHLKELAIFAISLQKDAVVIAEKGKEALLKSQQTL 309731
+                  ******999999999******************************************************************************** PP
+
+     align    594 qeRyehyksLydenisstEqevielqsqaaalllaaqaartaaaaldlvpnifglAvGGskwgailraaaeilqikaesketkadslsvsesYrR 688   
+                  q+R +hyk+Lydenis++E+ +++lq +a  +    + + taa+a+ l+p i g+ +GG +w  +l  +a i ++++ ++++++d+lsv++ Y+R
+  CP024900 309732 QQRIDHYKALYDENISTDETYALNLQGTAKIISSVEEGMLTAAGAASLIPSIAGTSFGGQQWHMPLVCTAGITRTASLIMQMASDTLSVKAGYNR 309826
+                  *********************************************************************************************** PP
+
+     align    689 RrqEWelqykqAeaeiesidqQinvqqlqleaaqkqlaqveaqqeqaqalleyls.trftneslYtWlisqlsalYlqaYdavsslcLsaeaslq 782   
+                  Rr+EWe+qykqAe+e+e +++Qi++q+ q++aa++ l+q +aq +++q+++++++ tr t++slY+Wl  q+ +lY qaYdav slcL+a+a++q
+  CP024900 309827 RREEWEIQYKQAESELEMLKKQIEQQEAQISAANTTLQQSQAQLQKEQDMYQFFTvTRVTKSSLYQWLNDQMMSLYRQAYDAVLSLCLNAQACWQ 309921
+                  ****************************************************99759************************************** PP
+
+     align    783 yElgdaetnFiksgaWndlYqGLlaGetLkLalqrmeraylerneRrleivkTvslkellkes..weeelkelkskssitfslkeklfvedYpel 875   
+                  yE+gd  t+Fi  ++W+d+++GLl+Ge++kL+l++me+ayl+rneRrle++kT+slk+ll+ +  w++  +elk  + +tf l+eklf++dY ++
+  CP024900 309922 YEMGDFATQFIVQNSWDDNHNGLLVGEKIKLNLLKMESAYLNRNERRLELTKTISLKNLLSGTkkWDDIQSELKTGEGVTFILNEKLFDQDYAGH 310016
+                  ************************************************************76656*9999999999******************* PP
+
+     align    876 leRriksvsvsLpallGpyedvrAkLsqgssstlakaDlktvekllkkrekadtknvvrniranqqialStglnDsGlftLnfdDerfLPFEGtg 970   
+                  + R+i svsv+Lp+l+Gpy+d++A+L+q++  tl + D+++v++ll++ +++d+k++v+n+ra+qqialS+g+nDsG f+Lnf D+r+LPFEGtg
+  CP024900 310017 YLRQITSVSVTLPTLMGPYQDIKATLTQTKCYTLKTPDINGVKYLLSN-KEGDNKQIVTNLRASQQIALSSGINDSGTFNLNFGDDRYLPFEGTG 310110
+                  ***********************************************9.99******************************************** PP
+
+     align    971 veskwklefpeknatdk.kqlLesLsDiilhvrYTakdgssefskavkkll 1020  
+                  + s wkl+fp +++ +  +  L+ LsDiilhvrYTakdg+++f+ +v++ll
+  CP024900 310111 AVSDWKLTFPSAATDNIqRDILDNLSDIILHVRYTAKDGGEAFAGQVRELL 310161
+                  *********776655545889***************************986 PP
+
+
+
+Internal pipeline statistics summary:
+-------------------------------------
+Query model(s):                              1  (1020 nodes)
+Target sequences:                            1  (1845512 residues searched)
+Passed MSV filter:                         1  (1); expected 0.0 (0.02)
+Passed bias filter:                        1  (1); expected 0.0 (0.02)
+Passed Vit filter:                         1  (1); expected 0.0 (0.001)
+Passed Fwd filter:                         1  (1); expected 0.0 (1e-05)
+Initial search space (Z):                  1  [actual number of targets]
+Domain search space  (domZ):               1  [number of targets reported over threshold]
+# CPU time: 10.24u 0.09s 00:00:10.33 Elapsed: 00:00:10.36
+# Mc/sec: 181.70
+//
+[ok]
