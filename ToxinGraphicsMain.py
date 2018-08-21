@@ -222,7 +222,7 @@ def writeHMMToImage(hmm_dict, reference, region, seq_record, species):
 def writeHmmToSeq(hmm_dict, reference, region, seqrecord, species):
     name = species + "_sequence"
     output_path = reference +"/"+ name + ".gb"
-    seqrecord.name = species
+    seqrecord.name = species[0:9]
     # Write Annotated Sequences to Genbank files to allow easy movement to Artemis
     print("writing sequences to GenBank File")       
     """ Create a dictionary for key = feature type -> value = location """
