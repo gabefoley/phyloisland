@@ -111,8 +111,8 @@ def get_feature_location_with_profile(ids, reference, profile_name, recordName, 
                 strand = "_forward_" +str(i) if forward else "_backward_" + str(i)
                 sequence = nuc_seq[i:] if forward else nuc_seq.reverse_complement()[i:]
 
-                cleaned_path = outpath + seq_record.id + "_" + seq_record.annotations.get('organism') + "_" + random_id + strand + "_translated_genome.fasta"
-                hmmsearch_results = outpath + seq_record.id + "_" + seq_record.annotations.get('organism') + "_" + random_id + strand + "_hmmsearch_results.fasta"
+                cleaned_path = outpath + seq_record.id.replace("/", "_") + "_" + seq_record.annotations.get('organism') + "_" + random_id + strand + "_translated_genome.fasta"
+                hmmsearch_results = outpath + seq_record.id.replace("/", "_") + "_" + seq_record.annotations.get('organism') + "_" + random_id + strand + "_hmmsearch_results.fasta"
 
 
                 cleaned_path = cleaned_path.replace(" ", "_")
