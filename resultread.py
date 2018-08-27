@@ -41,7 +41,7 @@ def HMMread(path):
             for i in range(len(qresult.hsps)):
                 try:
                     hsp = qresult[0][i]
-                    hmm_dict[infile + "_"str(i)] = str(3*hsp.env_start)+ ':' + str(3*hsp.env_end)
+                    hmm_dict[infile + "_" + str(i)] = str(3*hsp.env_start)+ ':' + str(3*hsp.env_end)
                     i += 1
                 except:
                     continue
