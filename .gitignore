@@ -11,3 +11,4 @@ testing/
 testing/*
 /servers.py
 /phyloinit.py
+/hmm_outputs/*
