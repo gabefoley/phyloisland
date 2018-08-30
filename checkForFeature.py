@@ -88,7 +88,8 @@ def get_feature_location_with_profile(ids, reference, profile_name, recordName, 
     query = models.GenomeRecords.query.filter(models.GenomeRecords.uid.in_(ids))
     for record in query.all():
         seq_record = servers.bio_db.lookup(primary_id=record.name)
-        species = record.name.replace(" ", "_")[0:4]
+        species = record.name.replace(" ", "_")
+        species = species.replace(".", "_")
 
         # Create a path to write the translated genomic sequence to
         random_id = phyloisland.randstring(5)
@@ -110,8 +111,8 @@ def get_feature_location_with_profile(ids, reference, profile_name, recordName, 
                 strand = "_forward_" +str(i) if forward else "_backward_" + str(i)
                 sequence = nuc_seq[i:] if forward else nuc_seq.reverse_complement()[i:]
 
-                cleaned_path = outpath + seq_record.id + "_" + seq_record.annotations.get('organism') + "_" + random_id + strand + "_translated_genome.fasta"
-                hmmsearch_results = outpath + seq_record.id + "_" + seq_record.annotations.get('organism') + "_" + random_id + strand + "_hmmsearch_results.fasta"
+                cleaned_path = outpath + seq_record.id.replace("/", "_") + "_" + random_id + strand + "_translated_genome.fasta"
+                hmmsearch_results = outpath + seq_record.id.replace("/", "_") + "_" + random_id + strand + "_hmmsearch_results.fasta"
 
 
                 cleaned_path = cleaned_path.replace(" ", "_")
@@ -136,7 +137,7 @@ def get_feature_location_with_profile(ids, reference, profile_name, recordName, 
 
                 if os.path.isfile(cleaned_path):
 
-                    stdoutdata = subprocess.getoutput("hmmsearch -o %s %s %s" % (hmmsearch_results, 'tmp/' +recordName +"_profile.hmm", cleaned_path))
+                    stdoutdata = subprocess.getoutput("hmmsearch -o %s %s %s" % (hmmsearch_results, 'tmp/' +region+"_profile.hmm", cleaned_path))
 
                     print (stdoutdata)
                     # result = subprocess.call(["hmmsearch -o %s %s %s" % (hmmsearch_results, reference, cleaned_path)])
@@ -156,13 +157,12 @@ def get_feature_location_with_profile(ids, reference, profile_name, recordName, 
         hmmerout = []
         # add handler to HMMread for output paths 
         for reg in all_reg:
-            print(reg)
             hmmerout.append(resultread.HMMread(reg))
         print(hmmerout)
-        # all_reg handling should be in HMMread not writeHMMtoImage
         ToxinGraphicsMain.writeHMMToImage(hmmerout, reference + "/" +species.replace(" ", "_") , all_reg, seq_record, species)
         print("Diagram has been written to %s directory" %(reference))
         print("Creating a Sequence file containing all %s region hits" % (region))
+	# TODO Add better invariant for Shotgun Naming
         ToxinGraphicsMain.writeHmmToSeq(hmmerout, reference +"/" + species.replace(" ", "_"), all_reg, seq_record, species)
         print("WIP Seq may not work")
                     
