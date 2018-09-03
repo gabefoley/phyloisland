@@ -23,8 +23,12 @@ def resultRead(paths):
             qresult = SearchIO.read(infile, 'hmmer3-text')
             for i in range(len(qresult.hsps)):
                     try:
-                        hsp = qresult[0][i]
-                        hmm_dict[infile[6:-24] + '_' +str(i)] = str(3*hsp.env_start) +':'+ str(3*hsp.env_end)
+                        if "forward" in infile:
+                            hsp = qresult[0][i]
+                            hmm_dict[infile[6:-24] + "forward" + '_' +str(i)] = str(3*hsp.env_start) +':'+ str(3*hsp.env_end)
+                        else:
+                            hsp = qresult[0][i]
+                            hmm_dict[infile[6:-24] + "backward" + '_' +str(i)] = str(3*hsp.env_start) +':'+ str(3*hsp.env_end) 
                     except:
                         continue
             print(hmm_dict)

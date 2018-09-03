@@ -161,11 +161,16 @@ def writeHMMToImage(hmm_dict, reference, region, seq_record, species):
     region_colours = {"a1":"orange", "a2":"red", "chitinase":"green", "a3":"yellow",
                       "TcB":"blue", "TcC":"magenta", "pore":"grey", "region1":"lightblue", "region2":"pink", "region3":"purple", "region4":"black"}
     locs = {}
-    print(hmm_dict)
+    strandd = 1
     for result in hmm_dict:
         i = 0
         for reg in result:       
             """ Create a dictionary for key = feature type -> value = location """
+            if "forward" in reg:
+                print("gratz")
+                strandd = 1
+            elif "backward" in reg:
+                strandd = -1
             locs[reg.split("/")[2] + phyloisland.randstring(5)] = result[reg].split(":")
             i += 1
             # Prepare for literally the worst code in existence
@@ -184,8 +189,7 @@ def writeHMMToImage(hmm_dict, reference, region, seq_record, species):
         svals.append(sval)
         endvals.append(endval)
         """ create and add features based on locations """
-        feature = SeqFeature(location = FeatureLocation(int(locs[location][0]), int(locs[location][1]), strand=1), type = location[0:-5])
-        print(feature.location)
+        feature = SeqFeature(location = FeatureLocation(int(locs[location][0]), int(locs[location][1]), strand=strandd), type = location[0:-5])
         seq_record.features.append(feature)
 
     """ Set up the Genome Diagram """
@@ -198,8 +202,6 @@ def writeHMMToImage(hmm_dict, reference, region, seq_record, species):
     # Add Features
     for feature in seq_record.features:
         if feature.type in region_colours.keys():
-            print(feature.type)
-            print(feature.location)
             gd_feature_set.add_feature(feature, label = True, name
             = feature.type, color = region_colours[feature.type], label_position = "start", label_size = 6, label_angle = 0)
         elif feature.type == "CDS":

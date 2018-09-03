@@ -153,12 +153,10 @@ def get_feature_location_with_profile(ids, reference, profile_name, recordName, 
         for infile in glob.glob(os.path.join(reference +"/" +species + '/*')):
             if '.' not in infile:
                 all_reg.append(infile)
-        print(all_reg)
         hmmerout = []
         # add handler to HMMread for output paths 
         for reg in all_reg:
             hmmerout.append(resultread.HMMread(reg))
-        print(hmmerout)
         ToxinGraphicsMain.writeHMMToImage(hmmerout, reference + "/" +species.replace(" ", "_") , all_reg, seq_record, species)
         print("Diagram has been written to %s directory" %(reference))
         print("Creating a Sequence file containing all %s region hits" % (region))
