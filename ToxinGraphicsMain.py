@@ -167,7 +167,6 @@ def writeHMMToImage(hmm_dict, reference, region, seq_record, species):
         for reg in result:       
             """ Create a dictionary for key = feature type -> value = location """
             if "forward" in reg:
-                print("gratz")
                 strandd = 1
             elif "backward" in reg:
                 strandd = -1
@@ -235,6 +234,10 @@ def writeHmmToSeq(hmm_dict, reference, region, seqrecord, species):
         i = 0
         for reg in result:       
             """ Create a dictionary for key = feature type -> value = location """
+            if "forward" in reg:
+                strandd = 1
+            elif "backward" in reg:
+                strandd = -1
             locs[reg.split("/")[2] + phyloisland.randstring(5)] = result[reg].split(":")
             i += 1
         
@@ -244,7 +247,7 @@ def writeHmmToSeq(hmm_dict, reference, region, seqrecord, species):
     for location in locs:
         """ create and add features based on locations """
         color = {'color':colour_dict[location[0:-5]]}
-        feature = SeqFeature(location = FeatureLocation(int(locs[location][0]), int(locs[location][1]), strand=1), type = "misc_feature", qualifiers = color)
+        feature = SeqFeature(location = FeatureLocation(int(locs[location][0]), int(locs[location][1]), strand=strandd), type = "misc_feature", qualifiers = color)
         seqrecord.features.append(feature)
         
     sequence = str(seqrecord.seq)[2:-1]
