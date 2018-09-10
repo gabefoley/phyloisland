@@ -179,14 +179,12 @@ def writeHMMToImage(hmm_dict, reference, region, seq_record, species):
             # TODO - Could likely turn this into a for loop in so
             
     """ Add the features from dictionary to the seq_record features """
-    svals = []
-    endvals = []        
+    feature_locations = []     
+    # If want to add all features to image comment below line out
+    seq_record.features = []
+    i = 0
     for location in locs:
         """ Extract start and end values from each location, and add to independent lists """
-        sval = int(locs[location][0])
-        endval = int(locs[location][1])
-        svals.append(sval)
-        endvals.append(endval)
         """ create and add features based on locations """
         feature = SeqFeature(location = FeatureLocation(int(locs[location][0]), int(locs[location][1]), strand=strandd), type = location[0:-5])
         seq_record.features.append(feature)
@@ -194,28 +192,58 @@ def writeHMMToImage(hmm_dict, reference, region, seq_record, species):
     """ Set up the Genome Diagram """
     max_len = max(max_len, len(seq_record))
 
-    gd_track_for_features = gd_diagram.new_track(1, name = 
-    seq_record.name, greytrack = True, start = 0, end = len(seq_record))
-    gd_feature_set = gd_track_for_features.new_set()
-    
+    gd_track1 = gd_diagram.new_track(1, name = seq_record.name + " Track 1", greytrack = True, start = 0, end = len(seq_record))
+    gd_track2 = gd_diagram.new_track(2, name = seq_record.name + " Track 2", greytrack = True, start = 0, end = len(seq_record))
+    gd_feature_set1 = gd_track1.new_set()
+    gd_feature_set2 = gd_track2.new_set()
+
+    for feature in seq_record.features:
+        feature_locations.append((feature.location.start, feature.location.end))
+
+    for feature in seq_record.features:
+        if i == 0:
+            gd_feature_set1.add_feature(seq_record.features[i], label = True, name = seq_record.features[i].type, color = region_colours[seq_record.features[i].type],
+                                        label_position = "middle")
+            while i +1 < len(feature_locations):
+                overlap = feature.location.start in feature_locations[i + 1] or feature.location.end in feature_locations[i+ 1]
+                i +=1
+                if overlap:
+                    gd_feature_set2.add_feature(seq_record.features[i], label = True, name = seq_record.features[i].type, color = region_colours[seq_record.features[i].type],
+                                        label_position = "middle")
+                else:
+                    gd_feature_set1.add_feature(seq_record.features[i], label = True, name = seq_record.features[i].type, color = region_colours[seq_record.features[i].type],
+                                        label_position = "middle")
     # Add Features
+    """ 
     for feature in seq_record.features:
         if feature.type in region_colours.keys():
-            gd_feature_set.add_feature(feature, label = True, name
-            = feature.type, color = region_colours[feature.type], label_position = "start", label_size = 6, label_angle = 0)
-        elif feature.type == "CDS":
-            gd_feature_set.add_feature(feature)
+            #check if location is in any existing locations
+            try:
+                for features in gd_feature_set1:
+                    if feature.location == features.location:
+                        break
+                    elif features.location.start in feature.location or features.location.end in feature.location:
+                        gd_feature_set2.add_feature(feature, label = True, name
+                                                    = feature.type, color = region_colours[feature.type], label_position = "start", label_size = 6, label_angle = 0)
+                    else:
+                        gd_feature_set1.add_feature(feature, label = True, name = feature.type, color = region_colours[feature.type], label_position = "start", label_size =6, label_angle = 0)
+            except:
+                gd_feature_set1.add_feature(feature, label = True, name = feature.type, color = region_colours[feature.type], label_position = "start", label_size =6, label_angle = 0)
+                """
                  
-        """    For 'Zoomed' sections:     
-        start = max(start, min(svals))
-        if start > 1500:
-            start -= 1000
+    """    
+    For 'Zoomed' sections:     
+    start = max(start, min(svals))
+    if start > 1500:
+        start -= 1000
         end = min(len(seq_record), max(endvals))
-        if len(seq_record) - end > 1500:
-            end += 1000
-            """
+     if len(seq_record) - end > 1500:
+         end += 1000
+         """
             
     """ Draw and Write the Diagram to file """
+    gd_track1.add_set(gd_feature_set1)
+    gd_track2.add_set(gd_feature_set2)
     gd_diagram.draw(format="linear", pagesize = "A2", fragments = 0, start = start, end = len(seq_record))
     gd_diagram.write(output_path, "PNG")
     print("Genome Diagram has been added to file " + output_path)
