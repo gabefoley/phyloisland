@@ -167,7 +167,6 @@ def writeHMMToImage(hmm_dict, reference, region, seq_record, species):
         overlap_amount = 0
 
 
-        print("In hmm code")
         name = reference + "_" + species + "_GenomeDiagram"
         gd_diagram = GenomeDiagram.Diagram(name)
         max_len = 0
@@ -186,7 +185,7 @@ def writeHMMToImage(hmm_dict, reference, region, seq_record, species):
                 """ Create a dictionary for key = feature type -> value = location """
                 if "forward" in reg:
                     strandd = 1
-                    locs[reg.split("/")[2] + phyloisland.randstring(5)] = result[reg].split(":")
+                    locs[reg.split("/")[2] + phyloisland.randstring(5)] =  result[reg].split(":")
 
                 # If it's on the backwards strand we need to correct the postion - swap the start and end positions and set them relative to the 5' end
                 # TODO: Actually this should be done in resultread, when we first read it in
@@ -255,7 +254,8 @@ def writeHMMToImage(hmm_dict, reference, region, seq_record, species):
 
                 overlap = False
                 for loc in dict_track[current_track]:
-                    if feature.location.start - overlap_amount in loc or feature.location.end + overlap_amount in loc:
+
+                    if feature.location.start + overlap_amount in loc or feature.location.end - overlap_amount in loc:
                         overlap = True
 
 
