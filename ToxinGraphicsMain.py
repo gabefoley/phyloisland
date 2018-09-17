@@ -232,12 +232,14 @@ def writeHMMToImage(hmm_dict, reference, region, seq_record, species):
         print("This many features")
         print(len(seq_record.features))
 
+
         total_tracks = 1
         # Dictionary to keep track of which locations are at which track
         forward_tracks = {1 : []}
         backward_tracks = {1 : []}
 
         for feature in seq_record.features:
+            print (feature)
             feature_added = False
             current_track = 1
 
