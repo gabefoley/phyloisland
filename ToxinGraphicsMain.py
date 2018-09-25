@@ -259,6 +259,7 @@ def writeHMMToImage(hmm_dict, reference, region, seq_record, species):
                 dict_track = backward_tracks
 
             overlap = False
+
             for loc in dict_track[current_track]:
 
                 if feature.location.start + overlap_amount in loc or feature.location.end - overlap_amount in loc:
@@ -275,10 +276,15 @@ def writeHMMToImage(hmm_dict, reference, region, seq_record, species):
                         dict_track[1].append(feature.location)
                         feature_added = True
                     else:
-                        # Add to this track
+                        # Add to next highest track
                         current_track += 1
                         total_tracks += 1
-                        dict_track[current_track] = []
+                        if current_track not in dict_track.keys():
+                            dict_track[current_track] = []
+                        if current_track not in forward_tracks.keys():
+                            forward_tracks[current_track] = []
+                        if current_track not in backward_tracks.keys():
+                            backward_tracks[current_track] = []
                         exec("gd_track" + str(
                             current_track) + "= gd_diagram.new_track(0, name=seq_record.name + ' Track " + str(
                             current_track) + "', greytrack=True, start=0, end=len(seq_record))")
