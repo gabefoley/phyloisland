@@ -114,6 +114,10 @@ def get_feature_location_with_profile(ids, reference, profile_name, recordName, 
                 cleaned_path = outpath + seq_record.id.replace("/", "_") + "_" + random_id + strand + "_translated_genome.fasta"
                 hmmsearch_results = outpath + seq_record.id.replace("/", "_") + "_" + random_id + strand + "_hmmsearch_results.fasta"
 
+                domScore = 100
+
+
+
 
                 cleaned_path = cleaned_path.replace(" ", "_")
                 hmmsearch_results = hmmsearch_results.replace(" ", "_")
@@ -137,7 +141,7 @@ def get_feature_location_with_profile(ids, reference, profile_name, recordName, 
 
                 if os.path.isfile(cleaned_path):
 
-                    stdoutdata = subprocess.getoutput("hmmsearch -o %s %s %s" % (hmmsearch_results, 'tmp/' +region+"_profile.hmm", cleaned_path))
+                    stdoutdata = subprocess.getoutput("hmmsearch -o %s --domT %s %s %s" % (hmmsearch_results, domScore, 'tmp/' +region+"_profile.hmm", cleaned_path))
 
                     print (stdoutdata)
                     # result = subprocess.call(["hmmsearch -o %s %s %s" % (hmmsearch_results, reference, cleaned_path)])
