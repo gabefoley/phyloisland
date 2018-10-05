@@ -344,7 +344,7 @@ def writeHmmToSeq(hmm_dict, reference, region, seqrecord, species):
                 print("positions after split", positions)
                 strand_dict[location] = strandd
 
-            locs[location] = result[reg].split(":")
+            # locs[location] = result[reg].split(":")
             i += 1
 
     print("adding %s genome to diagram" % (seqrecord.name))
