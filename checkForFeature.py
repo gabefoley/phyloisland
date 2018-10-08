@@ -85,6 +85,9 @@ def get_feature_location_with_profile(ids, reference, profile_name, recordName, 
     :return:
     """
 
+    print (reference)
+    print (profile_name)
+
     query = models.GenomeRecords.query.filter(models.GenomeRecords.uid.in_(ids))
     for record in query.all():
         seq_record = servers.bio_db.lookup(primary_id=record.name)
@@ -95,12 +98,13 @@ def get_feature_location_with_profile(ids, reference, profile_name, recordName, 
         random_id = phyloisland.randstring(5)
 
 
-
-
         # Get the nucleotide sequence of the genome
+        print ("Building outpath")
+        print (reference)
         nuc_seq = Bio.Seq.Seq(str(seq_record.seq).replace("b'", "").replace("'", ""))
         outpath = reference + "/" + species + "/" + region +"/" + profile_name + "/"
         outpath.replace(" ", "_")
+        print (outpath)
         # Check three forward reading frames
         if not os.path.exists(outpath):
             os.makedirs(outpath.replace(" ", "_"))
@@ -160,30 +164,53 @@ def get_feature_location_with_profile(ids, reference, profile_name, recordName, 
         hmmerout = []
         # add handler to HMMread for output paths 
         for reg in all_reg:
-            hmmerout.append(resultread.HMMread(reg))
-        ToxinGraphicsMain.writeHMMToImage(hmmerout, reference + "/" +species.replace(" ", "_") , all_reg, seq_record, species)
+            hmmerout.append(resultread.HMMread(reg, record))
+        ToxinGraphicsMain.writeHMMToImage(hmmerout, reference + "/" +species.replace(" ", "_") , seq_record, species)
         print("Diagram has been written to %s directory" %(reference))
         print("Creating a Sequence file containing all %s region hits" % (region))
 	# TODO Add better invariant for Shotgun Naming
-        ToxinGraphicsMain.writeHmmToSeq(hmmerout, reference +"/" + species.replace(" ", "_"), all_reg, seq_record, species)
+        ToxinGraphicsMain.writeHmmToSeq(hmmerout, reference +"/" + species.replace(" ", "_"), seq_record, species)
         print("WIP Seq may not work")
-                    
-                # utilities.removeFile(reference, cleaned_path)
-# def read_hmmer_results(filepath):
-#     with open(filepath) as hmmsearch_results:
-#         for line in hmmsearch_results:
-#             print (line)
 
 
-def checkFeatureAlreadyAnnotated():
-    return
+# Function to be called when wanting to generate Genome Diagram and GenBank output
+def generateOutput(ids, reference, diagram=True, genbank=True, expand=False):
 
-def annotateNewFeature():
-    return
+    query = models.GenomeRecords.query.filter(models.GenomeRecords.uid.in_(ids))
+    for record in query.all():
+        seq_record = servers.bio_db.lookup(primary_id=record.name)
+        species = record.name.replace(" ", "_")
+        species = species.replace(".", "_")
 
-def addToDatabase():
-    return
+        print ("Building the output in generateOutput")
+        print(reference)
+        print (species)
 
+        # for regions in hmmer_outputs/organism add reg to all_reg
+        all_reg = []
+        for infile in glob.glob(os.path.join(reference + "/" + species + '/*')):
+            if '.' not in infile:
+                all_reg.append(infile)
+        hmmerout = []
+        print (all_reg)
+        # add handler to HMMread for output paths
+
+        #If we don't want to expand, don't pass the genome record into the HMM reader
+        if not expand:
+            record = None
+
+        for reg in all_reg:
+
+            hmmerout.append(resultread.HMMread(reg, record))
+
+        if diagram:
+            ToxinGraphicsMain.writeHMMToImage(hmmerout, os.path.join(reference + "/" + species.replace(" ", "_")), seq_record,
+                                          species)
+            print("Diagram has been written to %s directory" % (reference))
+
+        if genbank:
+            # TODO Add better invariant for Shotgun Naming
+            ToxinGraphicsMain.writeHmmToSeq(hmmerout, os.path.join(reference + "/" + species.replace(" ", "_")), seq_record, species)
 
 
 

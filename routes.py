@@ -865,23 +865,24 @@ class GenomeRecordsView(ModelView):
         createFASTAFromRegion(ids, "a2")
         
 
-    @action('item10_generate_genome_diagram', 'Generate a Diagram')
+    @action('item10_generate_genome_diagram', 'Generate a genome diagram and GenBank file')
     def item10_generate_genome_diagram(self, ids):
         try:
-            ToxinGraphicsMain.writeImageToFile(ids)
+            checkForFeature.generateOutput(ids, "hmm_outputs", diagram=True, genbank=True, expand=False)
+
         except Exception as ex:
             if not self.handle_view_exception(ex):
                 raise
             flash(gettext('Failed to generate Diagram based on selected Genomes. %(error)s', error=str(ex)), 'error')
     
-    @action('item11_generate_gb_file', 'Write Sequence to File')
+    @action('item11_generate_gb_file', 'Generate an expanded genome diagram and GenBank file')
     def item11_generate_gb_file(self, ids):
         try:
-            ToxinGraphicsMain.writeSeqToFile(ids)
+            checkForFeature.generateOutput(ids, "hmm_outputs", diagram=True, genbank=True, expand=True)
         except Exception as ex:
             if not self.handle_view_exception(ex):
                 raise
-            flash(gettext('Failed to generate Diagram based on selected Genomes. %(error)s', error =str(ex)), 'error')
+            flash(gettext('Failed to generate GenBank based on selected Genomes. %(error)s', error =str(ex)), 'error')
 
 
 class ProfileView(ModelView):
@@ -1282,7 +1283,7 @@ def checkForRegion(ids, region, closest_to=-1):
 
 
 def checkWithProfile(ids, region):
-    # Check if a reference profile for A1 exists
+    # Check if a reference profile for this region exists
     profile_reference = eval("models.Profile.query.filter_by(" + region + "_profile_ref=1).first()")
     if (profile_reference):
         profile_name = profile_reference.name

@@ -12,9 +12,13 @@ import csv
 
 paths = ['DDQSY', 'FJWHO', 'ITMTT']
 
+def getStartPostion(record, hit_start):
+    print ('Lets get this start position')
+    print (record)
+    print (record.sequence[hit_start])
+    print (record.sequence[hit_start: hit_start + 100])
 
-
-def resultRead(paths):
+def resultRead(paths, record=None):
     hmm_dict = {}
     for path in paths:
         if glob.glob(os.path.join(path, '*.csv')):
@@ -36,7 +40,7 @@ def resultRead(paths):
             for key, value in sorted(hmm_dict.items()):
                     file.write(str(key) +'\t' + str(value) + '\n')
                                     
-def HMMread(path):
+def HMMread(path, record=None):
     hmm_dict = {}
     i = 0
     for infile in glob.glob(path + '/*/*.fasta'):
@@ -45,6 +49,15 @@ def HMMread(path):
             for i in range(len(qresult.hsps)):
                 try:
                     hsp = qresult[0][i]
+                    print ("HSPs")
+                    print (hsp.env_start)
+                    print (hsp.env_end)
+
+                    # If we have a genome record, it means we want to pull to the start and stop codons
+                    if record:
+                        print ("Pull to start and stop codons")
+                        start_position = getStartPostion(record, hsp.env_start)
+
                     hmm_dict[infile + "_" + str(i)] = str(3*hsp.env_start)+ ':' + str(3*hsp.env_end)
                     i += 1
                 except:
@@ -55,4 +68,7 @@ def HMMread(path):
     
 #test = HMMread('hmm_outputs/DDQSY/a2')
 #print(test)
+
+
+
 

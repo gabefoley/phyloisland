@@ -150,7 +150,7 @@ def writeSeqToFile(ids):
         SeqIO.write(seq_record, out_path, "genbank")
 
 
-def writeHMMToImage(hmm_dict, reference, region, seq_record, species):
+def writeHMMToImage(hmm_dict, reference, seq_record, species):
     # Currently taking region to be run simultaneously with hmmer, will need to manipulate some stuff for later
     # Initiation of GenomeDiagram assets"
 
@@ -311,7 +311,7 @@ def writeHMMToImage(hmm_dict, reference, region, seq_record, species):
     print("Genome Diagram has been added to file " + output_path)
 
 
-def writeHmmToSeq(hmm_dict, reference, region, seqrecord, species):
+def writeHmmToSeq(hmm_dict, reference, seqrecord, species):
     name = species + "_sequence"
     output_path = reference + "/" + name + ".gb"
     seqrecord.name = species[0:9]
@@ -329,8 +329,10 @@ def writeHmmToSeq(hmm_dict, reference, region, seqrecord, species):
             """ Create a dictionary for key = feature type -> value = location """
             if "forward" in reg:
                 location = reg.split("/")[2] + phyloisland.randstring(5)
+                locs[location] = result[reg].split(":")
                 strandd = 1
                 strand_dict[location] = strandd
+
             elif "backward" in reg:
                 # TODO: Again this should be done in resultread, when we first read it in
                 location = reg.split("/")[2] + phyloisland.randstring(5)
@@ -344,7 +346,6 @@ def writeHmmToSeq(hmm_dict, reference, region, seqrecord, species):
                 print("positions after split", positions)
                 strand_dict[location] = strandd
 
-            # locs[location] = result[reg].split(":")
             i += 1
 
     print("adding %s genome to diagram" % (seqrecord.name))
