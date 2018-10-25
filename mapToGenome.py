@@ -8,10 +8,12 @@ from flask import flash
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 import models
+from http.client import IncompleteRead
 
 Entrez.email = "gabriel.foley@uqconnect.edu.au"
 
 # seqDict = {}
+missing = []
 
 
 def getSpeciesNames(seq_records, type):
@@ -40,19 +42,28 @@ def getGenomeIDs(species_names):
     query_string = utilities.makeQueryString(species_names, "[orgn]", " OR ")
 
     #TODO: Let the user decide how to filter the GenBank records (i.e. let user decide if we're not accepting shotgun, segments, etc...)
+    # query_string_with_filters = query_string + " AND genome[title] NOT shotgun[title] NOT contig[title]  NOT segment[title] NOT plasmid[title] NOT megaplasmid[title] AND refseq[filter]"
     query_string_with_filters = query_string + " AND genome[title] NOT shotgun[title] NOT contig[title]  NOT segment[title] NOT plasmid[title] NOT megaplasmid[title]"
+
 
     # queryString += " AND genome[title] AND project[title]"
 
-    print('\n ***** Searching NCBI with the following query')
+    print('\n ***** Searching NCBI with the following query (first time)')
     print(query_string_with_filters + "\n")
 
     # Get a list of the genome IDs
-    genome_handle = Entrez.esearch(db="nucleotide", term= query_string_with_filters, rettype="gb", idtype='acc', retmax='10000')
-    record = Entrez.read(genome_handle)
+    try:
+        # genome_handle = Entrez.esearch(db="genome", term= query_string, rettype="gb", idtype='acc', retmax='10000')
+        genome_handle = Entrez.esearch(db="nuccore", term= query_string_with_filters, rettype="gb", idtype='acc', retmax='10000')
 
-    for recordID in record['IdList']:
-        genome_ids.add(recordID)
+        record = Entrez.read(genome_handle)
+
+        print (record)
+
+        for recordID in record['IdList']:
+            genome_ids.add(recordID)
+    except (URLError):
+        pass
 
     return genome_ids
 
@@ -91,13 +102,21 @@ def get_full_genome(genome_ids):
         else:
 
             try:
+                # genome_records = Entrez.elink(db="nuccore", dbfrom="genome", id=genome_id)
+
+                # print (genome_records)
+
                 genome_records = Entrez.efetch(db="nuccore", id=genome_id, rettype="gb", retmode = 'text')
 
                 records = SeqIO.parse(genome_records, "gb")
 
+                print ('here is record')
+
                 found_species = []
 
                 for record in records:
+                    print (record)
+                    print ('found something')
                     found_ids.append(record.id)
 
                     found_species.append(record.annotations.get('organism'))
@@ -116,7 +135,9 @@ def get_full_genome(genome_ids):
                         else:
 
                             non_ref_seq_ids.append(record.id)
-                            seqDict[" ".join(record.annotations.get('organism').split(" ")[0:2])] = record
+                            seqDict[record.annotations.get('organism')] = record
+
+                            # seqDict[" ".join(record.annotations.get('organism').split(" ")[0:2])] = record
 
                     # Join all the found species together so we can quickly search to see if we didn't find something
                     combined_species = '\t'.join(found_species)
@@ -124,8 +145,11 @@ def get_full_genome(genome_ids):
 
                 # return seqDict
 
-            except HTTPError as ex:
-                pass
+            except (IncompleteRead, HTTPError, URLError):
+                print ("We are missing genome id - ", genome_id)
+                missing.append(genome_id)
+
+                # pass
                 # for genome_id in genome_ids:
                 #     print (ex)
                 #     print("Couldn't find an appropriate genome record for %s" % (genome_id))
@@ -159,6 +183,7 @@ def update_shotgun_id_dict(species_names, shotgun_id_dict):
     print (query_string_with_filters + "\n")
 
     # Get a list of the genome IDs
+    # try:
     genome_handle = Entrez.esearch(db="nucleotide", term= query_string_with_filters, rettype="gb", idtype='acc', retmax='10000')
     record = Entrez.read(genome_handle)
     records = ""
@@ -216,6 +241,9 @@ def update_shotgun_id_dict(species_names, shotgun_id_dict):
 
         else:
             print("Couldn't add a record from this genome - %s" % (species_names))
+    # except(URLError):
+    #     print ("Here is a new error")
+    #     return
 
 
 def get_shotgun_id_dict_from_id(genome_record):
@@ -290,6 +318,7 @@ def get_shotgun_genome(shotgun_id_dict):
                 shotgun_seq = SeqRecord(Seq(shotgun_genome), id=genome_id + " Shotgun Sequence",
                                         annotations={"organism": species, "source": source})
                 seqDict[shotgun_seq.id] = shotgun_seq
+
     except EOFError as error:
         flash("There was an error reading the shotgun sequence file. Please try again")
         print("There was an error reading the shotgun sequence file. Please try again")

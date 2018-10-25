@@ -150,7 +150,7 @@ def writeSeqToFile(ids):
         SeqIO.write(seq_record, out_path, "genbank")
 
 
-def writeHMMToImage(hmm_dict, reference, seq_record, species):
+def writeHMMToImage(hmm_dict, reference, seq_record, species, expand=False):
     # Currently taking region to be run simultaneously with hmmer, will need to manipulate some stuff for later
     # Initiation of GenomeDiagram assets"
 
@@ -167,9 +167,13 @@ def writeHMMToImage(hmm_dict, reference, seq_record, species):
     overlap_amount = 0
 
     name = reference + "_" + species + "_GenomeDiagram"
+    name += "_expanded" if expand else ""
+
+
+
     gd_diagram = GenomeDiagram.Diagram(name)
     max_len = 0
-    output_path = reference + "/" + species + ".png"
+    output_path = "%s/%s%s.png" % (reference, species, "_expanded" if expand else "")
     start = 0
     # For my work I was considering changing 'region1, 2, and 3' to a3, TcB, and TcC for convenience
     # Up to others though if I fully change that (is just a UI thing tbh)
@@ -189,19 +193,13 @@ def writeHMMToImage(hmm_dict, reference, seq_record, species):
                 locs[location] = result[reg].split(":")
                 strand_dict[location] = strandd
 
-            # If it's on the backwards strand we need to correct the postion - swap the start and end positions and set them relative to the 5' end
-            # TODO: Actually this should be done in resultread, when we first read it in
             elif "backward" in reg:
-                print("Writing to backwards strand")
-
                 strandd = -1
-                positions = result[reg].split(":")
-                positions[0], positions[1] = (len(seq_record) - int(positions[1])), (
-                len(seq_record) - int(positions[0]))
                 location = reg.split("/")[2] + phyloisland.randstring(5)
-
-                locs[location] = positions
+                locs[location] = result[reg].split(":")
                 strand_dict[location] = strandd
+
+
 
             i += 1
             # Prepare for literally the worst code in existence
@@ -216,9 +214,6 @@ def writeHMMToImage(hmm_dict, reference, seq_record, species):
     seq_record.features = []
     i = 0
     for location in locs:
-        print("What are the dicts")
-        print(locs)
-        print(strand_dict)
         """ Extract start and end values from each location, and add to independent lists """
         """ create and add features based on locations """
         feature = SeqFeature(
@@ -236,8 +231,6 @@ def writeHMMToImage(hmm_dict, reference, seq_record, species):
     for feature in seq_record.features:
         feature_locations.append((feature.location.start, feature.location.end))
 
-    print("This many features")
-    print(len(seq_record.features))
 
     total_tracks = 1
     # Dictionary to keep track of which locations are at which track
@@ -245,7 +238,6 @@ def writeHMMToImage(hmm_dict, reference, seq_record, species):
     backward_tracks = {1: []}
 
     for feature in seq_record.features:
-        print(feature)
         feature_added = False
         current_track = 1
 
@@ -311,12 +303,15 @@ def writeHMMToImage(hmm_dict, reference, seq_record, species):
     print("Genome Diagram has been added to file " + output_path)
 
 
-def writeHmmToSeq(hmm_dict, reference, seqrecord, species):
+def writeHmmToSeq(hmm_dict, reference, seqrecord, species, expand=False):
     name = species + "_sequence"
+    name += "_expanded" if expand else ""
     output_path = reference + "/" + name + ".gb"
+    print (name)
+    print (reference)
     seqrecord.name = species[0:9]
     # Write Annotated Sequences to Genbank files to allow easy movement to Artemis
-    print("writing sequences to GenBank File")
+    print("Writing sequences to GenBank File")
     """ Create a dictionary for key = feature type -> value = location """
     locs = {}
     strand_dict = {}
@@ -324,6 +319,7 @@ def writeHmmToSeq(hmm_dict, reference, seqrecord, species):
                    "chitinase": "0 255 0", "region1": "0 255 255", "region2": "255 153 255", "region3": "204 0 102",
                    "region4": "0 0 0"}
     for result in hmm_dict:
+        print (result)
         i = 0
         for reg in result:
             """ Create a dictionary for key = feature type -> value = location """
@@ -334,21 +330,16 @@ def writeHmmToSeq(hmm_dict, reference, seqrecord, species):
                 strand_dict[location] = strandd
 
             elif "backward" in reg:
-                # TODO: Again this should be done in resultread, when we first read it in
-                location = reg.split("/")[2] + phyloisland.randstring(5)
 
                 strandd = -1
-                positions = result[reg].split(":")
-                print("positions before split", positions)
-                positions[0], positions[1] = (len(seqrecord) - int(positions[1])), (
-                    len(seqrecord) - int(positions[0]))
-                locs[location] = positions
-                print("positions after split", positions)
+
+                location = reg.split("/")[2] + phyloisland.randstring(5)
+                locs[location] = result[reg].split(":")
                 strand_dict[location] = strandd
 
             i += 1
 
-    print("adding %s genome to diagram" % (seqrecord.name))
+    print("Adding %s genome to diagram" % (seqrecord.name))
 
     seqrecord.features = []
     for location in locs:
@@ -356,7 +347,7 @@ def writeHmmToSeq(hmm_dict, reference, seqrecord, species):
         color = {'color': colour_dict[location[0:-5]]}
         feature = SeqFeature(
             location=FeatureLocation(int(locs[location][0]), int(locs[location][1]), strand=strand_dict[location]),
-            type="misc_feature", qualifiers=color)
+            type=location[0:-5], qualifiers=color)
         seqrecord.features.append(feature)
 
     sequence = str(seqrecord.seq)[2:-1]

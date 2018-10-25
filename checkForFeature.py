@@ -85,9 +85,6 @@ def get_feature_location_with_profile(ids, reference, profile_name, recordName, 
     :return:
     """
 
-    print (reference)
-    print (profile_name)
-
     query = models.GenomeRecords.query.filter(models.GenomeRecords.uid.in_(ids))
     for record in query.all():
         seq_record = servers.bio_db.lookup(primary_id=record.name)
@@ -100,11 +97,9 @@ def get_feature_location_with_profile(ids, reference, profile_name, recordName, 
 
         # Get the nucleotide sequence of the genome
         print ("Building outpath")
-        print (reference)
         nuc_seq = Bio.Seq.Seq(str(seq_record.seq).replace("b'", "").replace("'", ""))
         outpath = reference + "/" + species + "/" + region +"/" + profile_name + "/"
         outpath.replace(" ", "_")
-        print (outpath)
         # Check three forward reading frames
         if not os.path.exists(outpath):
             os.makedirs(outpath.replace(" ", "_"))
@@ -120,16 +115,11 @@ def get_feature_location_with_profile(ids, reference, profile_name, recordName, 
 
                 domScore = 100
 
-
-
-
                 cleaned_path = cleaned_path.replace(" ", "_")
                 hmmsearch_results = hmmsearch_results.replace(" ", "_")
 
-
                 # Translate the nucleotide genome sequence to a protein sequence
                 with open(cleaned_path, 'w') as handle:
-
 
                     if seq_record.name == "<unknown name>":
                         handle.write(">" + seq_record.id + " " + seq_record.annotations.get('organism') + "\n" + str(
@@ -174,43 +164,67 @@ def get_feature_location_with_profile(ids, reference, profile_name, recordName, 
 
 
 # Function to be called when wanting to generate Genome Diagram and GenBank output
-def generateOutput(ids, reference, diagram=True, genbank=True, expand=False):
+def generateOutput(ids, reference, diagram=True, genbank=True, fasta=False, expand=False):
 
     query = models.GenomeRecords.query.filter(models.GenomeRecords.uid.in_(ids))
+    fasta_region_dict = {}
     for record in query.all():
         seq_record = servers.bio_db.lookup(primary_id=record.name)
         species = record.name.replace(" ", "_")
         species = species.replace(".", "_")
 
-        print ("Building the output in generateOutput")
-        print(reference)
-        print (species)
-
         # for regions in hmmer_outputs/organism add reg to all_reg
+
         all_reg = []
+
         for infile in glob.glob(os.path.join(reference + "/" + species + '/*')):
             if '.' not in infile:
                 all_reg.append(infile)
-        hmmerout = []
-        print (all_reg)
-        # add handler to HMMread for output paths
 
-        #If we don't want to expand, don't pass the genome record into the HMM reader
-        if not expand:
-            record = None
+        outpath = os.path.join(reference + "/" + species.replace(" ", "_"))
+
+        hmmerout = []
 
         for reg in all_reg:
 
-            hmmerout.append(resultread.HMMread(reg, record))
+            hmmerout.append(resultread.HMMread(reg, record, expand))
+
+            if fasta:
+                reg_name = reg.split("/")[-1]
+
+                if reg_name not in fasta_region_dict:
+                    fasta_region_dict[reg_name] = []
+
+
+                # For a given region, create the sequence files
+                fasta_output = utilities.createFASTAFromHMMOutput(seq_record, hmmerout, record.name, reg_name)
+
+                # Write the region sequence files out to a genome specific FASTA file
+                fasta_outpath = "%s/%s%s.fasta" % (outpath, reg_name, "_expanded" if expand else "")
+                utilities.saveFASTA(fasta_output, fasta_outpath)
+
+                # Add the region to a dictionary so we can write out a non-genome specific FASTA file
+                fasta_region_dict[reg_name] = fasta_region_dict[reg_name] + fasta_output
+
+                hmmerout = []
 
         if diagram:
-            ToxinGraphicsMain.writeHMMToImage(hmmerout, os.path.join(reference + "/" + species.replace(" ", "_")), seq_record,
-                                          species)
+            ToxinGraphicsMain.writeHMMToImage(hmmerout, outpath , seq_record,
+                                          species, expand)
             print("Diagram has been written to %s directory" % (reference))
 
         if genbank:
             # TODO Add better invariant for Shotgun Naming
-            ToxinGraphicsMain.writeHmmToSeq(hmmerout, os.path.join(reference + "/" + species.replace(" ", "_")), seq_record, species)
+            ToxinGraphicsMain.writeHmmToSeq(hmmerout, outpath, seq_record, species, expand)
+
+    # Write out the non-genome specific FASTA file/s
+    if fasta:
+        for reg_name, output in fasta_region_dict.items():
+            outpath = "%s/hmm_outputs/%s_%s%s.fasta" % (os.getcwd(), reg_name, "expanded_" if expand else "", str(len(ids)))
+            utilities.saveFASTA(output, outpath)
+
+
+
 
 
 

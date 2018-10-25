@@ -2,6 +2,9 @@ import os
 import glob
 from flask import flash
 from Bio import SeqIO
+from Bio.Seq import Seq
+from Bio.SeqRecord import SeqRecord
+from Bio.Alphabet import DNAAlphabet
 
 
 def makeQueryString(iter, info = "", link = "", final = ""):
@@ -38,7 +41,25 @@ def removeFile(*args):
     for arg in args:
         os.remove(arg)
 
+
+def createFASTAFromHMMOutput(seq_record, hmmerout, species, region, amino_acid=True):
+    seq_list = []
+    for result, position in hmmerout[0].items():
+        start = int(position.split(":")[0])
+        end = int(position.split(":")[1])
+        if 'forward' in result:
+            if amino_acid:
+                seq = SeqRecord(Seq(str(Seq.translate(seq_record.seq[start:end]))), id="_".join([species, region, position]), description="")
+            else:
+                seq = SeqRecord(Seq(str(seq_record.seq[start:end])), id="_".join([species, region, position]), description="")
+        elif 'backward' in result:
+            if amino_acid:
+                seq = SeqRecord(Seq.translate(Seq(str(seq_record.seq[start:end])).reverse_complement()), id="_".join([species, region, position]), description="")
+            else:
+                seq = SeqRecord(Seq(str(seq_record.seq[start:end])).reverse_complement(), id="_".join([species, region, position]), description="")
+        seq_list.append(seq)
+    return seq_list
+
 def saveFASTA(align_list, filepath):
     SeqIO.write(align_list, filepath, "fasta")
     print ("FASTA file was saved to %s" % (filepath))
-    flash ("FASTA file was saved to %s" % (filepath))

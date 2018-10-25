@@ -884,6 +884,25 @@ class GenomeRecordsView(ModelView):
                 raise
             flash(gettext('Failed to generate GenBank based on selected Genomes. %(error)s', error =str(ex)), 'error')
 
+    @action('item12_generate_fasta_file', 'Generate a FASTA file of all regions')
+    def item12_generate_fasta_file(self, ids):
+        try:
+            checkForFeature.generateOutput(ids, "hmm_outputs", diagram=False, genbank=False, fasta=True, expand=False)
+
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+            flash(gettext('Failed to generate FASTA file based on selected Genomes. %(error)s', error=str(ex)), 'error')
+
+    @action('item13_generate_expanded_fasta_file', 'Generate an expanded FASTA file of all regions')
+    def item13_generate_expanded_fasta_file(self, ids):
+        try:
+            checkForFeature.generateOutput(ids, "hmm_outputs", diagram=True, genbank=True, fasta=True, expand=True)
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+            flash(gettext('Failed to generate expanded FASTA file based on selected Genomes. %(error)s', error=str(ex)), 'error')
+
 
 class ProfileView(ModelView):
     """
@@ -1009,10 +1028,19 @@ class UploadView(BaseView):
                                           "search for shotgun sequenced genomes \n" % (species_name))
                                     shotgun_id_dict = {}
                                     shotgun_id_dict = mapToGenome.update_shotgun_id_dict(species_name, shotgun_id_dict)
-                                    shotgun_results = mapToGenome.get_shotgun_genome(shotgun_id_dict)
 
-                                    if shotgun_results:
-                                        addGenome(shotgun_results)
+                                    if shotgun_id_dict:
+                                        # print ("Skipping getting shotgun")
+                                        # shotgun_results = None
+                                        shotgun_results = mapToGenome.get_shotgun_genome(shotgun_id_dict)
+
+                                        if shotgun_results:
+                                            addGenome(shotgun_results)
+
+                                    else:
+                                        print ("Couldn't find a shotgun sequence for %s \n" % (species_name))
+
+
 
                                 elif species_name not in genome_results and not search_shotgun:
 
@@ -1041,10 +1069,16 @@ class UploadView(BaseView):
                                     species_name))
                             shotgun_id_dict = {}
                             shotgun_id_dict = mapToGenome.update_shotgun_id_dict(species_name, shotgun_id_dict)
-                            shotgun_results = mapToGenome.get_shotgun_genome(shotgun_id_dict)
+                            if shotgun_id_dict:
 
-                            if shotgun_results:
-                                addGenome(shotgun_results)
+                                shotgun_results = mapToGenome.get_shotgun_genome(shotgun_id_dict)
+                                # print("Skipping getting shotgun")
+                                # shotgun_results = None
+
+                                if shotgun_results:
+                                    addGenome(shotgun_results)
+                            else:
+                                print("Couldn't find a shotgun sequence for %s \n" % (species_name))
 
                         elif species_name not in genome_results and not search_shotgun:
                             print(
@@ -1067,9 +1101,17 @@ class UploadView(BaseView):
                                     name))
 
                             shotgun_id_dict = mapToGenome.get_shotgun_id_dict_from_id(name)
-                            genome_results = mapToGenome.get_shotgun_genome(shotgun_id_dict)
-                            if genome_results:
-                                addGenome(genome_results)
+                            if shotgun_id_dict:
+                                # print("Skipping getting shotgun")
+                                # shotgun_results = None
+                                genome_results = mapToGenome.get_shotgun_genome(shotgun_id_dict)
+                                if genome_results:
+                                    addGenome(genome_results)
+
+                            else:
+                                print("Couldn't find a shotgun sequence for %s \n" % (name))
+
+
                         elif genome_results != 'in_database' and not search_shotgun:
                             print(
                                 "\nWe didn't identify any genome records for %s. And we are not attempting to search for shotgun sequenced genomes \n" % (
@@ -1097,6 +1139,8 @@ class MyHomeView(AdminIndexView):
 
 
 def addGenome(genome_results):
+
+    # print ("Here is where I would add a genome")
 
     # print (genome_results)
     for record in genome_results:
