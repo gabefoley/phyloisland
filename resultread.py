@@ -15,23 +15,30 @@ import re
 def expandStartPostion(record, hit_start, strand):
 
     if strand == "forward":
-        codon_list = ["ATG", "TGA", "TAA", "TAG"]
+        codon_list = ["TGA", "TAA", "TAG"]
     elif strand == "backward":
         codon_list = ["TCA", "TTA", "CTA"]
 
     codon = ""
     first_pos = hit_start
     second_pos = hit_start + 3
+
+    start_pos = first_pos # variable to keep track of all the potential start positions (methionines) we run into
     print (" positions are" , first_pos, second_pos)
     while  first_pos -3 > 0:
         codon = record.sequence[first_pos: second_pos]
+
+        if codon == "ATG":
+            start_pos = first_pos
+
         if codon in codon_list:
             break
+
         second_pos = first_pos
         first_pos = first_pos - 3
 
     if strand == "forward":
-        return first_pos
+        return start_pos
     else:
         return first_pos + 3
 
@@ -44,7 +51,7 @@ def expandEndPosition(record, hit_end, strand):
     if strand == "forward":
         codon_list = ["TGA", "TAA", "TAG"]
     elif strand == "backward":
-        codon_list = ["CAT", "TCA", "TTA", "CTA"]
+        codon_list = ["TCA", "TTA", "CTA"]
 
     print(record.sequence[hit_end])
     codon = ""
@@ -52,6 +59,8 @@ def expandEndPosition(record, hit_end, strand):
     second_pos = hit_end
     while  first_pos +3 < len(record.sequence):
         codon = record.sequence[first_pos: second_pos]
+        if codon == "CAT":
+            start_pos = second_pos
         if codon in codon_list:
             break
         first_pos = second_pos
@@ -60,7 +69,7 @@ def expandEndPosition(record, hit_end, strand):
     if strand == "forward":
         return second_pos - 3
     else:
-        return second_pos
+        return start_pos
 
 
 
