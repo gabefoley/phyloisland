@@ -24,7 +24,6 @@ def expandStartPostion(record, hit_start, strand):
     second_pos = hit_start + 3
 
     start_pos = first_pos # variable to keep track of all the potential start positions (methionines) we run into
-    print (" positions are" , first_pos, second_pos)
     while  first_pos -3 > 0:
         codon = record.sequence[first_pos: second_pos]
 
@@ -53,10 +52,13 @@ def expandEndPosition(record, hit_end, strand):
     elif strand == "backward":
         codon_list = ["TCA", "TTA", "CTA"]
 
-    print(record.sequence[hit_end])
     codon = ""
     first_pos = hit_end - 3
     second_pos = hit_end
+
+    start_pos = second_pos # variable to keep track of all the potential start positions (methionines) we run into
+
+
     while  first_pos +3 < len(record.sequence):
         codon = record.sequence[first_pos: second_pos]
         if codon == "CAT":
@@ -75,7 +77,7 @@ def expandEndPosition(record, hit_end, strand):
 
 
 def HMMread(path, record=None, expand=False):
-    print('here we are in hmmRead')
+    # print('here we are in hmmRead')
     hmm_dict = {}
     i = 0
     for infile in glob.glob(path + '/*/*.fasta'):
