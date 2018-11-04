@@ -1,6 +1,23 @@
 {% extends 'admin/master.html' %}
 
+<script type="text/javascript">// <![CDATA[
+    $(document).on({
+        ajaxStart: function() { $( ".loader" ).show();    },
+    });
+
+    // Hide the loading screen and clear the loading text
+    function hideLoadingScreen(){
+      $( ".loading" ).show();
+      $(".loading").html("Cleaning sequences!");
+}
+// ]]></script>
+
 {% block body %}
+
+    <div id="loading"></div>
+
+    <div id="content">
+
 
      <form method="POST"    enctype="multipart/form-data">
             {{ form.hidden_tag() }}
@@ -32,6 +49,11 @@
               {% endif %}
 
             <br>
+
+{#                {{ form.input_text.label }}#}
+{#                {{ form.input_text() }}#}
+
+
             {{ form.type.label }}
             <br>
                 {{ form.type() }}
@@ -44,11 +66,16 @@
 
                 {{form.add_genome.label }}
                 {{ form.add_genome }}
+{#            <br>#}
+{#                {{form.search_shotgun.label }}#}
+{#                {{ form.search_shotgun }}#}
+{##}
+
+
+
             <br>
-                {{form.search_shotgun.label }}
-                {{ form.search_shotgun }}
-
-
+                {{form.genome_type.label }}
+                {{ form.genome_type }}
 
 
             <br>
@@ -57,5 +84,5 @@
             </div>
  </form>
 
-
+</div>
 {% endblock %}

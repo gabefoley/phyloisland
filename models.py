@@ -4,7 +4,8 @@ from wtforms import ValidationError, fields
 from wtforms.validators import required
 from wtforms.widgets import FileInput
 from flask_wtf import FlaskForm
-from wtforms import SubmitField, FileField, SelectField, BooleanField, validators
+from wtforms import SubmitField, FileField, SelectField, BooleanField, SelectMultipleField, TextAreaField, StringField, validators
+from wtforms.widgets import ListWidget, CheckboxInput
 from gettext import gettext
 
 
@@ -249,16 +250,23 @@ class BlobUploadField(fields.StringField):
             if self.mimetype_field:
                 setattr(obj, self.mimetype_field, self.data.content_type)
 
+class MultiCheckboxField(SelectMultipleField):
+    widget = ListWidget(prefix_label=False)
+    option_widget = CheckboxInput()
 
 # Form for uploading files
 class UploadForm(FlaskForm):
     file = FileField('Upload the file that contains the information we will map to the genome records.',
                      [validators.DataRequired()])
+    input_text = StringField(u'Input text', [validators.optional()])
     type = SelectField('What type of file is this?', [validators.DataRequired()],
                        choices=[("protein", "FASTA (amino acids)"), ("nucleotide", "FASTA (nucleotides)"),
                                 ("species", "Species list"), ("genome", "Genome ID list"), ("profile", "Profile")])
     add_sequence = BooleanField("Add sequences to sequence database?", default="checked")
     add_genome = BooleanField("Search for genomic records?", default="checked")
+    genome_type = SelectField('Which genome records should we return?', choices=[('single_refseq','Retrieve a single RefSeq genome for each species'),
+                                                 ('all_refseq','Retrieve all RefSeq genomes for each species'),
+                                                 ('all_genbank', 'Retrieve all Genbank genomes for each species')])
     search_shotgun = BooleanField("Search for shotgun sequenced genomes if we can't find another "
                                   "genomic record?", default="checked")
 

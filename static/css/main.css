@@ -133,3 +133,18 @@ header {
 .error-message {
   color: #db4437;
 }
+
+div#content {
+    display: none;
+    }
+
+div#loading {
+    top: 200px;
+    margin: auto;
+    position: absolute;
+    z-index: 1000;
+    width: 160px;
+    height: 24px;
+    background: url("../img/loading.gif") no-repeat;
+    cursor: wait;
+    }

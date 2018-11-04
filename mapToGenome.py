@@ -42,8 +42,8 @@ def getGenomeIDs(species_names):
     query_string = utilities.makeQueryString(species_names, "[orgn]", " OR ")
 
     #TODO: Let the user decide how to filter the GenBank records (i.e. let user decide if we're not accepting shotgun, segments, etc...)
-    # query_string_with_filters = query_string + " AND genome[title] NOT shotgun[title] NOT contig[title]  NOT segment[title] NOT plasmid[title] NOT megaplasmid[title] AND refseq[filter]"
-    query_string_with_filters = query_string + " AND genome[title] NOT shotgun[title] NOT contig[title]  NOT segment[title] NOT plasmid[title] NOT megaplasmid[title]"
+    query_string_with_filters = query_string + " AND genome[title] NOT shotgun[title] NOT contig[title]  NOT segment[title] NOT plasmid[title] NOT megaplasmid[title] AND refseq[filter]"
+    # query_string_with_filters = query_string + " AND genome[title] NOT shotgun[title] NOT contig[title]  NOT segment[title] NOT plasmid[title] NOT megaplasmid[title]"
 
 
     # queryString += " AND genome[title] AND project[title]"
@@ -53,12 +53,13 @@ def getGenomeIDs(species_names):
 
     # Get a list of the genome IDs
     try:
-        # genome_handle = Entrez.esearch(db="genome", term= query_string, rettype="gb", idtype='acc', retmax='10000')
-        genome_handle = Entrez.esearch(db="nuccore", term= query_string_with_filters, rettype="gb", idtype='acc', retmax='10000')
+        genome_handle = Entrez.esearch(db="genome", term= query_string, rettype="gb", idtype='acc', retmax='10000')
+        # genome_handle = Entrez.esearch(db="nuccore", term= query_string_with_filters, rettype="gb", idtype='acc', retmax='10000')
 
         record = Entrez.read(genome_handle)
 
         print (record)
+        print ("That was it, folks")
 
         for recordID in record['IdList']:
             genome_ids.add(recordID)
@@ -101,53 +102,55 @@ def get_full_genome(genome_ids):
             seqDict[species] = "in_database"
         else:
 
-            try:
-                # genome_records = Entrez.elink(db="nuccore", dbfrom="genome", id=genome_id)
+            # try:
+            genome_records = Entrez.elink(db="nuccore", dbfrom="genome", id=genome_id)
 
-                # print (genome_records)
+            print (genome_records.read())
 
-                genome_records = Entrez.efetch(db="nuccore", id=genome_id, rettype="gb", retmode = 'text')
+            # genome_records = Entrez.esearch(db="genome", term=genome_id, rettype="gb")
 
-                records = SeqIO.parse(genome_records, "gb")
+            records = SeqIO.parse(genome_records, "gb")
 
-                print ('here is record')
+            print ('here is record')
 
-                found_species = []
+            print (records)
 
-                for record in records:
-                    print (record)
-                    print ('found something')
-                    found_ids.append(record.id)
+            found_species = []
 
-                    found_species.append(record.annotations.get('organism'))
+            for record in records:
+                print (record)
+                print ('found something')
+                found_ids.append(record.id)
 
-                    # Check if the genome is just "N" characters. Slice from the middle to account for genomes that
-                    # begin or end with "N" characters
-                    if any(nucleotide in 'A G C T' for nucleotide in record.seq[int(len(record.seq)/2):int(len(record.seq)/2 + 1000)]):
-                        correct_alphabet_ids.append(record.id)
+                found_species.append(record.annotations.get('organism'))
 
-                        if record.description in seqDict:
+                # Check if the genome is just "N" characters. Slice from the middle to account for genomes that
+                # begin or end with "N" characters
+                if any(nucleotide in 'A G C T' for nucleotide in record.seq[int(len(record.seq)/2):int(len(record.seq)/2 + 1000)]):
+                    correct_alphabet_ids.append(record.id)
 
-                            # Prefer RefSeq sequences
-                            if 'RefSeq' not in record.annotations.get('keywords'):
-                                continue
+                    if record.description in seqDict:
 
-                        else:
+                        # Prefer RefSeq sequences
+                        if 'RefSeq' not in record.annotations.get('keywords'):
+                            continue
 
-                            non_ref_seq_ids.append(record.id)
-                            seqDict[record.annotations.get('organism')] = record
+                    else:
 
-                            # seqDict[" ".join(record.annotations.get('organism').split(" ")[0:2])] = record
+                        non_ref_seq_ids.append(record.id)
+                        seqDict[record.annotations.get('organism')] = record
 
-                    # Join all the found species together so we can quickly search to see if we didn't find something
-                    combined_species = '\t'.join(found_species)
+                        # seqDict[" ".join(record.annotations.get('organism').split(" ")[0:2])] = record
+
+                # Join all the found species together so we can quickly search to see if we didn't find something
+                combined_species = '\t'.join(found_species)
 
 
                 # return seqDict
 
-            except (IncompleteRead, HTTPError, URLError):
-                print ("We are missing genome id - ", genome_id)
-                missing.append(genome_id)
+            # except (IncompleteRead, HTTPError, URLError):
+            #     print ("We are missing genome id - ", genome_id)
+            #     missing.append(genome_id)
 
                 # pass
                 # for genome_id in genome_ids:

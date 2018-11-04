@@ -29,6 +29,8 @@ import time
 from urllib.error import HTTPError
 import ToxinGraphicsMain
 import resultread
+import getGenomes
+import timeit
 
 try:
     from wtforms.fields.core import _unset_value as unset_value
@@ -863,7 +865,6 @@ class GenomeRecordsView(ModelView):
     @action('item9a_download_A2_sequences', 'Download the A2 sequences as a FASTA file')
     def item9a_download_A2_sequences(self, ids):
         createFASTAFromRegion(ids, "a2")
-        
 
     @action('item10_generate_genome_diagram', 'Generate a genome diagram and GenBank file')
     def item10_generate_genome_diagram(self, ids):
@@ -874,7 +875,7 @@ class GenomeRecordsView(ModelView):
             if not self.handle_view_exception(ex):
                 raise
             flash(gettext('Failed to generate Diagram based on selected Genomes. %(error)s', error=str(ex)), 'error')
-    
+
     @action('item11_generate_gb_file', 'Generate an expanded genome diagram and GenBank file')
     def item11_generate_gb_file(self, ids):
         try:
@@ -882,7 +883,7 @@ class GenomeRecordsView(ModelView):
         except Exception as ex:
             if not self.handle_view_exception(ex):
                 raise
-            flash(gettext('Failed to generate GenBank based on selected Genomes. %(error)s', error =str(ex)), 'error')
+            flash(gettext('Failed to generate GenBank based on selected Genomes. %(error)s', error=str(ex)), 'error')
 
     @action('item12_generate_fasta_file', 'Generate a FASTA file of all regions')
     def item12_generate_fasta_file(self, ids):
@@ -901,7 +902,8 @@ class GenomeRecordsView(ModelView):
         except Exception as ex:
             if not self.handle_view_exception(ex):
                 raise
-            flash(gettext('Failed to generate expanded FASTA file based on selected Genomes. %(error)s', error=str(ex)), 'error')
+            flash(gettext('Failed to generate expanded FASTA file based on selected Genomes. %(error)s', error=str(ex)),
+                  'error')
 
 
 class ProfileView(ModelView):
@@ -968,10 +970,13 @@ class UploadView(BaseView):
     """
 
     @expose("/", methods=('GET', 'POST'))
+
     def upload(self):
         form = models.UploadForm()
 
         if request.method == 'POST' and form.validate():
+
+            start_time = timeit.default_timer()
 
             # Get the information from the upload form
             filename = servers.allfiles.save(request.files['file'])
@@ -979,6 +984,7 @@ class UploadView(BaseView):
             add_seq = form.add_sequence.data
             add_genome = form.add_genome.data
             search_shotgun = form.search_shotgun.data
+            genome_type=form.genome_type.data
 
             # # Create the initial seqRecords
             # phyloisland.seqDict = {}
@@ -998,124 +1004,85 @@ class UploadView(BaseView):
                             addSequence(seq_records)
 
                         if add_genome:
-                            species_names = mapToGenome.getSpeciesNames(seq_records, seq_type)
-                            print ('Here are the species names')
-                            print (species_names)
-                            genome_ids = mapToGenome.getGenomeIDs(species_names)
-                            print ('Here are the genome ids')
-                            print (genome_ids)
-
-                            genome_query_string = utilities.makeQueryString(genome_ids, link="+OR+")
-
-                            if genome_query_string == "":
-                                genome_results = {}
-                                # print("We didn't identify any genome records. Attempting to search for shotgun sequenced "
-                                #       "genomes \n")
-                                # shotgun_id_dict = {}
-                                # for name in species_names:
-                                #     shotgun_id_dict = mapToGenome.update_shotgun_id_dict(name, shotgun_id_dict)
-                                # genome_results = mapToGenome.get_shotgun_genome(shotgun_id_dict)
-
-                            else:
-                                genome_results = mapToGenome.get_full_genome(genome_ids)
-
-                            for species_name in species_names:
-                                if species_name in genome_results.keys() and type(genome_results[species_name]) == SeqRecord:
-                                    addGenome(genome_results)
-                                elif species_name not in genome_results.keys() and search_shotgun:
-
-                                    print("Couldn't find an appropriate genome for %s Attempting to "
-                                          "search for shotgun sequenced genomes \n" % (species_name))
-                                    shotgun_id_dict = {}
-                                    shotgun_id_dict = mapToGenome.update_shotgun_id_dict(species_name, shotgun_id_dict)
-
-                                    if shotgun_id_dict:
-                                        # print ("Skipping getting shotgun")
-                                        # shotgun_results = None
-                                        shotgun_results = mapToGenome.get_shotgun_genome(shotgun_id_dict)
-
-                                        if shotgun_results:
-                                            addGenome(shotgun_results)
-
-                                    else:
-                                        print ("Couldn't find a shotgun sequence for %s \n" % (species_name))
+                            #TODO: Correct this call
+                            getGenomes.add_genome(seq_records, seq_type)
 
 
-
-                                elif species_name not in genome_results and not search_shotgun:
-
-                                    print(
-                                    "\nWe didn't identify any genome records for %s. And we are not attempting to search for shotgun sequenced genomes \n" % (
-                                        species_name))
 
 
                 elif seq_type == "species":
+
                     species_names = readLinesFromFile("static/uploads/" + filename)
 
                     for species_name in species_names:
 
+                        if genome_type == "single_refseq":
 
-                        genome_ids = mapToGenome.getGenomeIDs(species_name)
-                        print ('Here are the species names')
-                        print (species_names)
-                        print ('Here are the genome ids')
-                        print (genome_ids)
-                        genome_results = mapToGenome.get_full_genome(genome_ids)
-                        if species_name in genome_results.keys() and type(genome_results[species_name]) == SeqRecord:
-                            addGenome(genome_results)
-                        elif species_name not in genome_results.keys() and search_shotgun:
-                            print(
-                                "\nWe didn't identify any genome records for %s. Attempting to search for shotgun sequenced genomes \n" % (
-                                    species_name))
-                            shotgun_id_dict = {}
-                            shotgun_id_dict = mapToGenome.update_shotgun_id_dict(species_name, shotgun_id_dict)
-                            if shotgun_id_dict:
+                            genome_check = getGenomes.add_genome(species_name, "reference", single=False)
 
-                                shotgun_results = mapToGenome.get_shotgun_genome(shotgun_id_dict)
-                                # print("Skipping getting shotgun")
-                                # shotgun_results = None
+                            if genome_check == "Fail":
+                                genome_check = getGenomes.add_genome(species_name, "representative", single=True)
 
-                                if shotgun_results:
-                                    addGenome(shotgun_results)
-                            else:
-                                print("Couldn't find a shotgun sequence for %s \n" % (species_name))
+                                if genome_check == "Fail":
 
-                        elif species_name not in genome_results and not search_shotgun:
-                            print(
-                                "\nWe didn't identify any genome records for %s. And we are not attempting to search for shotgun sequenced genomes \n" % (
-                                    species_name))
+                                    genome_check = getGenomes.add_genome(species_name, "latest_assembly_versions",
+                                                                        single=True)
+
+                                    if genome_check == 'Fail':
+                                        genome_check = getGenomes.add_genome(species_name, "latest_assembly_versions", database="genbank",
+
+                                                                         single=True)
+
+                        elif genome_type == "all_refseq":
+                            genome_check = getGenomes.add_genome(species_name, "latest_assembly_versions",
+                                                                single=False)
+
+                        elif genome_type == "all_genbank":
+                            genome_check = getGenomes.add_genome(species_name, "latest_assembly_versions", database="genbank",
+
+                                                            single=False)
+
+
+
+
+
+
+
+
+
 
                 elif seq_type == "genome":
-                    genome_names = readLinesFromFile("static/uploads/" + filename)
-
-                    for name in genome_names:
-                        genome_ids = {}
-                        genome_results = {}
-                        genome_ids = readLinesFromFile("static/uploads/" + filename)
-                        genome_results = mapToGenome.get_full_genome([name])
-                        if genome_results and genome_results != 'in_database':
-                            addGenome(genome_results)
-                        elif genome_results != 'in_database' and search_shotgun:
-                            print("\nWe didn't identify any genome records for %s. Attempting to search for shotgun "
-                                  "sequenced genomes \n" % (
-                                    name))
-
-                            shotgun_id_dict = mapToGenome.get_shotgun_id_dict_from_id(name)
-                            if shotgun_id_dict:
-                                # print("Skipping getting shotgun")
-                                # shotgun_results = None
-                                genome_results = mapToGenome.get_shotgun_genome(shotgun_id_dict)
-                                if genome_results:
-                                    addGenome(genome_results)
-
-                            else:
-                                print("Couldn't find a shotgun sequence for %s \n" % (name))
-
-
-                        elif genome_results != 'in_database' and not search_shotgun:
-                            print(
-                                "\nWe didn't identify any genome records for %s. And we are not attempting to search for shotgun sequenced genomes \n" % (
-                                    name))
+                    pass
+                    # genome_names = readLinesFromFile("static/uploads/" + filename)
+                    #
+                    # for name in genome_names:
+                    #     genome_ids = {}
+                    #     genome_results = {}
+                    #     genome_ids = readLinesFromFile("static/uploads/" + filename)
+                    #     genome_results = mapToGenome.get_full_genome([name])
+                    #     if genome_results and genome_results != 'in_database':
+                    #         addGenome(genome_results)
+                    #     elif genome_results != 'in_database' and search_shotgun:
+                    #         print("\nWe didn't identify any genome records for %s. Attempting to search for shotgun "
+                    #               "sequenced genomes \n" % (
+                    #                 name))
+                    #
+                    #         shotgun_id_dict = mapToGenome.get_shotgun_id_dict_from_id(name)
+                    #         if shotgun_id_dict:
+                    #             # print("Skipping getting shotgun")
+                    #             # shotgun_results = None
+                    #             genome_results = mapToGenome.get_shotgun_genome(shotgun_id_dict)
+                    #             if genome_results:
+                    #                 addGenome(genome_results)
+                    #
+                    #         else:
+                    #             print("Couldn't find a shotgun sequence for %s \n" % (name))
+                    #
+                    #
+                    #     elif genome_results != 'in_database' and not search_shotgun:
+                    #         print(
+                    #             "\nWe didn't identify any genome records for %s. And we are not attempting to search for shotgun sequenced genomes \n" % (
+                    #                 name))
 
                 elif seq_type == "profile":
 
@@ -1123,13 +1090,25 @@ class UploadView(BaseView):
                     while not os.path.exists(hmm_path):
                         time.sleep(1)
                     if os.path.isfile(hmm_path):
-
                         file = open(hmm_path, 'rb')
 
                         saveProfile(file)
+
             except HTTPError as error:
                 flash("There was a HTTP error. Please try again")
+
+            seconds = timeit.default_timer() - start_time
+            minutes, seconds = divmod(seconds, 60)
+            hours, minutes = divmod(minutes, 60)
+
+            periods = [('hours', hours), ('minutes', minutes), ('seconds', seconds)]
+            time_string = ', '.join('{} {}'.format(value, name)
+                                    for name, value in periods
+                                    if value)
+
+            print('\nFINISHED GETTING RECORDS: Time taken was {} \n'.format( time_string))
         return self.render("upload_admin.html", form=form)
+
 
 
 class MyHomeView(AdminIndexView):
@@ -1139,7 +1118,6 @@ class MyHomeView(AdminIndexView):
 
 
 def addGenome(genome_results):
-
     # print ("Here is where I would add a genome")
 
     # print (genome_results)
@@ -1163,7 +1141,8 @@ def addGenome(genome_results):
             overlap = current.annotations["Overlap"] if "Overlap" in current.annotations.keys() else ""
             distance = ""
 
-            entry = models.GenomeRecords(name, species, strain, description, a1, a1_length, a1_loc, a2, a2_length, a2_loc,
+            entry = models.GenomeRecords(name, species, strain, description, a1, a1_length, a1_loc, a2, a2_length,
+                                         a2_loc,
                                          overlap, distance, sequence, 0, 0)
             check = models.GenomeRecords.query.filter_by(name=name).first()
 
@@ -1286,7 +1265,7 @@ def setProfileAsReference(ids, region):
         for record in query.all():
             # Check for a previous reference profile
             old_profile_reference = eval("models.Profile.query.filter_by(" + region + "_profile_ref=1).first()")
-            
+
             if (old_profile_reference):
                 # Remove the previous reference profile
                 setattr(old_profile_reference, region + "_profile_ref", 0)
@@ -1300,7 +1279,7 @@ def setProfileAsReference(ids, region):
             servers.db.session.commit()
 
             # Write the new profile to the tmp folder ready to be used
-            with open("tmp/"+ region + "profile.hmm", 'w') as profile_path:
+            with open("tmp/" + region + "profile.hmm", 'w') as profile_path:
                 profile_path.write(record.profile.decode('utf-8'))
 
             flash("The profile named %s has been set as the reference profile for %s" % (record.name, region))
@@ -1334,7 +1313,7 @@ def checkWithProfile(ids, region):
 
         print("Using the %s profile named %s to check for %s regions" % (region, profile_name, region))
         eval(
-            'checkForFeature.get_feature_location_with_profile(ids, "hmm_outputs' + '", "' + profile_name + '", "' + region + '", "' + region + '_loc' + '","' + region +'")')
+            'checkForFeature.get_feature_location_with_profile(ids, "hmm_outputs' + '", "' + profile_name + '", "' + region + '", "' + region + '_loc' + '","' + region + '")')
     else:
         flash("Please set a profile as the %s reference profile first" % (region), "error")
 
