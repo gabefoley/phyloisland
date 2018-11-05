@@ -56,7 +56,6 @@ def getGenomeIDs(species_names):
 
     return genome_ids
 
-
 def get_full_genome(genome_ids):
     """
     Given an uploaded file, return the most appropriate genome record and add it to the database
