@@ -1,0 +1,25 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Sat Oct 13 10:11:22 2018
+
+@author: merodoc
+"""
+
+"""
+BLASTP program for initialization of runs
+"""
+
+from Bio.Blast import NCBIWWW, NCBIXML
+
+def preBLAST(program = "blastp", database = "nrp", sequence):
+    """ runs BLAST search on the provided Sequence (string) """
+    result_handle = NCBIWWW.qblast(program, database, sequence)
+    with open("pre_blast.xml", "w") as out_handle:
+        out_handle.write(result_handle.read())
+    result_handle.close
+    
+    result_handle = open("pre_blast.xml")
+    
+    blast_records = NCBIXML.read(result_handle)
+    
