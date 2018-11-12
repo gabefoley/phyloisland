@@ -264,10 +264,22 @@ class UploadForm(FlaskForm):
                                 ("species", "Species list"), ("genome", "Genome ID list"), ("profile", "Profile")])
     add_sequence = BooleanField("Add sequences to sequence database?", default="checked")
     add_genome = BooleanField("Search for genomic records?", default="checked")
-    genome_type = SelectField('Which genome records should we return?', choices=[('single_refseq','Retrieve a single RefSeq genome for each species'),
-                                                 ('all_refseq','Retrieve all RefSeq genomes for each species'),
-                                                 ('all_genbank', 'Retrieve all Genbank genomes for each species')])
+    single_genome = BooleanField("Retrieve just a single record for each genome?", default="checked")
+    representative = BooleanField("If previous genome search fails, search RefSeq representative genomes",
+                                  default="checked")
+    assembly = BooleanField("If previous genome search fails, search RefSeq assembly genomes",
+                            default="checked")
+    genbank = BooleanField("If previous genome search fails, search GenBank assembly genomes",
+                            default="checked")
+
     search_shotgun = BooleanField("Search for shotgun sequenced genomes if we can't find another "
                                   "genomic record?", default="checked")
+    genome_type = SelectField('Which genome records should we return?', choices=[
+        ('reference genome','Retrieve RefSeq reference genome/s'),
+        ('representative genome', 'Retrieve RefSeq representative genome/s'),
+        ('assembly', 'Retrieve RefSeq assembly genome/s'),
+        ('genbank', 'Retrieve GenBank assembly genome/s')])
+
+
 
     upload_submit = SubmitField("Upload file")

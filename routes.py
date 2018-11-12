@@ -983,8 +983,12 @@ class UploadView(BaseView):
             seq_type = form.type.data
             add_seq = form.add_sequence.data
             add_genome = form.add_genome.data
-            search_shotgun = form.search_shotgun.data
+            # search_shotgun = form.search_shotgun.data
+            single = form.single_genome.data
             genome_type=form.genome_type.data
+            representative = form.representative.data
+            assembly = form.assembly.data
+            genbank = form.genbank.data
 
             # # Create the initial seqRecords
             # phyloisland.seqDict = {}
@@ -1016,37 +1020,29 @@ class UploadView(BaseView):
 
                     for species_name in species_names:
 
-                        if genome_type == "single_refseq":
+                        print ("Species name is ", species_name)
 
-                            genome_check = getGenomes.add_genome(species_name, "reference", single=False)
+                        destinations = [genome_type]
 
-                            if genome_check == "Fail":
-                                genome_check = getGenomes.add_genome(species_name, "representative", single=True)
+                        #TODO: Once the checkbox selection is dynamic we can just add freely here
+                        if representative and not genome_type in ["representative", "assembly", "genbank"]:
+                            destinations.append("representative genome")
 
-                                if genome_check == "Fail":
-
-                                    genome_check = getGenomes.add_genome(species_name, "latest_assembly_versions",
-                                                                        single=True)
-
-                                    if genome_check == 'Fail':
-                                        genome_check = getGenomes.add_genome(species_name, "latest_assembly_versions", database="genbank",
-
-                                                                         single=True)
-
-                        elif genome_type == "all_refseq":
-                            genome_check = getGenomes.add_genome(species_name, "latest_assembly_versions",
-                                                                single=False)
-
-                        elif genome_type == "all_genbank":
-                            genome_check = getGenomes.add_genome(species_name, "latest_assembly_versions", database="genbank",
-
-                                                            single=False)
+                        if assembly and genome_type not in ["assembly", "genbank"]:
+                            destinations.append("assembly")
 
 
+                        if genbank and genome_type not in ["genbank"]:
+                            destinations.append("genbank")
 
+                        print ("Destinations is ", destinations)
 
+                        genome_results = getGenomes.add_genome2(species_name, destinations, single=single)
 
-
+                        if genome_results and genome_results != "Fail":
+                            print ("GENOME RESULTS IS ")
+                            print (genome_results)
+                            addGenome(genome_results)
 
 
 
