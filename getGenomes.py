@@ -8,6 +8,7 @@ from collections import defaultdict
 import operator
 from Bio.SeqRecord import SeqRecord
 from Bio.Seq import Seq
+import utilities
 
 
 def read_genome(outpath, species_name):
@@ -75,10 +76,10 @@ def retrieve_genome(records, species_name, category, database):
         if not file_list:
             return
 
+
         for filename in file_list.split():
 
             if len(filename) > 2:
-                print ("Filename = ", filename)
                 record = "_".join(filename.split("_")[0:2])
                 assembly_level = records[record][0]
 
@@ -110,6 +111,8 @@ def retrieve_genome(records, species_name, category, database):
                 genome_dict[record] = genome
                 print ("Genome dict is ")
                 print (genome_dict)
+
+                utilities.removeFile(outpath)
 
 
     except subprocess.CalledProcessError as exc:
@@ -165,6 +168,7 @@ def add_genome2(species_name, categories, single):
             database = "genbank"
             # Need to reinstate all the categories because GenBank can have these even if it doesn't have a RefSeq record
             categories = ["reference genome", "representative genome", "assembly", "genbank"]
+            break
 
 
     try:

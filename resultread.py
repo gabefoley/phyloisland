@@ -13,6 +13,13 @@ import re
 
 
 def expandStartPostion(record, hit_start, strand):
+    """
+    Extend a HMMER hit
+    :param record:
+    :param hit_start:
+    :param strand:
+    :return:
+    """
 
     if strand == "forward":
         codon_list = ["TGA", "TAA", "TAG"]

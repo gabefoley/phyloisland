@@ -62,6 +62,7 @@ def createFASTAFromHMMOutput(seq_record, hmmerout, species, region, amino_acid=T
         seq_list.append(seq)
     return seq_list
 
+
 def saveFASTA(align_list, filepath):
     SeqIO.write(align_list, filepath, "fasta")
     print ("FASTA file was saved to %s" % (filepath))

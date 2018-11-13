@@ -1042,11 +1042,8 @@ class UploadView(BaseView):
                             addGenome(genome_results)
                         else:
 
-                            print ("COuldn't find it")
-
                             # Couldn't find it in RefSeq, let's try genbank
                             if genbank:
-                                print ("Let's try genbank")
                                 destinations = ["genbank"]
                                 genome_results = getGenomes.add_genome2(species_name, destinations, single=single)
 
@@ -1119,7 +1116,8 @@ class UploadView(BaseView):
                                     if value)
 
             print('\nFINISHED GETTING RECORDS: Time taken was {} \n'.format( time_string))
-            print ("List of failed genomes - ", failed_genomes)
+            if failed_genomes:
+                print ("List of failed genomes - ", failed_genomes)
         return self.render("upload_admin.html", form=form)
 
 
