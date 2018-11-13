@@ -25,15 +25,23 @@ def read_genome(outpath, species_name):
             description = r.description
             genome_id = r.id
 
+        # Temporary measure to reduce the name so it can fit in the database. Edge case but occurs with
+        # 'bacterium endosymbiont of Mortierella elongata FMR23-6', for example
+
+        if len(species_name) > 40:
+            species_name = species_name[0:40]
+
     return SeqRecord(Seq(concatenated_genome), id=genome_id, name= species_name, description=description,
                        annotations={"organism": species_name, "source": ""})
 
 
-def add_genome3(records, species_name, category, database):
+def retrieve_genome(records, species_name, category, database):
+
+    print ("Got to retrieve genome")
 
     genome_dict = {}
 
-    if category == "assembly":
+    if category == "assembly" or category == "genbank":
         folder = "latest_assembly_versions"
     else:
         folder = category.split(" ")[0]
@@ -45,8 +53,7 @@ def add_genome3(records, species_name, category, database):
     file_type = "--exclude='*cds_from*' --exclude='*rna_from*' --include='*genomic.fna.gz' --exclude='*'"
 
     print ("rsync -Lrtv --chmod=+rwx -p %s rsync://ftp.ncbi.nlm.nih.gov/genomes/%s/bacteria/%s/%s/*/%s %s" % (
-        file_type, database, species_name.replace(" ", "_"), folder, location, "./tmp"))
-
+                    file_type, database, species_name.replace(" ", "_"), folder, location, "./tmp"))
 
     try:
         process = subprocess.Popen(
@@ -57,8 +64,8 @@ def add_genome3(records, species_name, category, database):
         out, err = process.communicate()
         errcode = process.returncode
 
-        # print ("errcode ", errcode)
-        # print ("output ", out.decode("utf-8"))
+        print ("errcode ", errcode)
+        print ("output ", out.decode("utf-8"))
 
         if errcode != 0:
             return
@@ -121,8 +128,9 @@ def get_record_list(summary, category, single):
     """
     ref_dict = defaultdict(list)
 
-    if category == "assembly":
+    if category == "assembly" or category == "genbank":
         category = "na"
+
 
     refs = summary.loc[summary['refseq_category'] == category]
 
@@ -135,14 +143,13 @@ def get_record_list(summary, category, single):
             ref_dict[ref._1] = (ref.assembly_level, "")
 
     elif len(refs) > 1 and single:
-        "getting a single"
 
         # Sort the records by release date
         summary['seq_rel_date'] = pd.to_datetime(summary.seq_rel_date)
         summary.sort_values(by=['seq_rel_date'], inplace=True, ascending=False)
 
         for ref in refs.itertuples():
-            ref_dict[ref._1] = (ref.assembly_level, ref.ftp_path.split("/")[-1])
+            ref_dict[ref._1] = (ref.assembly_level, ref.ftp_path.split("/")[-1] + "*")
             break
 
     return ref_dict
@@ -156,6 +163,8 @@ def add_genome2(species_name, categories, single):
             break
         else:
             database = "genbank"
+            # Need to reinstate all the categories because GenBank can have these even if it doesn't have a RefSeq record
+            categories = ["reference genome", "representative genome", "assembly", "genbank"]
 
 
     try:
@@ -185,7 +194,7 @@ def add_genome2(species_name, categories, single):
             # print (category, records)
 
             if records:
-                genome_dict = add_genome3(records, species_name, category, database)
+                genome_dict = retrieve_genome(records, species_name, category, database)
                 return genome_dict
         return
 

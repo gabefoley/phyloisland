@@ -989,6 +989,7 @@ class UploadView(BaseView):
             representative = form.representative.data
             assembly = form.assembly.data
             genbank = form.genbank.data
+            failed_genomes = []
 
             # # Create the initial seqRecords
             # phyloisland.seqDict = {}
@@ -1025,15 +1026,11 @@ class UploadView(BaseView):
                         destinations = [genome_type]
 
                         #TODO: Once the checkbox selection is dynamic we can just add freely here
-                        if representative and not genome_type in ["representative", "assembly", "genbank"]:
+                        if representative and genome_type not in ["representative genome", "assembly", "genbank"]:
                             destinations.append("representative genome")
 
                         if assembly and genome_type not in ["assembly", "genbank"]:
                             destinations.append("assembly")
-
-
-                        if genbank and genome_type not in ["genbank"]:
-                            destinations.append("genbank")
 
                         print ("Destinations is ", destinations)
 
@@ -1043,6 +1040,25 @@ class UploadView(BaseView):
                             print ("GENOME RESULTS IS ")
                             print (genome_results)
                             addGenome(genome_results)
+                        else:
+
+                            print ("COuldn't find it")
+
+                            # Couldn't find it in RefSeq, let's try genbank
+                            if genbank:
+                                print ("Let's try genbank")
+                                destinations = ["genbank"]
+                                genome_results = getGenomes.add_genome2(species_name, destinations, single=single)
+
+                                if genome_results and genome_results != "Fail":
+                                    print("GENOME RESULTS IS ")
+                                    print(genome_results)
+                                    addGenome(genome_results)
+                                else:
+                                    failed_genomes.append(species_name)
+
+                            else:
+                                failed_genomes.append(species_name)
 
 
 
@@ -1103,6 +1119,7 @@ class UploadView(BaseView):
                                     if value)
 
             print('\nFINISHED GETTING RECORDS: Time taken was {} \n'.format( time_string))
+            print ("List of failed genomes - ", failed_genomes)
         return self.render("upload_admin.html", form=form)
 
 
