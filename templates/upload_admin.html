@@ -1,20 +1,40 @@
 {% extends 'admin/master.html' %}
 
-<script type="text/javascript">// <![CDATA[
-    $(document).on({
-        ajaxStart: function() { $( ".loader" ).show();    },
-    });
+{#<script type="text/javascript">// <![CDATA[#}
+{#    $(document).on({#}
+{#        ajaxStart: function() { $( ".loader" ).show();    },#}
+{#    });#}
+{##}
+{#    // Hide the loading screen and clear the loading text#}
+{#    function hideLoadingScreen(){#}
+{#      $( ".loading" ).show();#}
+{#      $(".loading").html("Cleaning sequences!");#}
+{#}#}
+{#// ]]></script>#}
 
-    // Hide the loading screen and clear the loading text
-    function hideLoadingScreen(){
-      $( ".loading" ).show();
-      $(".loading").html("Cleaning sequences!");
-}
+<script type="text/javascript">// <![CDATA[
+        function loading(){
+            $("#loading").show();
+        }
 // ]]></script>
+
+<script>
+    $(document).ready(function() {
+        //attach the click event to all <img> tag having class 'popos_img'
+        //here no need of any for loop
+        $('.upload_submit').click(function(){
+            $("#loading").show();
+        });
+    });
+</script>
 
 {% block body %}
 
-    <div id="loading"></div>
+    <div id="loading">
+
+ <img src="/static/img/loading.gif" height=70" width="200">
+
+    </div>
 
     <div id="content">
 
