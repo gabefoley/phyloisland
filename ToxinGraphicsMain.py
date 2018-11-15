@@ -1,4 +1,4 @@
-biimport servers
+import servers
 import models
 import BLAST
 import utilities
