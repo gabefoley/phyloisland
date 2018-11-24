@@ -113,6 +113,8 @@ def retrieve_genome(records, species_name, category, database):
                 print (genome_dict)
 
                 utilities.removeFile(outpath)
+                utilities.removeFile(filepath)
+
 
 
     except subprocess.CalledProcessError as exc:
