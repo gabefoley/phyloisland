@@ -1,20 +1,11 @@
 import servers
 import models
-import BLAST
-import utilities
-import os
-import time
-from flask import flash
-import subprocess
-import Bio
 from Bio import SeqIO
 from Bio.Graphics import GenomeDiagram
 from Bio.SeqFeature import SeqFeature, FeatureLocation
 import phyloisland
 from Bio.Seq import Seq
-from Bio.SeqRecord import SeqRecord
 from Bio.Alphabet import generic_dna
-import glob
 
 
 def writeImageToFile(ids):
@@ -150,7 +141,7 @@ def writeSeqToFile(ids):
         SeqIO.write(seq_record, out_path, "genbank")
 
 
-def writeHMMToImage(hmm_dict, reference, seq_record, species, expand=False):
+def writeHMMToImage(hmm_dict, output_dir, identifier, seq_record, species, expand=False):
     # Currently taking region to be run simultaneously with hmmer, will need to manipulate some stuff for later
     # Initiation of GenomeDiagram assets"
 
@@ -166,14 +157,13 @@ def writeHMMToImage(hmm_dict, reference, seq_record, species, expand=False):
     # The amount we want to allow a feature to overlap with a neighbouring feature
     overlap_amount = 0
 
-    name = reference + "_" + species + "_GenomeDiagram"
+    name = output_dir + "_" + identifier + "_GenomeDiagram"
     name += "_expanded" if expand else ""
-
-
+    output_dir = output_dir.replace(".", "_")
 
     gd_diagram = GenomeDiagram.Diagram(name)
     max_len = 0
-    output_path = "%s/%s%s.png" % (reference, species, "_expanded" if expand else "")
+    output_path = "%s/%s%s.png" % (output_dir, identifier, "_expanded" if expand else "")
     start = 0
     # For my work I was considering changing 'region1, 2, and 3' to a3, TcB, and TcC for convenience
     # Up to others though if I fully change that (is just a UI thing tbh)
@@ -303,13 +293,14 @@ def writeHMMToImage(hmm_dict, reference, seq_record, species, expand=False):
     print("Genome Diagram has been added to file " + output_path)
 
 
-def writeHmmToSeq(hmm_dict, reference, seqrecord, species, expand=False):
-    name = species + "_sequence"
+def writeHmmToSeq(hmm_dict, output_dir, identifier, seqrecord, species, expand=False):
+    name = identifier + "_sequence"
     name += "_expanded" if expand else ""
-    output_path = reference + "/" + name + ".gb"
-    print (name)
-    print (reference)
-    seqrecord.name = species[0:9]
+    output_path = output_dir + "/" + name
+
+    output_path = output_path.replace(".", "_") + ".gb"
+    print ('Writing HMM to sequence. Output path is ' + output_path)
+    seqrecord.name = species[0:9].replace(" ", "")
     # Write Annotated Sequences to Genbank files to allow easy movement to Artemis
     print("Writing sequences to GenBank File")
     """ Create a dictionary for key = feature type -> value = location """

@@ -1,0 +1,175 @@
+# hmmsearch :: search profile(s) against a sequence database
+# HMMER 3.1b2 (February 2015); http://hmmer.org/
+# Copyright (C) 2015 Howard Hughes Medical Institute.
+# Freely distributed under the GNU General Public License (GPLv3).
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# query HMM file:                  tmp/a1_profile.hmm
+# target sequence database:        new_output/hmm_outputs/NZ_CP009533_1/a1/A1_profile/NZ_CP009533.1_VPOYL_backward_2_translated_genome.fasta
+# output directed to file:         new_output/hmm_outputs/NZ_CP009533_1/a1/A1_profile/NZ_CP009533.1_VPOYL_backward_2_hmmsearch_results.fasta
+# domain reporting threshold:      score >= 100
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Query:       align  [M=1131]
+Scores for complete sequences (score includes all domains):
+   --- full sequence ---   --- best 1 domain ---    -#dom-
+    E-value  score  bias    E-value  score  bias    exp  N  Sequence    Description
+    ------- ------ -----    ------- ------ -----   ---- --  --------    -----------
+          0 1063.9   0.0   8.5e-164  532.6   0.0    2.1  2  Pseudomonas  rhizosphaerae NZ_CP009533.1 Pseudomonas rhizosph
+
+
+Domain annotation for each sequence (and alignments):
+>> Pseudomonas  rhizosphaerae NZ_CP009533.1 Pseudomonas rhizosphaerae strain DSM 16299, complete genome
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  532.6   0.0  8.5e-164  8.5e-164      26    1130 .. 1213070 1214199 .. 1213054 1214200 .. 0.84
+   2 !  529.2   0.0  8.7e-163  8.7e-163      26    1130 .. 1215943 1217075 .. 1215923 1217076 .. 0.87
+
+  Alignments for each domain:
+  == domain 1  score: 532.6 bits;  conditional E-value: 8.5e-164
+        align      26 kekrsqsteslvdelkrlGyfsifdivkvskqrfikrhneslsGqaevifdkavsmanqlvqsyrqrslrdadteklakvasgae....k 111    
+                      +++  +   s +d++ rlGy+s+fdi++  kq f ++ +     ++e+ +d+a+ +a+q+ +syr++++    +       +g +     
+  Pseudomonas 1213070 QTRSLDGKLSFADAMPRLGYSSVFDIIRQPKQAFARQLRSLSDADGEMAYDNALCYATQIARSYREEQVSSGRSLPQIAPQTGVRalvdV 1213159
+                      455566678899************************99999999***********************99876665444444444455656 PP
+
+        align     112 lPdysslfpepwdnfckPdaiesLdsPaaYLleLYkfvkq.lelDgtn.qalkleqRRaDipeLlLdsdnlnkevsaleivndvLsesar 199    
+                       P y +lf e wd+fck +aie++d P+aYL  L +f+ q +e  +t  + + l+ RR+D+++L++d++++++  + l++vndvL +   
+  Pseudomonas 1213160 GPSYPNLFKENWDQFCKVGAIEAMDGPVAYLGSLRRFAEQrIEGASTSpKRIPLAVRRPDLDKLVIDEQSTYQSRPMLDLVNDVLTQGIG 1213249
+                      69************************************763665544326789************************************* PP
+
+        align     200 eyidqsgeaekpvnqvlGetrfPftlPyslatqqinkGlaekntelgtviqqvdqelpwstteek.anqvllaytqlskeqielltekap 288    
+                      +y  ++g+  +pv  +l + ++P  +Py +a qq+++ l  ++  lg + +++     ++  +   + + l   + ls  q +ll ++ap
+  Pseudomonas 1213250 KYQAEKGDV-RPVHELLAQKKHPLVFPYHFAHQQVSLALKGDKPALGELNHALVMGPQYTGLQPIdQTHALALLSGLSPAQQQLLIQPAP 1213338
+                      **9999986.8**************************************999865444333332214445555789************** PP
+
+        align     289 fsq..nllsreelvksylsgstteilpekdlskhayivkqeenikGptklvensdeaydeievtCknkakktitvklrg....envltyq 372    
+                      +++    l+ +   +   s +      e+    h   ++++ ++ G ++     +     ie++ +n   +t  ++lr+    e v    
+  Pseudomonas 1213339 YAAlgHALADNAWYTPIQSNTCLWETNET----HID-IPAQPSMIGYAH-----QTNNTLIELRMSNG-SETKPITLRAvglkEGVGYSW 1213417
+                      *9722344444443333333222222222....222.444444444433.....33345678888775.577888888822323333334 PP
+
+        align     373 rikarlePfdnspPfsrqlkltyveednkdvnldeGPyfgelt..iyaakpkeknsfltlkyrlaiakkgtsaeellpeaedffeknyGl 460    
+                         +r +           +++ y++edn   ++ eG y + lt  + a+   +++  + l+ +l  + ++    +l  + +++ +++ G+
+  Pseudomonas 1213418 PLNRRYVDTV----QGLCFRIEYHAEDNAGSDMPEG-YCAALTlnVIATVEGQSRIGRQLTIELSTTGDAKLIRQLDVDEQQYMRDHLGV 1213502
+                      4555555433....3445799**************9.67776611556666666669999999999999999****************** PP
+
+        align     461 sae..esskLkellafgdqteskaeeveellssgdfapvvspnvlfsnpifsskqseeafpapyqyGavYina.gqedavs.ivrtd... 543    
+                      ++    ss+L e+ +++d  +++ae++++l++ ++++p  s+n+ + n+   ++  + ++p p++yGav+in  g +d ++   + d   
+  Pseudomonas 1213503 EQRvfGSSSLSEVKQLCDASALDAEQLQSLICRKHAHPKLSANCPIVNTTGWNSP-TRKMPNPMNYGAVFINGnGGQDRLKpGTNLDlyd 1213591
+                      98744699*****************************************998885.6789***********9523444443133444677 PP
+
+        align     544 ............dgreltavsddrfdRlnRliRLqrwlelpyhqlDlLltsalkAe.eenldleinentlraLGlFrhlnkqykvsaeaF 620    
+                                  ++  l+++s drfdR++R+iRLqrw+++p+ +lD L+tsa++ e  +n  l+ n ntlr LG +r++  +y++  e+F
+  Pseudomonas 1213592 naltlwqpaessTTTLLANTSLDRFDRMQRMIRLQRWMNIPFAELDTLITSAMRSEgDANPGLHANRNTLRILGAYRYFDAHYEIGVEEF 1213681
+                      8899999998866667899*************************************999******************************* PP
+
+        align     621 aallyqltpfavsnnvpflDqlFNqekLFdePlvlddeeFdytetkgddaktvkqLcagLgIs..avtfqllaelveaalelesgkLvrs 708    
+                      aa++ ++tpfa ++++p +D++FN++ LFd+Pl ld ++F+ + +    +kt+ qLcagL++s  a+ f lla  v a++    g L+rs
+  Pseudomonas 1213682 AAFVDNITPFATGDKLPLFDRVFNSPVLFDTPLYLDRNAFSESGKDSVAQKTISQLCAGLNLSpaAESFGLLAANVIAVV----GPLKRS 1213767
+                      **************************************************************844568********9999....78**** PP
+
+        align     709 ldvvSalYrLvtiPrlfglsaedgliliniltkegky......Lakepal...teeksttekdlLdiilkleelaaWlrkskltpaklsl 789    
+                      l++vSa+Yr  ++ ++fg+ + +   l+n+l     y            l     e+  ++ d+Ldi+++l+ +++Wl+ +klt+a+l  
+  Pseudomonas 1213768 LKIVSAFYRQARMAQMFGIGVAECQYLLNLLGGAA-YinactiG-----LlspRLENGGEDADVLDILMELDGVVRWLKANKLTVAALRE 1213851
+                      *******************************8877.53544331.....1354458899999**************************** PP
+
+        align     790 llgktelpvvatdsevtlfkgiaqglsenvLseddfnraeiP...k.egidWldlLs..llvdanGlvldiplewgktdeealkekikai 873    
+                      ll +t  ++ ++ + ++ ++++a +   +  + ++    ++P   + + i+W+++L   +l+++ G+++    + + td+++l + +  +
+  Pseudomonas 1213852 LLDTT-GSAEPSVALIERLQQLAGDALTQRTTPEQVDGLGLPaaaDgTVINWYAQLRafHLISSGGFIIAPEVTVQDTDHAQLVATVLGM 1213940
+                      99876.4566777777777777777777777888899999997653699********999**********9999*************999 PP
+
+        align     874 veeikidaddnviai..lvqlilqaktaQenllsssiaaeygverdlvpllLrWlgssvyqvLkkvldgtpetvadisdelleltysL.. 959    
+                      ++ + ++++++  +   l + +  + + Q+ l+   + ++ g+  + + l  rW+      +L+ v +  p + + ++d++ +++ +L  
+  Pseudomonas 1213941 LTVLPLAPEAVEPTTlrLSEWLADTLARQQRLVEGFMQEYTGLLPEQALLAARWAIVTPQAFLDCVGEAWPASSEPVQDHIDAVLQQLhg 1214030
+                      9999999877665544599***************9999999************************9999998888888888888777722 PP
+
+        align     960 .liytqlikelklkkellllrltkPeWlglavekkdssslsldeiyllsryqdllesakqnEdklleYlkfansseadkkee...ednse 1045   
+                       ++ +  +k  +l +++l++ l++P Wlg      +  + +l++++ll  y+ l ++  q E++ll Yl++an++ +++  +     + e
+  Pseudomonas 1214031 vTCAALGVKWSQLGARALRMFLAEPTWLGT----ATLWPQTLHTLHLLKAYESLFNTLGQPEERLLGYLELANTAVSKRPGKrqlATQVE 1214116
+                      255566689999******************....4668899********************************98777665544688999 PP
+
+        align    1046 kcaellAeilgwdadeielavakleltpkrartleqiDwlrRlqqlsektglsvelllqaaaLtpnsdfelyqsvgEavlaaLka 1130   
+                      +c  + A++lgw+ d+++      +l +  a+t+ ++DwlrR q+++ +tgl   +llqa aL+ +s+   +q+vg a++aa+ a
+  Pseudomonas 1214117 HCNAAAASLLGWNVDDVAV--LTATLPQGIAKTVAHLDWLRRAQAIALQTGLNGATLLQACALNADSPEADWQAVGQAAMAAVSA 1214199
+                      ****************965..455667778****************************************************876 PP
+
+  == domain 2  score: 529.2 bits;  conditional E-value: 8.7e-163
+        align      26 kekrsqsteslvdelkrlGyfsifdivkvskqrfikrhneslsGqaevifdkavsmanqlvqsyrqrslrdadteklakvasgae....k 111    
+                      ++++ +   s +d++ rlGy+s+fdi++  kq f+++ +     ++e+ +d+a+ +a+q+ +syr++++    +       +g +     
+  Pseudomonas 1215943 QTRTLNGKLSFADAMPRLGYSSVFDIIRQPKQAFVRQVRSLSDADGEMAYDNALCYATQIARSYREEQVSSGRSLPQIAPQTGVRalvdV 1216032
+                      556677788999************************99999999***********************99876665444444444455656 PP
+
+        align     112 lPdysslfpepwdnfckPdaiesLdsPaaYLleLYkfvkq.lelDgtn.qalkleqRRaDipeLlLdsdnlnkevsaleivndvLsesar 199    
+                       P y +lf e wd+fck +aie++d P+aYL  L +f+ q +e  +t  + + l+ RR+D+++L++d++++++  + l++vndvL +   
+  Pseudomonas 1216033 GPSYPNLFKENWDQFCKVGAIEAMDGPVAYLGSLRRFAEQrIEGASTSpKRIPLAVRRPDLDKLVIDEQSTYQSRPMLDLVNDVLTQGIG 1216122
+                      69************************************763665544326789************************************* PP
+
+        align     200 eyidqsgeaekpvnqvlGetrfPftlPyslatqqinkGlaekntelgtviqqvdqelpwstteek.anqvllaytqlskeqielltekap 288    
+                      +y  ++g+  +pv q+l e ++Pf +Py++a qq+++ l+ ++  lg +  +v q++p++ + +  +++ l   +q+s    +ll e+ +
+  Pseudomonas 1216123 KYQADKGDV-RPVHQLLAEKKHPFVFPYQFAHQQVSLALSGEKPRLGEINYRVSQDVPDFPEAVYgSDDALCLLSQISPAHQKLLLEPVH 1216211
+                      **9999886.8*************************************************9999879999******************** PP
+
+        align     289 fsqnllsreelvks...ylsgstteilpekdlskhayivkqee..nik...GptklvensdeaydeievtCknkakktitvklrgenvlt 370    
+                      f++  +  +e++++   ++s s  e++  +  ++ +y++ q +   ++    +t+   ++d +   i+v+ +  a++ i vk+r+   + 
+  Pseudomonas 1216212 FPSFDIDLAEILAAgqpWVSPSYSEVIVWN--TQATYVLLQPQpsVVDcvpAATTSAVAADGTDTLITVRLTGGAGEKI-VKVRAYTHFF 1216298
+                      ****999999886544589******99876..57778877765213331103333344455555678899999999987.899*999988 PP
+
+        align     371 yqr..ikarl.ePfdnspPfsrqlkltyveednkdvnldeGPyfgel..tiyaakpkeknsfltlkyrlaiakkgtsaeellpeaedffe 455    
+                       +r    + +  P+  s+ ++r l +    edn+ v+l+ G y + l  ++y + +k++  ++ l+ +l  a       +l+ ++++   
+  Pseudomonas 1216299 QRRplLDRSInAPMTGSSAYARCLAVVMKPEDNPGVELS-GDYSAALifDVYGQRHKDQ-LLQRLEVNLHAA-----DCQLSEQQKQHLL 1216381
+                      888433344427**************************7.9999997446777766654.355566555544.....4689999****** PP
+
+        align     456 knyGlsaeesskLk..ellafgdqteskaeeveellssgdfapvvspnvlfsnpifsskqseeafpapyqyGavYina..gqedavsivr 541    
+                      ++ G+ ++++ ++    l +f+ qt++ a e++++l++g  ap vs n+     i++s++ ++  p p+  Ga Y+n   g +d + +++
+  Pseudomonas 1216382 THLGIPEHSNRHMSsaALNVFMAQTGLGAAEIKQALAVGLTAPQVSVNCPRLHYIITSANPANPAPKPMDAGARYVNGsgGLDDSLPTLN 1216471
+                      *****99988887522699**********************************************************7334455554422 PP
+
+        align     542 td...........dgreltavsddrfdRlnRliRLqrwlelpyhqlDlLltsalkAeeenldleinentlraLGlFrhlnkqykvsaeaF 620    
+                       d            ++ ++++s dr+dRl+R+iRLqr  ++p+ +lD L++++++ e +n +l +n+ntlr +G +rh+n+ y ++a + 
+  Pseudomonas 1216472 -DiytnsmciergAPSRIRNLSPDRLDRLQRMIRLQRLTHIPFPELDNLIVAGMRSEGDNIRLLLNANTLRLIGAYRHFNRTYDLTAREL 1216560
+                      .134457888887899************************************************************************** PP
+
+        align     621 aallyqltpfavsnnvpflDqlFNqekLFdePlvlddeeFdytetkgddaktvkqLcagLgIsavtfqllaelveaalelesgkLvrsld 710    
+                      aal+ ++ p+a  +++p++Dq+FN ++LF+ Plvl+++  +  +++ + ++tv+qLca+L++s +    l+ +++ a +   +  +  l+
+  Pseudomonas 1216561 AALVCEVNPYAFDGKPPMFDQVFNTPTLFNAPLVLNETPLNLDSNEMSVKQTVQQLCAALALSGAG--SLSCIIADASAY-VSAPQLDLP 1216647
+                      **************************************************************9986..566666666644.33445689* PP
+
+        align     711 vvSalYrLvtiPrlfglsaedgliliniltkegky..LakepalteeksttekdlLdiilkleelaaWlrkskltpaklslllgktelpv 798    
+                       vS+lYr  +i ++f ls+ed+  l+++l  ++ +  L  + ++ + +s+  +d+Ld++++++ + +Wl+ +klt+++l  ll +t  +v
+  Pseudomonas 1216648 FVSSLYRQARIAQMFALSVEDSQWLLELLGGSE-FrqLVARGQMLSRTSAPGVDILDVLMRVDWAIRWLKANKLTVTALRELLDAT-GSV 1216735
+                      *****************************8876.3356666555599999*******************************99876.689 PP
+
+        align     799 vatdsevtlfkgiaqglsenvLseddfnraeiP...k.egidWldlLs..llvdanGlvldiplewgktdeealkekikaiveeikidad 882    
+                       ++++ ++ ++++a +   + ++ ++  + ++P   + + i+W+++L    l+++ G+++    + + td+++l + +  +++ + ++++
+  Pseudomonas 1216736 EPSAALLERLQQLAGDAFTQRITPEQVDDLGLPttvDgTVINWYAQLRafYLISSGGFIIAPDVTVQDTDHAQLVATVLGMLTVLPLAPE 1216825
+                      9****************9999************7652699********8899*********9999*************999999999987 PP
+
+        align     883 dnviai..lvqlilqaktaQenllsssiaaeygverdlvpllLrWlgssvyqvLkkvldgtpetvadisdelleltysL...liytqlik 967    
+                      ++  +   l + +    + Q+ l+   + ++ g+  + + l  rW+      +L+ v +  p + + ++d + +++ +L   ++ +  +k
+  Pseudomonas 1216826 AVEPTTlrLSEWLADRLARQQRLVEGFVQEYTGLLPEQALLAARWAIVTPQAFLDCVNEAWPASGEPVQDRIDAVLQQLhgvTCAAVGVK 1216915
+                      7665543599999999999*******999999************************9999998888888887777777722256666789 PP
+
+        align     968 elklkkellllrltkPeWlglavekkdssslsldeiyllsryqdllesakqnEdklleYlkfansseadkkee...ednsekcaellAei 1054   
+                        +l +++l++ l++P Wlg      +  + +l++++ll  y+ l ++  q E++ll Yl++an++ +++  +     + e+c  + A++
+  Pseudomonas 1216916 WSQLGARALRMFLAEPTWLGT----ATLWPQTLHTLHLLKAYESLFNTLGQPEERLLGYLELANTAVSKRPGKrqlATQAEHCNAAAASL 1217001
+                      999******************....4668899********************************9877665554478999********** PP
+
+        align    1055 lgwdadeielavakleltpkrartleqiDwlrRlqqlsektglsvelllqaaaLtpnsdfelyqsvgEavlaaLka 1130   
+                      lgw+ d+++  +   +l +  a+t+ ++DwlrR q+++ +tgl   +llqa aL+ +s+   +q+vg a++aa+ a
+  Pseudomonas 1217002 LGWNVDDVAALT--ATLPQGIAKTVAHLDWLRRAQAIALQTGLNGATLLQACALNADSPEADWQAVGQAAMAAVSA 1217075
+                      *******96443..3455566****************************************************876 PP
+
+
+
+Internal pipeline statistics summary:
+-------------------------------------
+Query model(s):                              1  (1131 nodes)
+Target sequences:                            1  (1562877 residues searched)
+Passed MSV filter:                         1  (1); expected 0.0 (0.02)
+Passed bias filter:                        1  (1); expected 0.0 (0.02)
+Passed Vit filter:                         1  (1); expected 0.0 (0.001)
+Passed Fwd filter:                         1  (1); expected 0.0 (1e-05)
+Initial search space (Z):                  1  [actual number of targets]
+Domain search space  (domZ):               1  [number of targets reported over threshold]
+# CPU time: 11.75u 0.20s 00:00:11.95 Elapsed: 00:00:12.61
+# Mc/sec: 140.18
+//
+[ok]
