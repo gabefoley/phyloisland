@@ -45,6 +45,23 @@ def expandStartPostion(record, hit_start, strand):
         first_pos = first_pos - 3
 
     if strand == "forward":
+        # If we want to also look forwards and our start position isn't a methionine
+        if track_forwards and start_pos != "ATG":
+            first_pos = start_pos
+            second_pos = start_pos + 3
+
+            while first_pos + 3 < len(record.sequence):
+                codon = record.sequence[first_pos: second_pos]
+                if codon == "ATG":
+                    start_pos = first_pos
+                    break
+
+                first_pos = second_pos
+                second_pos = first_pos + 3
+
+            return start_pos
+
+
         return start_pos
     else:
         return first_pos + 3
@@ -64,6 +81,9 @@ def expandEndPosition(record, hit_end, strand):
     codon = ""
     first_pos = hit_end - 3
     second_pos = hit_end
+
+    start_pos = second_pos # variable to keep track of all the potential start positions (methionines) we run into
+
     while  first_pos +3 < len(record.sequence):
         codon = record.sequence[first_pos: second_pos]
         if codon == "CAT":
@@ -76,6 +96,21 @@ def expandEndPosition(record, hit_end, strand):
     if strand == "forward":
         return second_pos - 3
     else:
+        # If we want to also look forwards and our start position isn't a methionine
+        if track_forwards and start_pos != "CAT":
+            first_pos = start_pos
+            second_pos = start_pos - 3
+
+            while first_pos - 3 > 0:
+                codon = record.sequence[first_pos: second_pos]
+                if codon == "CAT":
+                    start_pos = first_pos
+                    break
+
+                first_pos = second_pos
+                second_pos = first_pos - 3
+
+            return start_pos
         return start_pos
 
 

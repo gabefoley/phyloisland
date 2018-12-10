@@ -29,6 +29,7 @@ import time
 from urllib.error import HTTPError
 import ToxinGraphicsMain
 import resultread
+import outputs
 import getGenomes
 import timeit
 
@@ -869,7 +870,7 @@ class GenomeRecordsView(ModelView):
     @action('item10_generate_genome_diagram', 'Generate a genome diagram and GenBank file')
     def item10_generate_genome_diagram(self, ids):
         try:
-            checkForFeature.generateOutput(ids, "hmm_outputs", diagram=True, genbank=True, expand=False)
+            checkForFeature.generateOutput(ids, outputs.output_dir, diagram=True, genbank=True, expand=False)
 
         except Exception as ex:
             if not self.handle_view_exception(ex):
@@ -879,7 +880,7 @@ class GenomeRecordsView(ModelView):
     @action('item11_generate_gb_file', 'Generate an expanded genome diagram and GenBank file')
     def item11_generate_gb_file(self, ids):
         try:
-            checkForFeature.generateOutput(ids, "hmm_outputs", diagram=True, genbank=True, expand=True)
+            checkForFeature.generateOutput(ids, outputs.output_dir, diagram=True, genbank=True, expand=True)
         except Exception as ex:
             if not self.handle_view_exception(ex):
                 raise
@@ -888,7 +889,7 @@ class GenomeRecordsView(ModelView):
     @action('item12_generate_fasta_file', 'Generate a FASTA file of all regions')
     def item12_generate_fasta_file(self, ids):
         try:
-            checkForFeature.generateOutput(ids, "hmm_outputs", diagram=False, genbank=False, fasta=True, expand=False)
+            checkForFeature.generateOutput(ids, outputs.output_dir, diagram=False, genbank=False, fasta=True, expand=False)
 
         except Exception as ex:
             if not self.handle_view_exception(ex):
@@ -898,7 +899,7 @@ class GenomeRecordsView(ModelView):
     @action('item13_generate_expanded_fasta_file', 'Generate an expanded FASTA file of all regions')
     def item13_generate_expanded_fasta_file(self, ids):
         try:
-            checkForFeature.generateOutput(ids, "hmm_outputs", diagram=True, genbank=True, fasta=True, expand=True)
+            checkForFeature.generateOutput(ids, outputs.output_dir, diagram=True, genbank=True, fasta=True, expand=True)
         except Exception as ex:
             if not self.handle_view_exception(ex):
                 raise
@@ -1129,6 +1130,7 @@ class MyHomeView(AdminIndexView):
 
 
 def addGenome(genome_results):
+
     # print ("Here is where I would add a genome")
 
     # print (genome_results)
@@ -1324,7 +1326,7 @@ def checkWithProfile(ids, region):
 
         print("Using the %s profile named %s to check for %s regions" % (region, profile_name, region))
         eval(
-            'checkForFeature.get_feature_location_with_profile(ids, "hmm_outputs' + '", "' + profile_name + '", "' + region + '", "' + region + '_loc' + '","' + region + '")')
+            'checkForFeature.get_feature_location_with_profile(ids, outputs.output_dir,  profile_name, "' + region + '", "' + region + '_loc' + '","' + region +'")')
     else:
         flash("Please set a profile as the %s reference profile first" % (region), "error")
 
