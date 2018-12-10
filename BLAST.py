@@ -1,6 +1,7 @@
 from Bio import SeqIO
 from Bio.Blast.Applications import NcbipsiblastCommandline, NcbitblastnCommandline
 from Bio.Blast import NCBIXML
+from Bio import SearchIO
 import sys
 import subprocess
 import os
@@ -82,3 +83,42 @@ def getBlastInfo(xmlFile, closest_to=-1):
 
     return blast_info
 
+# TODO - Rowan:
+    # XML input Parser
+    # BLAST on input FASTA files (PSIBLAST returning top 100 unique hits
+    
+def readBLAST(file, E_val, maxhits = 100):
+    """
+    Read BLAST input into phyloisland
+    :param file: BLAST XML file
+    :param E_val: E-value threshold 
+    :param maxhits: maximum number of BLAST hits to return
+    :return: list of genome accession numbers
+    """
+    blast_record = SearchIO.read(file, "blast-xml")
+    results = {}
+    for hsp in blast_record.hsps:
+        if hsp.evalue < E_val:
+            name = hsp.hit_id.split("|")[3]
+            if name in results.keys():
+                if hsp.evalue < results[name]:
+                    results[name] = hsp.evalue               
+                else:
+                    continue
+            else:
+                results[name] = hsp.evalue
+    list_to_order = []
+    for k, v in results.items():
+        list_to_order.append((k, v))
+        
+    ordered_list = sorted(list_to_order, key=lambda tup: tup[1])
+    genome_ids = []
+    for k,v in ordered_list:
+        genome_ids.append(k)
+    if len(genome_ids) < maxhits:
+        return(genome_ids)
+    else:
+        return(genome_ids[0:maxhits])
+    
+test = readBLAST("testing/Alignment.xml",1)
+print(test)
