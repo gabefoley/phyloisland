@@ -71,7 +71,11 @@ def retrieve_genome(records, species_name, category, database):
         if errcode != 0:
             return
 
-        file_list = out.decode("utf-8").split("receiving file list ... done")[1].split("sent")[0]
+        if "incremental" in out:
+            file_list = out.decode("utf-8").split("receiving incremental file list")[1].split("sent")[0]
+
+        else:
+            file_list = out.decode("utf-8").split("receiving file list ... done")[1].split("sent")[0]
 
         if not file_list:
             return
